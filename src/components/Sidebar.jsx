@@ -2,15 +2,31 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { Home, Users, BookOpen, ClipboardList } from 'lucide-react';
 
-const Sidebar = () => {
+const Sidebar = ({ role }) => {
+  const menuItems = {
+    admin: [
+      { icon: <Home />, text: 'Dashboard', to: '/admin/dashboard' },
+      { icon: <ClipboardList />, text: 'Exam', to: '/admin/exam' },
+      { icon: <Users />, text: 'Faculty', to: '/admin/faculty' },
+      { icon: <BookOpen />, text: 'Student', to: '/admin/student' },
+    ],
+    student: [
+      { icon: <ClipboardList />, text: 'Exam Interface', to: '/student/examinterface' },
+    ],
+    faculty: [
+      { icon: <Home />, text: 'Faculty Home', to: '/faculty/home' },
+    ],
+  };
+
+  const items = menuItems[role] || [];
+
   return (
     <div className="w-64 bg-gray-900 text-white p-4 space-y-4">
       <div className="text-2xl font-bold mb-6">CREATIVE TIM</div>
       <nav className="space-y-2">
-        <SidebarItem icon={<Home />} text="Dashboard" to="/" />
-        <SidebarItem icon={<ClipboardList />} text="Exam" to="/exam" />
-        <SidebarItem icon={<Users />} text="Faculty" to="/faculty" />
-        <SidebarItem icon={<BookOpen />} text="Student" to="/student" />
+        {items.map((item, idx) => (
+          <SidebarItem key={idx} icon={item.icon} text={item.text} to={item.to} />
+        ))}
       </nav>
     </div>
   );
