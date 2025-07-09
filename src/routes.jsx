@@ -3,6 +3,7 @@ import React from "react";
 // Admin Views
 import AdminDashboard from "./pages/admin/dashboard";
 import AdminExam from "./pages/admin/exam";
+import MockCourse from "./pages/admin/course";
 // Staff Views
 
 // Auth Views
@@ -40,6 +41,13 @@ const routes = [
     path: "exam",
     icon: <MdDashboard className="h-6 w-6" />,
     component: <AdminExam/>,
+  },
+  {
+    name: "Courses",
+    layout: "/admin",
+    path: "course",
+    icon: <MdDashboard className="h-6 w-6" />,
+    component: <MockCourse />,
   },
 
   // Student Routes
