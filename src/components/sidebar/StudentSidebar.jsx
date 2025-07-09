@@ -46,6 +46,8 @@ export default function StudentSidebar() {
           </li>
         ))}
       </ul>
+
+      <p className="text-sm text-gray-500 mt-10">© 2025 Academix</p>
     </aside>
   );
 }
