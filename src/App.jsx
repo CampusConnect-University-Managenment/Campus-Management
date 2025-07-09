@@ -6,6 +6,7 @@ import Dashboard from './pages/Dashboard';
 import Exam from './pages/Exam';
 import Faculty from './pages/Faculty';
 import Student from './pages/Student';
+import StudentDashboard from './pages/StudentDashboard';
 
 function App() {
   return (
@@ -20,6 +21,7 @@ function App() {
               <Route path="/exam" element={<Exam />} />
               <Route path="/faculty" element={<Faculty />} />
               <Route path="/student" element={<Student />} />
+              <Route path="/student-dashboard" element={<StudentDashboard />} />
             </Routes>
           </main>
         </div>
