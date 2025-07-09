@@ -3,13 +3,13 @@ import { HiX } from "react-icons/hi";
 import Links from "./components/Link";
 import routes from "../../routes";
 
-const AdminSidebar = ({ open, onClose }) => {
-  const adminRoutes = routes.filter(route => route.layout === "/admin");
+const FacultySidebar = ({ open, onClose }) => {
+  const facultyRoutes = routes.filter(route => route.layout === "/faculty");
 
   return (
     <div
     // style={{backgroundColor:"green"}}
-      className={`fixed top-0 left-0 z-50 h-full w-100 flex-col bg-red-200 shadow-2xl transition-transform duration-300  ${
+      className={`fixed top-0 left-0 z-50 h-full w-64 flex-col bg-red-200 shadow-2xl transition-transform duration-300  ${
         open ? "translate-x-0" : "-translate-x-full"
       }`}
     >
@@ -23,9 +23,9 @@ const AdminSidebar = ({ open, onClose }) => {
 
       {/* Logo + Title */}
       <div className="mx-6 mt-12 flex items-center space-x-2">
-        <img src="/logo.svg" alt="Admin Logo" className="h-8 w-8" />
+        <img src="/logo.svg" alt="Faculty Logo" className="h-8 w-8" />
         <p className="text-xl font-bold uppercase text-navy-700 dark:text-white">
-          Admin Portal
+          Faculty Portal
         </p>
       </div>
 
@@ -34,10 +34,10 @@ const AdminSidebar = ({ open, onClose }) => {
 
       {/* Navigation Links */}
       <ul className="flex-1 overflow-y-auto px-4">
-        <Links routes={adminRoutes} />
+        <Links routes={facultyRoutes} />
       </ul>
     </div>
   );
 };
 
-export default AdminSidebar;
+export default FacultySidebar;

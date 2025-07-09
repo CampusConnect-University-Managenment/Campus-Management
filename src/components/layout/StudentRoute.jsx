@@ -2,13 +2,13 @@ import React from "react";
 import { Routes, Route, Navigate, useLocation } from "react-router-dom";
 import StudentSidebar from "../../components/sidebar/StudentSidebar";
 import routes from "../../routes";
-
-export default function Student(props) {
-  const { ...rest } = props;
+import Navbar from "../Navbar";
+export default function Student() {
+ 
   const location = useLocation();
   const [open, setOpen] = React.useState(true);
   const [currentRoute, setCurrentRoute] = React.useState("Main Dashboard");
-
+   console.log(currentRoute)
   React.useEffect(() => {
     const handleResize = () =>
       window.innerWidth < 1200 ? setOpen(false) : setOpen(true);
@@ -34,16 +34,7 @@ export default function Student(props) {
     }
   };
 
-  const getActiveNavbar = (routes) => {
-    for (let i = 0; i < routes.length; i++) {
-      if (
-        window.location.href.includes(routes[i].layout + routes[i].path)
-      ) {
-        return routes[i].secondary;
-      }
-    }
-    return false;
-  };
+
 
   const getRoutes = (routes) => {
     return routes.map((route, key) => {
@@ -62,6 +53,7 @@ export default function Student(props) {
     <div className="flex h-full w-full">
       <StudentSidebar open={open} onClose={() => setOpen(false)} />
       <div className="h-full w-full bg-lightPrimary dark:!bg-navy-900">
+          <Navbar/>
         <main
           className={`mx-[12px] h-full flex-none transition-all md:pr-2 xl:ml-[313px]`}
         >

@@ -1,5 +1,5 @@
 import React from 'react';
-import { Bell, Search } from 'lucide-react';
+import { Bell } from 'lucide-react';
 
 const Navbar = () => {
   return (

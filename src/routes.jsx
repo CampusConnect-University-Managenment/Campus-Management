@@ -21,9 +21,9 @@ import {
   MdChatBubble,
   MdLiveHelp,
 } from "react-icons/md";
-
+import FacultyDashboard from "./pages/faculty/dashboard"
 const routes = [
-  // Citizen Routes
+
   
   // Admin Routes
   {
@@ -42,7 +42,7 @@ const routes = [
     component: <AdminExam/>,
   },
 
-  // Staff Routes
+  // Student Routes
   {
     name: "Exam ",
     layout: "/student",
@@ -57,7 +57,14 @@ const routes = [
     icon: <MdDashboard className="h-6 w-6" />,
     component: <ExamInterface/>,
   },
-  // Auth Routes
+  // Faculty Routes
+  {
+    name:"Faculty Dashboard",
+    layout:"/faculty",
+    path:"default",
+    icon:<MdDashboard className="h-6 w-6" />,
+    component:<FacultyDashboard/>
+  }
   
 ];
 
