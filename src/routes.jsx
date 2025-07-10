@@ -12,59 +12,98 @@ import ExamInterface from "./pages/student/ExamInterface";
 // Icons
 
 import {
-  MdHome,
-  MdLock,
-  MdPerson,
-  MdDashboard,
-  MdTableView,
-  MdAdminPanelSettings,
-  MdChatBubble,
-  MdLiveHelp,
-} from "react-icons/md";
-import FacultyDashboard from "./pages/faculty/dashboard"
-const routes = [
+  FaBookOpen,
+  FaUser,
+  FaBell,
+  FaChartBar,
+  FaClipboardCheck,
+  FaGraduationCap,
+  FaQuestionCircle,
+} from "react-icons/fa";
 
-  
+import { MdDashboard } from "react-icons/md";
+
+import FacultyDashboard from "./pages/faculty/dashboard";
+// import { FaUser } from "react-icons/fa";
+const routes = [
   // Admin Routes
   {
     name: "Admin Dashboard",
     layout: "/admin",
     path: "default",
-    icon: <MdDashboard className="h-6 w-6" />,
+    icon: <MdDashboard className="h-5 w-5" />,
     component: <AdminDashboard />,
   },
 
-    {
-    name: "Admin Services",
-    layout: "/admin",
-    path: "exam",
-    icon: <MdDashboard className="h-6 w-6" />,
-    component: <AdminExam/>,
-  },
-
+  
   // Student Routes
   {
-    name: "Exam ",
+    name: "Dashboard ",
     layout: "/student",
     path: "exam",
-    icon: <MdDashboard className="h-6 w-6" />,
-    component: <ExamInterface/>,
+    icon: <MdDashboard className="h-5 w-5" />,
+    component: <ExamInterface />,
   },
   {
-    name: "Demo ",
+    name: "Profile",
     layout: "/student",
     path: "demo",
-    icon: <MdDashboard className="h-6 w-6" />,
-    component: <ExamInterface/>,
+    icon: <FaUser className="h-5 w-5" />,
+    component: <ExamInterface />,
   },
+  {
+    name: "Courses Enrolled",
+    layout: "/student",
+    path: "demo",
+    icon: <FaBookOpen className="h-5 w-5" />,
+    component: <ExamInterface />,
+  },
+  {
+    name: "Practice Exams",
+    layout: "/student",
+    path: "demo",
+    icon: <FaClipboardCheck className="h-5 w-5" />,
+    component: <ExamInterface />,
+  },
+
+  {
+    name: "Results Portal",
+    layout: "/student",
+    path: "demo",
+    icon: <FaGraduationCap className="h-5 w-5" />,
+    component: <ExamInterface />,
+  },
+
+  {
+    name: "Performance Analytics",
+    layout: "/student",
+    path: "demo",
+    icon: <FaChartBar className="h-5 w-5" />,
+    component: <ExamInterface />,
+  },
+  {
+    name: "Notifications",
+    layout: "/student",
+    path: "demo",
+    icon: <FaBell className="h-5 w-5" />,
+    component: <ExamInterface />,
+  },
+  {
+    name: "Help & Support",
+    layout: "/student",
+    path: "demo",
+    icon: <FaQuestionCircle className="h-5 w-5" />,
+    component: <ExamInterface />,
+  },
+
   // Faculty Routes
   {
-    name:"Faculty Dashboard",
-    layout:"/faculty",
-    path:"default",
-    icon:<MdDashboard className="h-6 w-6" />,
-    component:<FacultyDashboard/>
-  }
+    name: "Faculty Dashboard",
+    layout: "/faculty",
+    path: "default",
+    icon: <MdDashboard className="h-5 w-5" />,
+    component: <FacultyDashboard />,
+  },
   
 ];
 

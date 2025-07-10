@@ -1,17 +1,13 @@
 import React from "react";
-import {
-  FaUniversity,
-  FaUser,
-  FaBookOpen,
-  FaClipboardCheck,
-  FaGraduationCap,
-  FaChartBar,
-  FaBell,
-  FaQuestionCircle,
-} from "react-icons/fa";
-import { MdDashboard } from "react-icons/md";
+import { FaUniversity } from "react-icons/fa";
+import { useNavigate } from "react-router-dom";
+
+import routes from "../../routes"; // or "../routes" depending on your file structure
 
 export default function StudentSidebar() {
+  const navigate = useNavigate();
+  const studentRoutes = routes.filter((route) => route.layout === "/student");
+
   return (
     <aside className="fixed top-0 left-0 h-full w-72 bg-gray-100 text-gray-800 shadow-lg rounded-tr-3xl rounded-br-3xl p-8 flex flex-col z-50">
       {/* Logo + Title */}
@@ -26,23 +22,14 @@ export default function StudentSidebar() {
 
       {/* Navigation Links */}
       <ul className="space-y-4 text-base flex-1">
-        {[
-          { icon: MdDashboard, label: "Dashboard" },
-          { icon: FaUser, label: "Profile" },
-          { icon: FaBookOpen, label: "Courses Enrolled" },
-          { icon: FaClipboardCheck, label: "Practice Exams" },
-          { icon: FaGraduationCap, label: "Results Portal" },
-          { icon: FaChartBar, label: "Performance Analytics" },
-          { icon: FaBell, label: "Notifications" },
-          { icon: FaQuestionCircle, label: "Help & Support" },
-        ].map((item, index) => (
+        {studentRoutes.map((route, index) => (
           <li
             key={index}
-            className="flex items-center gap-4 p-3 rounded-xl transition-all cursor-pointer
-              hover:bg-white hover:text-blue-600 hover:shadow-md"
+            onClick={() => navigate(`/student/${route.path}`)}
+            className="flex items-center gap-4 p-3 rounded-xl transition-all cursor-pointer hover:bg-white hover:text-blue-600 hover:shadow-md"
           >
-            <item.icon className="text-xl" />
-            <span className="font-medium">{item.label}</span>
+            {route.icon}
+            <span className="font-medium">{route.name}</span>
           </li>
         ))}
       </ul>
