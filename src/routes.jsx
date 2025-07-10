@@ -3,6 +3,7 @@ import React from "react";
 // Admin Views
 import AdminDashboard from "./pages/admin/dashboard";
 import AdminExam from "./pages/admin/exam";
+import MockCourse from "./pages/admin/course";
 
 import AttendanceUpload from "./pages/faculty/AttendanceUpload"
 import Notification_Message from "./pages/faculty/Notification_Message"
@@ -68,6 +69,13 @@ const routes = [
     path: "demo",
     icon: <FaClipboardCheck className="h-5 w-5" />,
     component: <ExamInterface />,
+  },
+  {
+    name: "Courses",
+    layout: "/admin",
+    path: "course",
+    icon: <MdDashboard className="h-6 w-6" />,
+    component: <MockCourse />,
   },
 
   {
