@@ -4,6 +4,7 @@ import React from "react";
 import AdminDashboard from "./pages/admin/dashboard";
 import AdminExam from "./pages/admin/exam";
 import MockCourse from "./pages/admin/course";
+import AllStudents from "./pages/admin/students/components/AllStudents";
 
 import AttendanceUpload from "./pages/faculty/AttendanceUpload"
 import Notification_Message from "./pages/faculty/Notification_Message"
@@ -26,7 +27,7 @@ import {
   FaQuestionCircle,
 } from "react-icons/fa";
 
-import { MdDashboard } from "react-icons/md";
+import { MdDashboard,MdGroups } from "react-icons/md";
 
 import FacultyDashboard from "./pages/faculty/dashboard";
 // import { FaUser } from "react-icons/fa";
@@ -39,7 +40,13 @@ const routes = [
     icon: <MdDashboard className="h-5 w-5" />,
     component: <AdminDashboard />,
   },
-
+   {
+    name: "All Students",
+    layout: "/admin",
+    path: "students/all",
+    icon: <MdGroups className="h-6 w-6" />,
+    component: <AllStudents />,
+  },
   
   // Student Routes
   {
