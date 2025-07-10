@@ -1,31 +1,19 @@
 import React from "react";
-
-// Admin Views
 import AdminDashboard from "./pages/admin/dashboard";
 import AdminExam from "./pages/admin/exam";
-// Staff Views
-
-// Auth Views
-
-//studnet
+import FacultyDashboard from "./pages/faculty/dashboard";
 import ExamInterface from "./pages/student/ExamInterface";
-// Icons
+
+// Student Components
+import AllStudents from "./pages/admin/students/components/AllStudents";
 
 import {
-  MdHome,
-  MdLock,
-  MdPerson,
   MdDashboard,
-  MdTableView,
-  MdAdminPanelSettings,
-  MdChatBubble,
-  MdLiveHelp,
+  MdGroups,
 } from "react-icons/md";
-import FacultyDashboard from "./pages/faculty/dashboard"
-const routes = [
 
-  
-  // Admin Routes
+const routes = [
+  // Admin Dashboard
   {
     name: "Admin Dashboard",
     layout: "/admin",
@@ -33,39 +21,47 @@ const routes = [
     icon: <MdDashboard className="h-6 w-6" />,
     component: <AdminDashboard />,
   },
-
-    {
+  {
     name: "Admin Services",
     layout: "/admin",
     path: "exam",
     icon: <MdDashboard className="h-6 w-6" />,
-    component: <AdminExam/>,
+    component: <AdminExam />,
   },
 
-  // Student Routes
+  // ✅ All Students as standalone sidebar item
   {
-    name: "Exam ",
+    name: "All Students",
+    layout: "/admin",
+    path: "students/all",
+    icon: <MdGroups className="h-6 w-6" />,
+    component: <AllStudents />,
+  },
+
+  // Student Dashboard
+  {
+    name: "Exam",
     layout: "/student",
     path: "exam",
     icon: <MdDashboard className="h-6 w-6" />,
-    component: <ExamInterface/>,
+    component: <ExamInterface />,
   },
   {
-    name: "Demo ",
+    name: "Demo",
     layout: "/student",
     path: "demo",
     icon: <MdDashboard className="h-6 w-6" />,
-    component: <ExamInterface/>,
+    component: <ExamInterface />,
   },
-  // Faculty Routes
+
+  // Faculty Dashboard
   {
-    name:"Faculty Dashboard",
-    layout:"/faculty",
-    path:"default",
-    icon:<MdDashboard className="h-6 w-6" />,
-    component:<FacultyDashboard/>
-  }
-  
+    name: "Faculty Dashboard",
+    layout: "/faculty",
+    path: "default",
+    icon: <MdDashboard className="h-6 w-6" />,
+    component: <FacultyDashboard />,
+  },
 ];
 
 export default routes;
