@@ -3,15 +3,13 @@ import React from "react";
 // Admin Views
 import AdminDashboard from "./pages/admin/dashboard";
 import AdminExam from "./pages/admin/exam";
-
 import AttendanceUpload from "./pages/faculty/AttendanceUpload"
 import Notification_Message from "./pages/faculty/Notification_Message"
-
 // Staff Views
-import ClassList from "./pages/faculty/ClassList";
+
 // Auth Views
 
-//student
+//studnet
 import ExamInterface from "./pages/student/ExamInterface";
 // Icons
 
@@ -68,13 +66,6 @@ const routes = [
     path:"default",
     icon:<MdDashboard className="h-6 w-6" />,
     component:<FacultyDashboard/>
-  },
-  {
-    name: "ClassList",
-    layout: "/faculty",
-    path: "ClassList",
-    icon: <MdDashboard className="h-6 w-6" />,
-    component: <ClassList />
   },
   {
     name:"Attendace Upload",
