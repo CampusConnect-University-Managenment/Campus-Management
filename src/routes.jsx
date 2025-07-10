@@ -3,6 +3,8 @@ import React from "react";
 // Admin Views
 import AdminDashboard from "./pages/admin/dashboard";
 import AdminExam from "./pages/admin/exam";
+import AttendanceUpload from "./pages/faculty/AttendanceUpload"
+import Notification_Message from "./pages/faculty/Notification_Message"
 // Staff Views
 
 // Auth Views
@@ -64,6 +66,20 @@ const routes = [
     path:"default",
     icon:<MdDashboard className="h-6 w-6" />,
     component:<FacultyDashboard/>
+  },
+  {
+    name:"Attendace Upload",
+    layout:"/faculty",
+    path:"Attendance",
+    icon:<MdDashboard className="h-6 w-6" />,
+    component:<AttendanceUpload/>
+  },
+  {
+    name:"Notification and Message",
+    layout:"/faculty",
+    path:"Notification&Message",
+    icon:<MdDashboard className="h-6 w-6" />,
+    component:<Notification_Message/>
   }
   
 ];
