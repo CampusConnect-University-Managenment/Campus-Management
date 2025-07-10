@@ -1,9 +1,17 @@
 import React from 'react'
+import Header from './component/header';
+
+
 
 const AdminDashboard = () => {
   return (
-           <>
-           <h1 className='text-red-400 '>sbnsbdjhsvb</h1></>
+    <>
+           <Header />
+           
+
+
+
+     </>
   )
 }
 
