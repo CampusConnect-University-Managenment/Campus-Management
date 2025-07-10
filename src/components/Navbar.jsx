@@ -1,11 +1,11 @@
 import React, { useRef, useState, useEffect } from "react";
-import { Bell, Search, UserCircle2 } from "lucide-react";
+import { Bell, Search, User } from "lucide-react";
 
 export default function Navbar() {
   const [showSearch, setShowSearch] = useState(false);
   const searchRef = useRef();
 
-  // Close search input when clicked outside
+  // Close search bar when clicking outside
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (searchRef.current && !searchRef.current.contains(event.target)) {
@@ -18,8 +18,18 @@ export default function Navbar() {
 
   return (
     <nav className="fixed top-6 ml-72 right-6 z-50 bg-white rounded-2xl shadow-lg px-8 py-4 flex items-center justify-between w-[calc(100%-21rem)]">
-      {/* Expanding Search Icon */}
-      <div ref={searchRef} className="relative transition-all duration-300">
+      {/* Left: Empty space or logo/title if needed */}
+      <div></div>
+
+      {/* Right Side: Icons */}
+      <div className="flex items-center gap-6" ref={searchRef}>
+        {/* Notification */}
+        <button className="relative p-2 rounded-full bg-gray-100 hover:bg-gray-200 transition">
+          <Bell className="h-5 w-5 text-blue-600" />
+          <span className="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full animate-ping"></span>
+        </button>
+
+        {/* Search Bar Toggle */}
         {!showSearch ? (
           <button
             onClick={() => setShowSearch(true)}
@@ -28,7 +38,7 @@ export default function Navbar() {
             <Search className="h-5 w-5 text-blue-600" />
           </button>
         ) : (
-          <div className="relative w-full max-w-xs">
+          <div className="relative w-full max-w-md transition-all duration-300">
             <Search className="absolute left-4 top-3.5 h-4 w-4 text-blue-500" />
             <input
               autoFocus
@@ -38,19 +48,10 @@ export default function Navbar() {
             />
           </div>
         )}
-      </div>
 
-      {/* Right Side Controls */}
-      <div className="flex items-center gap-6 ml-auto">
-        {/* Notification */}
-        <button className="relative p-2 rounded-full bg-gray-100 hover:bg-gray-200 transition">
-          <Bell className="h-5 w-5 text-blue-600" />
-          <span className="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full"></span>
-        </button>
-
-        {/* Profile */}
-        <div className="bg-blue-600 w-10 h-10 rounded-full flex items-center justify-center text-white cursor-pointer hover:scale-105 transition-transform">
-          <UserCircle2 className="h-6 w-6" />
+        {/* Account Icon */}
+        <div className="w-10 h-10 rounded-full bg-gray-100 flex items-center justify-center hover:bg-gray-200 cursor-pointer">
+          <User className="text-blue-600 w-5 h-5" />
         </div>
       </div>
     </nav>
