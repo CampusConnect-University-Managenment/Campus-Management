@@ -1,0 +1,51 @@
+.table-container {
+  padding: 20px;
+  overflow-x: auto;
+  font-family: 'Segoe UI', sans-serif;
+}
+
+.class-table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0 8px; /* Adds vertical spacing between rows */
+  background-color: white;
+}
+
+.class-table th,
+.class-table td {
+  padding: 12px 16px; /* More space inside cells */
+  border: 1px solid #ddd;
+  text-align: center;
+  font-size: 14px;
+  white-space: nowrap; /* Prevents long buttons from wrapping */
+}
+
+.class-table th {
+  background-color: #004080;
+  color: white;
+  font-weight: 600;
+}
+
+.class-table tbody tr {
+  background-color: #f9f9f9;
+  transition: background-color 0.2s ease;
+}
+
+.class-table tbody tr:hover {
+  background-color: #eef4ff;
+}
+
+.class-table button {
+  padding: 6px 12px;
+  font-size: 13px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: 0.2s ease;
+}
+
+.class-table button:hover {
+  background-color: #0056b3;
+}
