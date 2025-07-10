@@ -3,11 +3,12 @@ import React from "react";
 // Admin Views
 import AdminDashboard from "./pages/admin/dashboard";
 import AdminExam from "./pages/admin/exam";
-// Staff Views
 
+// Staff Views
+import ClassList from "./pages/faculty/ClassList";
 // Auth Views
 
-//studnet
+//student
 import ExamInterface from "./pages/student/ExamInterface";
 // Icons
 
@@ -64,6 +65,13 @@ const routes = [
     path:"default",
     icon:<MdDashboard className="h-6 w-6" />,
     component:<FacultyDashboard/>
+  },
+  {
+    name: "ClassList",
+    layout: "/faculty",
+    path: "ClassList",
+    icon: <MdDashboard className="h-6 w-6" />,
+    component: <ClassList />
   }
   
 ];
