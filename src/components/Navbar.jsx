@@ -5,7 +5,6 @@ export default function Navbar() {
   const [showSearch, setShowSearch] = useState(false);
   const searchRef = useRef();
 
-  // Close search bar when clicking outside
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (searchRef.current && !searchRef.current.contains(event.target)) {
@@ -18,18 +17,8 @@ export default function Navbar() {
 
   return (
     <nav className="fixed top-6 ml-72 right-6 z-50 bg-white rounded-2xl shadow-lg px-8 py-4 flex items-center justify-between w-[calc(100%-21rem)]">
-      {/* Left: Empty space or logo/title if needed */}
-      <div></div>
-
-      {/* Right Side: Icons */}
-      <div className="flex items-center gap-6" ref={searchRef}>
-        {/* Notification */}
-        <button className="relative p-2 rounded-full bg-gray-100 hover:bg-gray-200 transition">
-          <Bell className="h-5 w-5 text-blue-600" />
-          <span className="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full animate-ping"></span>
-        </button>
-
-        {/* Search Bar Toggle */}
+      {/* 🔍 Search Bar on the Left */}
+      <div ref={searchRef} className="relative transition-all duration-300">
         {!showSearch ? (
           <button
             onClick={() => setShowSearch(true)}
@@ -38,7 +27,7 @@ export default function Navbar() {
             <Search className="h-5 w-5 text-blue-600" />
           </button>
         ) : (
-          <div className="relative w-full max-w-md transition-all duration-300">
+          <div className="relative w-full max-w-md">
             <Search className="absolute left-4 top-3.5 h-4 w-4 text-blue-500" />
             <input
               autoFocus
@@ -48,8 +37,17 @@ export default function Navbar() {
             />
           </div>
         )}
+      </div>
 
-        {/* Account Icon */}
+      {/* Right-side: Notifications & Account */}
+      <div className="flex items-center gap-6">
+        {/* 🔔 Notification */}
+        <button className="relative p-2 rounded-full bg-gray-100 hover:bg-gray-200 transition">
+          <Bell className="h-5 w-5 text-blue-600" />
+          <span className="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full animate-ping"></span>
+        </button>
+
+        {/* 👤 Professional Account Icon */}
         <div className="w-10 h-10 rounded-full bg-gray-100 flex items-center justify-center hover:bg-gray-200 cursor-pointer">
           <User className="text-blue-600 w-5 h-5" />
         </div>
