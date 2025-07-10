@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 
 const mockCourses = {
   BSc: {
@@ -228,6 +228,7 @@ const mockCourses = {
 function Courses() {
   const [degree, setDegree] = useState("");
   const [department, setDepartment] = useState("");
+  const [courses, setCourses] = useState([]);
   const [showForm, setShowForm] = useState(false);
   const [newCourse, setNewCourse] = useState({
     title: "",
@@ -241,6 +242,14 @@ function Courses() {
     image: "",
   });
 
+  useEffect(() => {
+    if (degree && department) {
+      setCourses(mockCourses[degree][department] || []);
+    } else {
+      setCourses([]);
+    }
+  }, [degree, department]);
+
   const handleDegreeChange = (e) => {
     setDegree(e.target.value);
     setDepartment("");
@@ -253,7 +262,9 @@ function Courses() {
   const handleAddCourse = () => {
     if (degree && department) {
       const courseData = { ...newCourse, category: department };
-      mockCourses[degree][department].push(courseData);
+      const updatedCourses = [...courses, courseData];
+      setCourses(updatedCourses);
+      mockCourses[degree][department] = updatedCourses;
       setShowForm(false);
       setNewCourse({
         title: "",
@@ -269,8 +280,14 @@ function Courses() {
     }
   };
 
-  const courseList =
-    degree && department ? mockCourses[degree]?.[department] || [] : [];
+  const handleDeleteCourse = (index) => {
+    if (window.confirm("Are you sure you want to delete this course?")) {
+      const updated = [...courses];
+      updated.splice(index, 1);
+      setCourses(updated);
+      mockCourses[degree][department] = updated;
+    }
+  };
 
   return (
     <div className="max-w-7xl mx-auto">
@@ -320,7 +337,7 @@ function Courses() {
         </div>
       </div>
 
-      {courseList.length > 0 && (
+      {courses.length > 0 && (
         <div className="flex justify-end mb-4">
           <button
             className="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 transition"
@@ -332,7 +349,7 @@ function Courses() {
       )}
 
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-        {courseList.map((course, index) => (
+        {courses.map((course, index) => (
           <div
             key={index}
             className="bg-white rounded-lg shadow overflow-hidden flex flex-col justify-between"
@@ -375,7 +392,10 @@ function Courses() {
                 </div>
               </div>
               <div className="mt-4">
-                <button className="w-full bg-red-600 text-white text-sm py-2 rounded hover:bg-red-700 transition">
+                <button
+                  onClick={() => handleDeleteCourse(index)}
+                  className="w-full bg-red-600 text-white text-sm py-2 rounded hover:bg-red-700 transition"
+                >
                   Delete
                 </button>
               </div>
@@ -384,7 +404,7 @@ function Courses() {
         ))}
       </div>
 
-      {degree && department && courseList.length === 0 && (
+      {degree && department && courses.length === 0 && (
         <p className="text-center mt-6 text-gray-500">
           No courses available for {degree} - {department}
         </p>
