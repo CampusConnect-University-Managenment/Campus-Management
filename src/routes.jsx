@@ -1,22 +1,15 @@
 import React from "react";
-
-// Admin Views
 import AdminDashboard from "./pages/admin/dashboard";
 import AdminExam from "./pages/admin/exam";
 import MockCourse from "./pages/admin/course";
 import AllStudents from "./pages/admin/students/components/AllStudents";
-
 import AttendanceUpload from "./pages/faculty/AttendanceUpload"
 import Notification_Message from "./pages/faculty/Notification_Message"
-
-// Staff Views
 import ClassList from "./pages/faculty/ClassList";
-// Auth Views
-
-//student
 import ExamInterface from "./pages/student/ExamInterface";
-// Icons
-
+import FacultyMarksUpdate from "./pages/faculty/Exam_InterFace/Upload_Marks";
+import UploadQuestionPaper from "./pages/faculty/Exam_InterFace/Upload_QuestionPaper";
+import UploadStudyMaterial from "./pages/faculty/Exam_InterFace/Upload_StudyMaterials";
 import {
   FaBookOpen,
   FaUser,
@@ -143,7 +136,28 @@ const routes = [
     path:"Notification&Message",
     icon:<MdDashboard className="h-6 w-6" />,
     component:<Notification_Message/>
-  }
+  },
+   {
+    name:"Upload Marks",
+    layout:"/faculty",
+    path:"UploadMarks",
+    icon:<MdDashboard className="h-6 w-6" />,
+    component:<FacultyMarksUpdate/>
+  },
+  {
+    name:"Upload Question Paper",
+    layout:"/faculty",
+    path:"UploadMarUpload Question Paperks",
+    icon:<MdDashboard className="h-6 w-6" />,
+    component:<UploadQuestionPaper/>
+  },
+  {
+    name:"Upload Study Materials",
+    layout:"/faculty",
+    path:"UploadMaUpload Study Materialsrks",
+    icon:<MdDashboard className="h-6 w-6" />,
+    component:<UploadStudyMaterial/>
+  },
   
 ];
 
