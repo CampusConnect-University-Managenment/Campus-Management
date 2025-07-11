@@ -9,7 +9,7 @@ import {
 
 export default function StudentDashboard() {
   return (
-    <div className="w-full min-h-screen bg-gradient-to-tr from-[#eef2ff] to-[#fdfbff] px-10 py-16">
+    <div className="w-full min-h-screen bg-gradient-to-tr from-[#eef2ff] to-[#fdfbff] px-10 pt-28 pb-16">
       {/* Header */}
       <div className="mb-10">
         <h1 className="text-4xl font-bold text-blue-700">
@@ -76,6 +76,26 @@ export default function StudentDashboard() {
         </div>
 
         {/* Timeline */}
+        <div className="bg-white p-6 rounded-2xl shadow-md lg:col-span-2">
+          <h3 className="text-lg font-semibold text-gray-800 mb-4">
+            📅 Upcoming Schedule
+          </h3>
+          <div className="space-y-4">
+            <TimelineItem
+              title="Mock Test - Algorithms"
+              time="Jul 14, 10:00 AM"
+            />
+            <TimelineItem
+              title="Assignment Submission - DBMS"
+              time="Jul 16, 5:00 PM"
+            />
+            <TimelineItem title="Mid-Term Exam - OS" time="Jul 18, 9:00 AM" />
+            <TimelineItem
+              title="Project Demo - AI Chatbot"
+              time="Jul 21, 3:00 PM"
+            />
+          </div>
+        </div>
         <div className="bg-white p-6 rounded-2xl shadow-md lg:col-span-2">
           <h3 className="text-lg font-semibold text-gray-800 mb-4">
             📅 Upcoming Schedule
