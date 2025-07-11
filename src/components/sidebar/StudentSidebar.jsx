@@ -1,8 +1,7 @@
 import React from "react";
 import { FaUniversity } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
-
-import routes from "../../routes"; // or "../routes" depending on your file structure
+import routes from "../../routes"; 
 
 export default function StudentSidebar() {
   const navigate = useNavigate();
@@ -26,8 +25,7 @@ export default function StudentSidebar() {
           <li
             key={index}
             onClick={() => navigate(`/student/${route.path}`)}
-            className="flex items-center gap-4 p-3 rounded-xl transition-all cursor-pointer hover:bg-white hover:text-blue-600 hover:shadow-md"
-          >
+            className="flex items-center gap-4 p-3 rounded-xl transition-all cursor-pointer hover:bg-white hover:text-blue-600 hover:shadow-md">
             {route.icon}
             <span className="font-medium">{route.name}</span>
           </li>

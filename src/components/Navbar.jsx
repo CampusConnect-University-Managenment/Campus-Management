@@ -16,8 +16,8 @@ export default function Navbar() {
   }, []);
 
   return (
-    <nav className="fixed top-6 ml-72 right-6 z-50 bg-white rounded-2xl shadow-lg px-8 py-4 flex items-center justify-between w-[calc(100%-21rem)]">
-      {/* 🔍 Search Bar on the Left */}
+    <nav className="fixed top-0 z-50 ml-[19rem] w-[calc(100%-19rem-3rem)] bg-white shadow-md px-6 py-4 flex items-center justify-between rounded-b-2xl mx-6">
+      {/* 🔍 Search */}
       <div ref={searchRef} className="relative transition-all duration-300">
         {!showSearch ? (
           <button
@@ -39,15 +39,13 @@ export default function Navbar() {
         )}
       </div>
 
-      {/* Right-side: Notifications & Account */}
+      {/* 🔔 Notifications & 👤 User */}
       <div className="flex items-center gap-6">
-        {/* 🔔 Notification */}
         <button className="relative p-2 rounded-full bg-gray-100 hover:bg-gray-200 transition">
           <Bell className="h-5 w-5 text-blue-600" />
           <span className="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full animate-ping"></span>
         </button>
 
-        {/* 👤 Professional Account Icon */}
         <div className="w-10 h-10 rounded-full bg-gray-100 flex items-center justify-center hover:bg-gray-200 cursor-pointer">
           <User className="text-blue-600 w-5 h-5" />
         </div>
