@@ -4,7 +4,8 @@ const sampleStudents = [
   { id: 1, name: "Arun Kumar" },
   { id: 2, name: "Priya Sharma" },
   { id: 3, name: "Ravi Raj" },
-  { id: 4, name: "Sneha Singh" }
+  { id: 4, name: "Sneha Singh" },
+  {id :5 ,name:"naren boobesh"}
 ];
 
 function FacultyAttendanceUpload() {
