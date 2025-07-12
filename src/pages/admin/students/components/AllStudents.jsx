@@ -2,13 +2,16 @@ import React, { useState } from "react";
 import { FiSearch } from "react-icons/fi";
 import { FaPlus, FaEdit, FaTrash } from "react-icons/fa";
 import AboutStudent from "./AboutStudent";
+import AddStudent from "./AddStudent";
 
 const AllStudents = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedDept, setSelectedDept] = useState("All");
   const [selectedStatus, setSelectedStatus] = useState("All");
+  const [showAddModal, setShowAddModal] = useState(false);
+  const [editingStudent, setEditingStudent] = useState(null);
 
-  const [students] = useState([
+  const [students, setStudents] = useState([
     {
       id: "STU001",
       name: "John Doe",
@@ -35,77 +38,36 @@ const AllStudents = () => {
     },
     {
       id: "STU003",
-      name: "David Miller",
-      phone: "+1-555-0135",
-      email: "david.miller@university.edu",
-      department: "IT",
-      degree: "B.Tech IT",
+      name: "David Johnson",
+      phone: "+1-555-0126",
+      email: "david.johnson@university.edu",
+      department: "CSE",
+      degree: "B.Tech CSE",
       year: "Year 1",
       semester: "Spring 2025",
       status: "Active",
       avatar: "https://i.pravatar.cc/100?img=3",
     },
-    {
-      id: "STU004",
-      name: "Emily Johnson",
-      phone: "+1-555-0166",
-      email: "emily.j@university.edu",
-      department: "EEE",
-      degree: "B.Tech EEE",
-      year: "Year 4",
-      semester: "Fall 2024",
-      status: "Graduated",
-      avatar: "https://i.pravatar.cc/100?img=4",
-    },
-    {
-      id: "STU005",
-      name: "Mark Wilson",
-      phone: "+1-555-0188",
-      email: "mark.wilson@university.edu",
-      department: "CSE",
-      degree: "B.Tech CSE",
-      year: "Year 1",
-      semester: "Fall 2024",
-      status: "Active",
-      avatar: "https://i.pravatar.cc/100?img=5",
-    },
-    {
-      id: "STU006",
-      name: "Priya Ramesh",
-      phone: "+1-555-0191",
-      email: "priya.ramesh@university.edu",
-      department: "IT",
-      degree: "B.Tech IT",
-      year: "Year 2",
-      semester: "Spring 2025",
-      status: "Active",
-      avatar: "https://i.pravatar.cc/100?img=6",
-    },
-    {
-      id: "STU007",
-      name: "Arjun Nair",
-      phone: "+1-555-0195",
-      email: "arjun.nair@university.edu",
-      department: "EEE",
-      degree: "B.Tech EEE",
-      year: "Year 3",
-      semester: "Fall 2024",
-      status: "Graduated",
-      avatar: "https://i.pravatar.cc/100?img=7",
-    },
-    {
-      id: "STU008",
-      name: "Nisha Rao",
-      phone: "+1-555-0199",
-      email: "nisha.rao@university.edu",
-      department: "ECE",
-      degree: "B.Tech ECE",
-      year: "Year 1",
-      semester: "Spring 2025",
-      status: "Active",
-      avatar: "https://i.pravatar.cc/100?img=8",
-    },
+    // ... other students
   ]);
+
+  const addStudent = (newStudent) => {
+    const nextId = `STU${String(students.length + 1).padStart(3, "0")}`;
+    setStudents([...students, { ...newStudent, id: nextId }]);
+  };
+
+  const updateStudent = (updatedStudent) => {
+    setStudents(students.map((student) =>
+      student.id === updatedStudent.id ? updatedStudent : student
+    ));
+  };
+
+  const deleteStudent = (studentId) => {
+    const confirmed = window.confirm("Are you sure you want to delete this student?");
+    if (confirmed) {
+      setStudents(students.filter((student) => student.id !== studentId));
+    }
+  };
 
   const filteredStudents = students.filter((s) => {
     const matchesSearch =
@@ -122,7 +84,7 @@ const AllStudents = () => {
     <div className="p-6 bg-gray-50 min-h-screen">
       <AboutStudent students={students} />
 
-      {/* 🔍 Search & Filters */}
+      {/* Search & Filters */}
       <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-6">
         <div className="flex items-center border rounded-md px-2 py-1 bg-white w-full md:max-w-md">
           <FiSearch className="text-gray-400 mr-2" />
@@ -135,7 +97,7 @@ const AllStudents = () => {
           />
         </div>
 
-        <div className="flex gap-4">
+        <div className="flex gap-4 flex-wrap">
           <select
             className="border px-3 py-2 rounded-md"
             value={selectedDept}
@@ -159,14 +121,20 @@ const AllStudents = () => {
             <option value="Graduated">Graduated</option>
           </select>
 
-          <button className="bg-gray-900 text-white px-4 py-2 rounded-md flex items-center gap-2 hover:bg-black">
+          <button
+            className="bg-gray-900 text-white px-4 py-2 rounded-md flex items-center gap-2 hover:bg-black"
+            onClick={() => {
+              setEditingStudent(null);
+              setShowAddModal(true);
+            }}
+          >
             <FaPlus />
             Add Student
           </button>
         </div>
       </div>
 
-      {/* 📊 Table */}
+      {/* Student Table */}
       <div className="bg-white rounded-lg shadow">
         <div className="p-4 border-b font-semibold text-lg">
           Student Records ({filteredStudents.length})
@@ -222,10 +190,19 @@ const AllStudents = () => {
                 </td>
                 <td className="p-3">
                   <div className="flex gap-2">
-                    <button className="px-3 py-1 bg-gray-100 text-gray-700 rounded hover:bg-gray-200 flex items-center gap-1">
+                    <button
+                      className="px-3 py-1 bg-gray-100 text-gray-700 rounded hover:bg-gray-200 flex items-center gap-1"
+                      onClick={() => {
+                        setEditingStudent(s);
+                        setShowAddModal(true);
+                      }}
+                    >
                       <FaEdit size={14} /> Edit
                     </button>
-                    <button className="px-3 py-1 bg-red-100 text-red-700 rounded hover:bg-red-200 flex items-center gap-1">
+                    <button
+                      className="px-3 py-1 bg-red-100 text-red-700 rounded hover:bg-red-200 flex items-center gap-1"
+                      onClick={() => deleteStudent(s.id)}
+                    >
                       <FaTrash size={14} /> Delete
                     </button>
                   </div>
@@ -235,6 +212,26 @@ const AllStudents = () => {
           </tbody>
         </table>
       </div>
+
+      {/* Modal */}
+      {showAddModal && (
+        <div className="fixed inset-0 z-50 bg-black bg-opacity-40 flex items-center justify-center">
+          <div className="bg-white rounded-lg p-6 w-full max-w-2xl relative shadow-lg">
+            <button
+              onClick={() => setShowAddModal(false)}
+              className="absolute top-2 right-4 text-gray-500 hover:text-red-600 text-xl"
+            >
+              &times;
+            </button>
+            <AddStudent
+              onClose={() => setShowAddModal(false)}
+              onAddStudent={addStudent}
+              onEditStudent={updateStudent}
+              editingStudent={editingStudent}
+            />
+          </div>
+        </div>
+      )}
     </div>
   );
 };
