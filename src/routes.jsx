@@ -7,7 +7,6 @@ import AttendanceUpload from "./pages/faculty/AttendanceUpload"
 import Notification_Message from "./pages/faculty/Notification_Message"
 import ClassList from "./pages/faculty/ClassList";
 
-import ExamInterface from "./pages/student/ExamInterface";
 import FacultyMarksUpdate from "./pages/faculty/Exam_InterFace/Upload_Marks";
 import UploadQuestionPaper from "./pages/faculty/Exam_InterFace/Upload_QuestionPaper";
 import UploadStudyMaterial from "./pages/faculty/Exam_InterFace/Upload_StudyMaterials";
