@@ -1,19 +1,22 @@
 import React from 'react';
 import {
-  PieChart, Pie, Cell,
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend,
-  LineChart, Line, Radar, RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis
+  LineChart, Line
 } from 'recharts';
 
 const Performance = () => {
   const student = {
     name: "John Doe",
-    attendance: 92,
+    branch: "CSE",
+    rollNo: "CS2021-045",
+    semester: "5th",
+    college: "ABC Engineering College",
+    course: "B.Tech - Computer Science",
     grades: {
-      math: "A",
-      physics: "B+",
-      chemistry: "A-",
-      english: "A"
+      "Data Structures": "A",
+      "Operating Systems": "B+",
+      "DBMS": "A-",
+      "Computer Networks": "A"
     },
     sports: "Football - State Level",
     competitions: [
@@ -21,6 +24,8 @@ const Performance = () => {
       { name: "Hackathon", year: 2023, position: "Top 10%" }
     ]
   };
+
+  const allowedBranches = ["CSE", "IT", "CST", "CD"];
 
   const gradeToValue = {
     "A+": 95, "A": 90, "A-": 85,
@@ -33,13 +38,6 @@ const Performance = () => {
     score: gradeToValue[grade] || 50
   }));
 
-  const attendanceData = [
-    { name: "Present", value: student.attendance },
-    { name: "Absent", value: 100 - student.attendance }
-  ];
-
-  const COLORS = ["#00C49F", "#FF8042"];
-
   const weeklyProgress = [
     { week: "Week 1", score: 80 },
     { week: "Week 2", score: 83 },
@@ -50,101 +48,107 @@ const Performance = () => {
     { week: "Week 7", score: 95 },
   ];
 
+  if (!allowedBranches.includes(student.branch)) {
+    return (
+      <div style={{ padding: "20px" }}>
+        <h2 style={{ color: "red" }}>
+          Performance data is only available for CSE, IT, CST, and CD branches.
+        </h2>
+      </div>
+    );
+  }
+
+  // Reusable Title Component Style
+  const sectionTitle = (icon, text, color) => ({
+    fontSize: "22px",
+    borderLeft: `5px solid ${color}`,
+    paddingLeft: "10px",
+    color: "#333",
+    marginBottom: "16px"
+  });
+
   return (
-    <div style={{ padding: "20px" }}>
-      <h1 style={{ fontSize: "24px", fontWeight: "bold", marginBottom: "20px" }}>
-        Student Performance Analysis
+    <div style={{ padding: "20px", fontFamily: "Segoe UI, sans-serif" }}>
+      <h1 style={{ fontSize: "26px", fontWeight: "bold", marginBottom: "30px", color: "#333" }}>
+        {student.name} ({student.branch}) – Performance Dashboard
       </h1>
 
-      <div style={{ display: "flex", gap: "40px", flexWrap: "wrap" }}>
-        {/* Attendance Pie Chart */}
- <div style={{ border: "1px solid #ccc", padding: "16px", borderRadius: "8px" }}>
-  <h2>Attendance</h2>
-  <PieChart width={300} height={220}>
-    <Pie
-      data={attendanceData}
-      cx={150}
-      cy={100}
-      outerRadius={70}
-      dataKey="value"
-      labelLine={false}
-    >
-      {attendanceData.map((entry, index) => (
-        <Cell key={`cell-${index}`} fill={COLORS[index]} />
-      ))}
-    </Pie>
-  </PieChart>
-  <div style={{ display: "flex", justifyContent: "space-around", marginTop: "10px" }}>
-    <div style={{ color: COLORS[0], fontWeight: "bold" }}>● Present</div>
-    <div style={{ color: COLORS[1], fontWeight: "bold" }}>● Absent</div>
-  </div>
-</div>
-
-
-        {/* Grades Bar Chart */}
-        <div style={{ border: "1px solid #ccc", padding: "16px", borderRadius: "8px" }}>
-          <h2>Grades</h2>
-          <BarChart
-            width={400}
-            height={250}
-            data={gradeData}
-            margin={{ top: 10, right: 30, left: 20, bottom: 5 }}
-          >
-            <CartesianGrid strokeDasharray="3 3" />
-            <XAxis dataKey="subject" />
-            <YAxis domain={[0, 100]} />
-            <Tooltip />
-            <Legend />
-            <Bar dataKey="score" fill="#8884d8" />
-          </BarChart>
-        </div>
+      {/* College Info Section */}
+      <div style={{
+        border: "1px solid #ccc",
+        padding: "20px",
+        borderRadius: "10px",
+        marginBottom: "30px",
+        backgroundColor: "#f9f9f9"
+      }}>
+        <h2 style={sectionTitle("🎓", "College Info", "#4287f5")}>🎓 College Info</h2>
+        <ul style={{ listStyle: "none", paddingLeft: 0, lineHeight: "1.8em" }}>
+          <li><strong>College:</strong> {student.college}</li>
+          <li><strong>Course:</strong> {student.course}</li>
+          <li><strong>Semester:</strong> {student.semester}</li>
+          <li><strong>Roll Number:</strong> {student.rollNo}</li>
+        </ul>
       </div>
 
-      <div style={{ display: "flex", gap: "40px", flexWrap: "wrap", marginTop: "30px" }}>
-        {/* Weekly Progress Line Chart */}
-        <div style={{ border: "1px solid #ccc", padding: "16px", borderRadius: "8px" }}>
-          <h2>Weekly Progress</h2>
-          <LineChart
-            width={400}
-            height={250}
-            data={weeklyProgress}
-            margin={{ top: 10, right: 30, left: 10, bottom: 5 }}
-          >
+      {/* Charts Section */}
+      <div style={{ display: "flex", flexWrap: "wrap", gap: "30px", marginBottom: "40px" }}>
+        {/* Grades Bar Chart */}
+        <div style={{ border: "1px solid #ccc", padding: "20px", borderRadius: "10px", flex: 1, minWidth: "480px" }}>
+          <h2 style={sectionTitle("📘", "Subject Grades", "#4287f5")}>📘 Subject Grades (CSE Core)</h2>
+          <BarChart width={500} height={300} data={gradeData} margin={{ top: 20, right: 30, left: 20, bottom: 60 }}>
             <CartesianGrid strokeDasharray="3 3" />
-            <XAxis dataKey="week" />
-            <YAxis />
+            <XAxis
+              dataKey="subject"
+              tick={{ fontSize: 12 }}
+              angle={-30}
+              textAnchor="end"
+            />
+            <YAxis domain={[0, 100]} tick={{ fontSize: 12 }} />
             <Tooltip />
-            <Legend />
-            <Line type="monotone" dataKey="score" stroke="#82ca9d" />
-          </LineChart>
+            <Legend wrapperStyle={{ fontSize: 12 }} />
+            <Bar dataKey="score" fill="#4287f5" />
+          </BarChart>
         </div>
 
-        {/* Radar Chart for Subject Strength */}
-        <div style={{ border: "1px solid #ccc", padding: "16px", borderRadius: "8px" }}>
-          <h2>Subject Strength</h2>
-          <RadarChart outerRadius={90} width={400} height={250} data={gradeData}>
-            <PolarGrid />
-            <PolarAngleAxis dataKey="subject" />
-            <PolarRadiusAxis angle={30} domain={[0, 100]} />
-            <Radar name="Score" dataKey="score" stroke="#8884d8" fill="#8884d8" fillOpacity={0.6} />
-          </RadarChart>
+        {/* Week-End Test Scores Line Chart */}
+        <div style={{ border: "1px solid #ccc", padding: "20px", borderRadius: "10px", flex: 1, minWidth: "480px" }}>
+          <h2 style={sectionTitle("📊", "Test Progress", "#f59e0b")}>📊 Week-End Test Scores</h2>
+          <LineChart width={500} height={300} data={weeklyProgress} margin={{ top: 20, right: 30, left: 50, bottom: 60 }}>
+            <CartesianGrid strokeDasharray="3 3" />
+            <XAxis
+              dataKey="week"
+              tick={{ fontSize: 12 }}
+              label={{ value: "Test Week", position: "bottom", offset: 10 }}
+            />
+            <YAxis
+              domain={[0, 100]}
+              tick={{ fontSize: 12 }}
+              label={{
+                value: "Test Score (out of 100)",
+                angle: -90,
+                position: "insideLeft",
+                style: { textAnchor: "middle" }
+              }}
+            />
+            <Tooltip />
+            <Legend wrapperStyle={{ fontSize: 12 }} />
+            <Line type="monotone" dataKey="score" stroke="#f59e0b" strokeWidth={2} dot={{ r: 4 }} />
+          </LineChart>
         </div>
       </div>
 
       {/* Sports Participation */}
-      <div style={{ border: "1px solid #ccc", padding: "16px", borderRadius: "8px", marginTop: "20px" }}>
-        <h2>Sports Participation</h2>
+      <div style={{ border: "1px solid #ccc", padding: "20px", borderRadius: "10px", marginBottom: "30px" }}>
+        <h2 style={sectionTitle("🏅", "Sports", "#f59e0b")}>🏅 Sports Participation</h2>
         <p>{student.sports}</p>
       </div>
 
       {/* Competitions */}
-      <div style={{ border: "1px solid #ccc", padding: "16px", borderRadius: "8px", marginTop: "20px" }}>
-        <h2>Competitions</h2>
+      <div style={{ border: "1px solid #ccc", padding: "20px", borderRadius: "10px", marginBottom: "30px" }}>
+        <h2 style={sectionTitle("🏆", "Competitions", "#4287f5")}>🏆 Competitions</h2>
         <ul>
           {student.competitions.map((comp, i) => (
-            <li key={i}>
-              {comp.name} ({comp.year}) - {comp.position}
-            </li>
+            <li key={i}>{comp.name} ({comp.year}) – {comp.position}</li>
           ))}
         </ul>
       </div>
