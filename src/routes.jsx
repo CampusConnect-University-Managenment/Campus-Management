@@ -54,7 +54,7 @@ const routes = [
     layout: "/student",
     path: "default",
     icon: <MdDashboard className="h-5 w-5" />,
-    component: <MyProfile />,
+    component: <student_dashboard/>,
   },
   {
     name: "Profile",
