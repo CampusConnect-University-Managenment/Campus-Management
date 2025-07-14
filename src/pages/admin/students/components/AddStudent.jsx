@@ -1,160 +1,181 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from "react";
 
-const AddStudent = ({ onClose, onAddStudent }) => {
+const AddStudent = ({ editingStudent, onAddStudent, onEditStudent, onClose }) => {
+  // Initialize form state, prefilling if editingStudent exists
   const [formData, setFormData] = useState({
-    name: '',
-    email: '',
-    phone: '',
-    department: '',
-    degree: '',
-    year: '',
-    semester: '',
-    status: 'Active',
-    avatar: '',
+    name: "",
+    email: "",
+    phone: "",
+    department: "",
+    degree: "",
+    year: "",
+    semester: "",
+    status: "Active",
+    avatar: "", // for profile picture url or file
   });
 
-  const [avatarPreview, setAvatarPreview] = useState(null);
-
-  const handleChange = (e) => {
-    const { name, value, files } = e.target;
-    if (name === 'avatar') {
-      const file = files[0];
-      if (file) {
-        const imageUrl = URL.createObjectURL(file);
-        setAvatarPreview(imageUrl);
-        setFormData({ ...formData, avatar: imageUrl });
-      }
+  // Update formData whenever editingStudent changes
+  useEffect(() => {
+    if (editingStudent) {
+      setFormData({
+        name: editingStudent.name || "",
+        email: editingStudent.email || "",
+        phone: editingStudent.phone || "",
+        department: editingStudent.department || "",
+        degree: editingStudent.degree || "",
+        year: editingStudent.year || "",
+        semester: editingStudent.semester || "",
+        status: editingStudent.status || "Active",
+        avatar: editingStudent.avatar || "",
+      });
     } else {
-      setFormData({ ...formData, [name]: value });
+      setFormData({
+        name: "",
+        email: "",
+        phone: "",
+        department: "",
+        degree: "",
+        year: "",
+        semester: "",
+        status: "Active",
+        avatar: "",
+      });
     }
+  }, [editingStudent]);
+
+  // Handle input changes for controlled inputs
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
+  // Submit handler
   const handleSubmit = (e) => {
     e.preventDefault();
-    if (onAddStudent) {
+    if (editingStudent) {
+      onEditStudent({ ...editingStudent, ...formData });
+    } else {
       onAddStudent(formData);
     }
     onClose();
   };
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-30 flex items-center justify-center z-50">
-      <div className="bg-white p-6 rounded-lg shadow-md w-[90%] max-w-2xl relative">
-        <h2 className="text-xl font-semibold mb-4">Add New Student</h2>
+    <form onSubmit={handleSubmit} className="space-y-4">
+      <div className="flex gap-4">
+        <input
+          name="name"
+          type="text"
+          placeholder="Name"
+          value={formData.name}
+          onChange={handleChange}
+          className="border rounded px-3 py-2 flex-1"
+          required
+        />
+        <input
+          name="email"
+          type="email"
+          placeholder="Email"
+          value={formData.email}
+          onChange={handleChange}
+          className="border rounded px-3 py-2 flex-1"
+          required
+        />
+      </div>
 
-        <form onSubmit={handleSubmit} className="grid grid-cols-2 gap-4">
-          <input
-            type="text"
-            name="name"
-            placeholder="Name"
-            onChange={handleChange}
-            className="border p-2 rounded"
-            required
-          />
-          <input
-            type="email"
-            name="email"
-            placeholder="Email"
-            onChange={handleChange}
-            className="border p-2 rounded"
-            required
-          />
+      <div className="flex gap-4">
+        <input
+          name="phone"
+          type="text"
+          placeholder="Phone"
+          value={formData.phone}
+          onChange={handleChange}
+          className="border rounded px-3 py-2 flex-1"
+        />
+        <input
+          name="department"
+          type="text"
+          placeholder="Department"
+          value={formData.department}
+          onChange={handleChange}
+          className="border rounded px-3 py-2 flex-1"
+        />
+      </div>
 
-          <input
-            type="text"
-            name="phone"
-            placeholder="Phone"
-            onChange={handleChange}
-            className="border p-2 rounded"
-            required
-          />
-          <input
-            type="text"
-            name="department"
-            placeholder="Department"
-            onChange={handleChange}
-            className="border p-2 rounded"
-            required
-          />
+      <div className="flex gap-4">
+        <input
+          name="degree"
+          type="text"
+          placeholder="Degree"
+          value={formData.degree}
+          onChange={handleChange}
+          className="border rounded px-3 py-2 flex-1"
+        />
+        <input
+          name="year"
+          type="text"
+          placeholder="Year"
+          value={formData.year}
+          onChange={handleChange}
+          className="border rounded px-3 py-2 flex-1"
+        />
+      </div>
 
-          <input
-            type="text"
-            name="degree"
-            placeholder="Degree"
-            onChange={handleChange}
-            className="border p-2 rounded"
-            required
-          />
-          <input
-            type="text"
-            name="year"
-            placeholder="Year"
-            onChange={handleChange}
-            className="border p-2 rounded"
-            required
-          />
-
-          <input
-            type="text"
-            name="semester"
-            placeholder="Semester"
-            onChange={handleChange}
-            className="border p-2 rounded"
-            required
-          />
-          <select
-            name="status"
-            value={formData.status}
-            onChange={handleChange}
-            className="border p-2 rounded"
-          >
-            <option value="Active">Active</option>
-            <option value="Graduated">Graduated</option>
-          </select>
-
-          <div className="col-span-2">
-            <label className="block mb-1 font-medium">Profile Picture</label>
-            <input
-              type="file"
-              name="avatar"
-              accept="image/*"
-              onChange={handleChange}
-              className="block"
-            />
-            {avatarPreview && (
-              <img
-                src={avatarPreview}
-                alt="Preview"
-                className="mt-2 h-20 w-20 object-cover rounded-full"
-              />
-            )}
-          </div>
-
-          <div className="col-span-2 flex justify-end mt-4">
-            <button
-              type="button"
-              onClick={onClose}
-              className="bg-gray-200 px-4 py-2 rounded mr-2"
-            >
-              Cancel
-            </button>
-            <button
-              type="submit"
-              className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
-            >
-              Save
-            </button>
-          </div>
-        </form>
-
-        <button
-          onClick={onClose}
-          className="absolute top-2 right-2 text-gray-500 hover:text-gray-800 text-xl"
+      <div className="flex gap-4">
+        <input
+          name="semester"
+          type="text"
+          placeholder="Semester"
+          value={formData.semester}
+          onChange={handleChange}
+          className="border rounded px-3 py-2 flex-1"
+        />
+        <select
+          name="status"
+          value={formData.status}
+          onChange={handleChange}
+          className="border rounded px-3 py-2 flex-1"
         >
-          &times;
+          <option value="Active">Active</option>
+          <option value="Graduated">Graduated</option>
+        </select>
+      </div>
+
+      {/* Add your file upload logic here */}
+      <div>
+        <label className="font-semibold">Profile Picture</label>
+        <input
+          name="avatar"
+          type="file"
+          accept="image/*"
+          onChange={(e) => {
+            const file = e.target.files[0];
+            if (file) {
+              // Convert to base64 or upload here, for demo just use URL.createObjectURL
+              const url = URL.createObjectURL(file);
+              setFormData((prev) => ({ ...prev, avatar: url }));
+            }
+          }}
+          className="mt-1"
+        />
+      </div>
+
+      <div className="flex justify-end gap-3 pt-4">
+        <button
+          type="button"
+          onClick={onClose}
+          className="bg-gray-300 px-4 py-2 rounded hover:bg-gray-400"
+        >
+          Cancel
+        </button>
+        <button
+          type="submit"
+          className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
+        >
+          Save
         </button>
       </div>
-    </div>
+    </form>
   );
 };
 
