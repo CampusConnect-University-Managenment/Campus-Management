@@ -1,18 +1,26 @@
 import React from "react";
-
-// Admin Views
 import AdminDashboard from "./pages/admin/dashboard";
 import AdminExam from "./pages/admin/exam";
+import MockCourse from "./pages/admin/course";
+import AllStudents from "./pages/admin/students/components/AllStudents";
 import AttendanceUpload from "./pages/faculty/AttendanceUpload"
 import Notification_Message from "./pages/faculty/Notification_Message"
+
 import Performance from './pages/student/Performance-analysis/component/Performance';
 // Staff Views
+import ClassList from "./pages/faculty/ClassList";
 
+
+import StudentDashboard from "./pages/student/StudentDashBoard/components/StudentDashboard";
+import FacultyMarksUpdate from "./pages/faculty/Exam_InterFace/Components/Upload_Marks";
+import UploadQuestionPaper from "./pages/faculty/Exam_InterFace/Components/Upload_QuestionPaper";
+import UploadStudyMaterial from "./pages/faculty/Exam_InterFace/Components/Upload_StudyMaterials";
 // Auth Views
 
-//studnet
-import ExamInterface from "./pages/student/ExamInterface";
+//student
+import MyProfile from "./pages/student/MyProfile";
 // Icons
+
 
 import {
   FaBookOpen,
@@ -24,10 +32,10 @@ import {
   FaQuestionCircle,
 } from "react-icons/fa";
 
-import { MdDashboard } from "react-icons/md";
+import { MdDashboard,MdGroups } from "react-icons/md";
 
 import FacultyDashboard from "./pages/faculty/dashboard";
-// import { FaUser } from "react-icons/fa";
+ //import { FaUser } from "react-icons/fa";
 const routes = [
   // Admin Routes
   {
@@ -37,36 +45,52 @@ const routes = [
     icon: <MdDashboard className="h-5 w-5" />,
     component: <AdminDashboard />,
   },
-
+   {
+    name: "All Students",
+    layout: "/admin",
+    path: "students/all",
+    icon: <MdGroups className="h-6 w-6" />,
+    component: <AllStudents />,
+  },
   
   // Student Routes
   {
-    name: "Dashboard ",
+    name: "Student Dashboard ",
     layout: "/student",
-    path: "exam",
+    path: "default",
     icon: <MdDashboard className="h-5 w-5" />,
-    component: <ExamInterface />,
+    component: <StudentDashboard />,
   },
   {
+    //src/pages/student/StudentDashboard/components/
+
     name: "Profile",
     layout: "/student",
-    path: "demo",
+    path: "profile",
     icon: <FaUser className="h-5 w-5" />,
-    component: <ExamInterface />,
+    component: <MyProfile/>,
   },
   {
     name: "Courses Enrolled",
     layout: "/student",
     path: "demo",
     icon: <FaBookOpen className="h-5 w-5" />,
-    component: <ExamInterface />,
+    component: <MyProfile/>,
   },
   {
     name: "Practice Exams",
     layout: "/student",
     path: "demo",
     icon: <FaClipboardCheck className="h-5 w-5" />,
-    component: <ExamInterface />,
+    component: <MyProfile />,
+  },
+
+  {
+    name: "Courses",
+    layout: "/admin",
+    path: "course",
+    icon: <MdDashboard className="h-6 w-6" />,
+    component: <MockCourse />,
   },
 
   {
@@ -74,7 +98,7 @@ const routes = [
     layout: "/student",
     path: "demo",
     icon: <FaGraduationCap className="h-5 w-5" />,
-    component: <ExamInterface />,
+    component: <MyProfile />,
   },
 
   {
@@ -82,21 +106,21 @@ const routes = [
     layout: "/student",
     path: "Performance",
     icon: <FaChartBar className="h-5 w-5" />,
-      component: <Performance />, 
+    component: <Performance />, 
   },
   {
     name: "Notifications",
     layout: "/student",
     path: "demo",
     icon: <FaBell className="h-5 w-5" />,
-    component: <ExamInterface />,
+    component: <MyProfile  />,
   },
   {
     name: "Help & Support",
     layout: "/student",
     path: "demo",
     icon: <FaQuestionCircle className="h-5 w-5" />,
-    component: <ExamInterface />,
+    component: <MyProfile  />,
   },
 
   // Faculty Routes
@@ -106,6 +130,13 @@ const routes = [
     path:"default",
     icon:<MdDashboard className="h-6 w-6" />,
     component:<FacultyDashboard/>
+  },
+  {
+    name: "ClassList",
+    layout: "/faculty",
+    path: "ClassList",
+    icon: <MdDashboard className="h-6 w-6" />,
+    component: <ClassList />
   },
   {
     name:"Attendace Upload",
@@ -120,7 +151,28 @@ const routes = [
     path:"Notification&Message",
     icon:<MdDashboard className="h-6 w-6" />,
     component:<Notification_Message/>
-  }
+  },
+   {
+    name:"Upload Marks",
+    layout:"/faculty",
+    path:"UploadMarks",
+    icon:<MdDashboard className="h-6 w-6" />,
+    component:<FacultyMarksUpdate/>
+  },
+  {
+    name:"Upload Question Paper",
+    layout:"/faculty",
+    path:"UploadQuestionPaper",
+    icon:<MdDashboard className="h-6 w-6" />,
+    component:<UploadQuestionPaper/>
+  },
+  {
+    name:"Upload Study Materials",
+    layout:"/faculty",
+    path:"UploadStudyMaterials",
+    icon:<MdDashboard className="h-6 w-6" />,
+    component:<UploadStudyMaterial/>
+  },
   
 ];
 
