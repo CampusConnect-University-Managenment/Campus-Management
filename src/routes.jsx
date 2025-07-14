@@ -5,7 +5,11 @@ import MockCourse from "./pages/admin/course";
 import AllStudents from "./pages/admin/students/components/AllStudents";
 import AttendanceUpload from "./pages/faculty/AttendanceUpload"
 import Notification_Message from "./pages/faculty/Notification_Message"
+
+import Performance from './pages/student/Performance-analysis/component/Performance';
+// Staff Views
 import ClassList from "./pages/faculty/ClassList";
+
 
 import StudentDashboard from "./pages/student/StudentDashBoard/components/StudentDashboard";
 import FacultyMarksUpdate from "./pages/faculty/Exam_InterFace/Components/Upload_Marks";
@@ -100,9 +104,9 @@ const routes = [
   {
     name: "Performance Analytics",
     layout: "/student",
-    path: "demo",
+    path: "Performance",
     icon: <FaChartBar className="h-5 w-5" />,
-    component: <MyProfile  />,
+    component: <Performance />, 
   },
   {
     name: "Notifications",
