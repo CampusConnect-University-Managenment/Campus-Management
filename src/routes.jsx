@@ -7,6 +7,7 @@ import AttendanceUpload from "./pages/faculty/AttendanceUpload"
 import Notification_Message from "./pages/faculty/Notification_Message"
 import ClassList from "./pages/faculty/ClassList";
 
+import StudentDashboard from "./pages/student/StudentDashBoard/components/StudentDashboard";
 import FacultyMarksUpdate from "./pages/faculty/Exam_InterFace/Components/Upload_Marks";
 import UploadQuestionPaper from "./pages/faculty/Exam_InterFace/Components/Upload_QuestionPaper";
 import UploadStudyMaterial from "./pages/faculty/Exam_InterFace/Components/Upload_StudyMaterials";
@@ -54,9 +55,11 @@ const routes = [
     layout: "/student",
     path: "default",
     icon: <MdDashboard className="h-5 w-5" />,
-    component: <MyProfile />,
+    component: <StudentDashboard />,
   },
   {
+    //src/pages/student/StudentDashboard/components/
+
     name: "Profile",
     layout: "/student",
     path: "profile",
