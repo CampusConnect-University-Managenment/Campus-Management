@@ -6,8 +6,8 @@ import AllStudents from "./pages/admin/students/components/AllStudents";
 import AttendanceUpload from "./pages/faculty/AttendanceUpload"
 import Notification_Message from "./pages/faculty/Notification_Message"
 import ClassList from "./pages/faculty/ClassList";
-import StudentDashboard from "./pages/student/StudentDashboard";
 
+import StudentDashboard from "./pages/student/StudentDashBoard/components/StudentDashboard";
 import FacultyMarksUpdate from "./pages/faculty/Exam_InterFace/Components/Upload_Marks";
 import UploadQuestionPaper from "./pages/faculty/Exam_InterFace/Components/Upload_QuestionPaper";
 import UploadStudyMaterial from "./pages/faculty/Exam_InterFace/Components/Upload_StudyMaterials";
@@ -58,6 +58,8 @@ const routes = [
     component: <StudentDashboard />,
   },
   {
+    //src/pages/student/StudentDashboard/components/
+
     name: "Profile",
     layout: "/student",
     path: "profile",
