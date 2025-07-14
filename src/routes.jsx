@@ -5,6 +5,7 @@ import AdminDashboard from "./pages/admin/dashboard";
 import AdminExam from "./pages/admin/exam";
 import AttendanceUpload from "./pages/faculty/AttendanceUpload"
 import Notification_Message from "./pages/faculty/Notification_Message"
+import Performance from './pages/student/Performance-analysis/component/Performance';
 // Staff Views
 
 // Auth Views
@@ -79,9 +80,9 @@ const routes = [
   {
     name: "Performance Analytics",
     layout: "/student",
-    path: "demo",
+    path: "Performance",
     icon: <FaChartBar className="h-5 w-5" />,
-    component: <ExamInterface />,
+      component: <Performance />, 
   },
   {
     name: "Notifications",
