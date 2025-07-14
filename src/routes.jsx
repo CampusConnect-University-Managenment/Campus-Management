@@ -7,10 +7,9 @@ import AttendanceUpload from "./pages/faculty/AttendanceUpload"
 import Notification_Message from "./pages/faculty/Notification_Message"
 import ClassList from "./pages/faculty/ClassList";
 
-import FacultyMarksUpdate from "./pages/faculty/Exam_InterFace/Upload_Marks";
-import UploadQuestionPaper from "./pages/faculty/Exam_InterFace/Upload_QuestionPaper";
-import UploadStudyMaterial from "./pages/faculty/Exam_InterFace/Upload_StudyMaterials";
-
+import FacultyMarksUpdate from "./pages/faculty/Exam_InterFace/Components/Upload_Marks";
+import UploadQuestionPaper from "./pages/faculty/Exam_InterFace/Components/Upload_QuestionPaper";
+import UploadStudyMaterial from "./pages/faculty/Exam_InterFace/Components/Upload_StudyMaterials";
 // Auth Views
 
 //student
@@ -156,14 +155,14 @@ const routes = [
   {
     name:"Upload Question Paper",
     layout:"/faculty",
-    path:"UploadMarUpload Question Paperks",
+    path:"UploadQuestionPaper",
     icon:<MdDashboard className="h-6 w-6" />,
     component:<UploadQuestionPaper/>
   },
   {
     name:"Upload Study Materials",
     layout:"/faculty",
-    path:"UploadMaUpload Study Materialsrks",
+    path:"UploadStudyMaterials",
     icon:<MdDashboard className="h-6 w-6" />,
     component:<UploadStudyMaterial/>
   },
