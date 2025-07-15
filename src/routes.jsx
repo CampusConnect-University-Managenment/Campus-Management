@@ -7,10 +7,8 @@ import AttendanceUpload from "./pages/faculty/AttendanceUpload"
 import Notification_Message from "./pages/faculty/Notification_Message"
 
 import Performance from './pages/student/Performance-analysis/component/Performance';
-// Staff Views
 import ClassList from "./pages/faculty/ClassList";
-
-
+import Announcements from "./pages/faculty/Announcements/components/Announcements";
 import StudentDashboard from "./pages/student/StudentDashBoard/components/StudentDashboard";
 import FacultyMarksUpdate from "./pages/faculty/Exam_InterFace/Components/Upload_Marks";
 import UploadQuestionPaper from "./pages/faculty/Exam_InterFace/Components/Upload_QuestionPaper";
@@ -172,6 +170,13 @@ const routes = [
     path:"UploadStudyMaterials",
     icon:<MdDashboard className="h-6 w-6" />,
     component:<UploadStudyMaterial/>
+  },
+   {
+    name:"Announcements",
+    layout:"/faculty",
+    path:"Announcements",
+    icon:<MdDashboard className="h-6 w-6" />,
+    component:<Announcements/>
   },
   
 ];
