@@ -1,10 +1,12 @@
 import React, { useRef, useState, useEffect } from "react";
 import { Bell, Search, User } from "lucide-react";
 
+
 export default function Navbar() {
   const [showSearch, setShowSearch] = useState(false);
   const searchRef = useRef();
 
+ 
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (searchRef.current && !searchRef.current.contains(event.target)) {
@@ -48,6 +50,7 @@ export default function Navbar() {
         </button>
 
         {/* 👤 Professional Account Icon */}
+
         <div className="w-10 h-10 rounded-full bg-gray-100 flex items-center justify-center hover:bg-gray-200 cursor-pointer">
           <User className="text-blue-600 w-5 h-5" />
         </div>
