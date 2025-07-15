@@ -48,57 +48,40 @@ export default function StudentDashboard() {
         />
       </div>
 
-      {/* Profile and Academic Status */}
+      {/* Profile + Schedule */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-        {/* Profile Summary */}
-        <div className="bg-white p-6 rounded-2xl shadow-md lg:col-span-1">
-          <div className="flex items-center gap-4">
-            <div className="bg-indigo-100 p-3 rounded-full">
-              <CircleUser className="text-indigo-600 w-8 h-8" />
-            </div>
-            <div>
-              <h2 className="text-xl font-bold text-gray-800">Riya Sharma</h2>
-              <p className="text-gray-500 text-sm">3rd Year, CSE Department</p>
-            </div>
-          </div>
-
-          <div className="mt-6 space-y-2 text-sm text-gray-600">
+        {/* Normal Profile Card */}
+        <div className="bg-gradient-to-b from-blue-100 to-blue-200 rounded-3xl shadow-xl p-6 flex flex-col items-center text-center lg:col-span-1">
+          <img
+            src="https://cdn-icons-png.flaticon.com/512/219/219983.png"
+            alt="Student Avatar"
+            className="w-28 h-28 rounded-full border-4 border-white shadow-md mb-4"
+          />
+          <h2 className="text-xl font-semibold text-blue-900">Riya Sharma</h2>
+          <p className="text-sm text-blue-700 mt-1 mb-4">Web Developer</p>
+          <div className="w-full bg-white rounded-xl p-4 mt-2 text-left space-y-3">
             <p>
-              <strong>Email:</strong> riya.sharma@univ.edu
+              <span className="font-semibold text-gray-700">Roll No:</span>{" "}
+              21CSE019
             </p>
             <p>
-              <strong>Roll No:</strong> 21CSE019
+              <span className="font-semibold text-gray-700">Department:</span>{" "}
+              Computer Science Engineering
             </p>
             <p>
-              <strong>Semester:</strong> 6th
+              <span className="font-semibold text-gray-700">Year:</span> 3rd
+              Year
             </p>
-          </div>
-        </div>
-
-        {/* Timeline */}
-        <div className="bg-white p-6 rounded-2xl shadow-md lg:col-span-2">
-          <h3 className="text-lg font-semibold text-gray-800 mb-4">
-            📅 Upcoming Schedule
-          </h3>
-          <div className="space-y-4">
-            <TimelineItem
-              title="Mock Test - Algorithms"
-              time="Jul 14, 10:00 AM"
-            />
-            <TimelineItem
-              title="Assignment Submission - DBMS"
-              time="Jul 16, 5:00 PM"
-            />
-            <TimelineItem title="Mid-Term Exam - OS" time="Jul 18, 9:00 AM" />
-            <TimelineItem
-              title="Project Demo - AI Chatbot"
-              time="Jul 21, 3:00 PM"
-            />
+            <p>
+              <span className="font-semibold text-gray-700">Semester:</span> 6th
+            </p>
           </div>
         </div>
+
+        {/* Upcoming Schedule */}
         <div className="bg-white p-6 rounded-2xl shadow-md lg:col-span-2">
           <h3 className="text-lg font-semibold text-gray-800 mb-4">
-            📅 Upcoming Schedule
+            🗓️ Upcoming Schedule
           </h3>
           <div className="space-y-4">
             <TimelineItem
@@ -142,7 +125,7 @@ function StatCard({ title, value, icon, color }) {
 
 function TimelineItem({ title, time }) {
   return (
-    <div className="flex justify-between items-center bg-gray-50 px-4 py-3 rounded-xl border hover:border-indigo-300 hover:shadow-sm transition-all">
+    <div className="flex justify-between items-center bg-gray-50 px-4 py-3 rounded-xl border hover:border-blue-300 hover:shadow-sm transition-all">
       <div className="text-sm font-medium text-gray-800">{title}</div>
       <div className="text-sm text-gray-500">{time}</div>
     </div>
