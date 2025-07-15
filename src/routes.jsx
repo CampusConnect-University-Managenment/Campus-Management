@@ -7,7 +7,6 @@ import AttendanceUpload from "./pages/faculty/AttendanceUpload";
 import Notification_Message from "./pages/faculty/Notification_Message";
 import ClassList from "./pages/faculty/ClassList";
 import Performance from './pages/student/Performance-analysis/component/Performance';
-import ClassList from "./pages/faculty/ClassList";
 import Announcements from "./pages/faculty/Announcements/components/Announcements";
 import StudentDashboard from "./pages/student/StudentDashBoard/components/StudentDashboard";
 import FacultyMarksUpdate from "./pages/faculty/Exam_InterFace/Components/Upload_Marks";
