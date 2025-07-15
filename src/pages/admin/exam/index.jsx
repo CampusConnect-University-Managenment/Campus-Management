@@ -1,9 +1,8 @@
-import React from 'react'
+import React from "react";
+import ExamSchedule from "./components/examschedule";
 
 const AdminExam = () => {
-  return (
-    <div>AdminExam</div>
-  )
-}
+  return <ExamSchedule />;
+};
 
-export default AdminExam
+export default AdminExam;
