@@ -1,22 +1,24 @@
 import React from "react";
 import { Routes, Route, Navigate, useLocation } from "react-router-dom";
-// import Navbar from "components/navbar";
-
-// import Footer from "components/footer/Footer";
 import routes from "../../routes";
 import FacultySidebar from "../sidebar/FacultySidebar";
 import Navbar from "../Navbar";
+
 export default function Faculty(props) {
- 
+  const { ...rest } = props;
   const location = useLocation();
   const [open, setOpen] = React.useState(true);
   const [currentRoute, setCurrentRoute] = React.useState("Main Dashboard");
-console.log(currentRoute)
+
   React.useEffect(() => {
-    window.addEventListener("resize", () =>
-      window.innerWidth < 1200 ? setOpen(false) : setOpen(true)
-    );
+    // Handle sidebar responsiveness
+    const handleResize = () =>
+      window.innerWidth < 1200 ? setOpen(false) : setOpen(true);
+    window.addEventListener("resize", handleResize);
+    handleResize(); // initial check
+    return () => window.removeEventListener("resize", handleResize);
   }, []);
+
   React.useEffect(() => {
     getActiveRoute(routes);
   }, [location.pathname]);
@@ -24,67 +26,74 @@ console.log(currentRoute)
   const getActiveRoute = (routes) => {
     let activeRoute = "Main Dashboard";
     for (let i = 0; i < routes.length; i++) {
-      if (
-        window.location.href.indexOf(
-          routes[i].layout + "/" + routes[i].path
-        ) !== -1
-      ) {
+      const fullPath = routes[i].layout + "/" + routes[i].path;
+      if (window.location.href.includes(fullPath)) {
         setCurrentRoute(routes[i].name);
+        return routes[i].name;
+      }
+      // check nested children
+      if (routes[i].children) {
+        for (let j = 0; j < routes[i].children.length; j++) {
+          const childPath = routes[i].layout + "/" + routes[i].children[j].path;
+          if (window.location.href.includes(childPath)) {
+            setCurrentRoute(routes[i].children[j].name);
+            return routes[i].children[j].name;
+          }
+        }
       }
     }
     return activeRoute;
   };
-  
+
   const getRoutes = (routes) => {
     return routes.map((prop, key) => {
       if (prop.layout === "/faculty") {
+        if (prop.children) {
+          return (
+            <React.Fragment key={key}>
+              <Route path={`/${prop.path}`} element={prop.component} />
+              {prop.children.map((child, childKey) => (
+                <Route
+                  path={`/${child.path}`}
+                  element={child.component}
+                  key={`${key}-${childKey}`}
+                />
+              ))}
+            </React.Fragment>
+          );
+        }
         return (
           <Route path={`/${prop.path}`} element={prop.component} key={key} />
         );
-      } else {
-        return null;
       }
+      return null;
     });
   };
 
   document.documentElement.dir = "ltr";
+
   return (
     <div className="flex h-full w-full">
-    
-        <FacultySidebar open={open} onClose={() => setOpen(false)}/>
-    
-      {/* Navbar & Main Content */}
-      
+      <FacultySidebar open={open} onClose={() => setOpen(false)} />
       <div className="h-full w-full bg-lightPrimary dark:!bg-navy-900">
-        {/* Main Content */}
-                    <Navbar/>
-        <main
-          className={`mx-[12px] h-full flex-none transition-all md:pr-2 xl:ml-[313px]`}
-        >
-            
-          {/* Routes */}
+        <main className="mx-[12px] h-full flex-none transition-all md:pr-2 xl:ml-[313px]">
           <div className="h-full">
-            {/* <Navbar
+            <Navbar
               onOpenSidenav={() => setOpen(true)}
-              logoText={"Horizon UI Tailwind React"}
+              logoText="Faculty Panel"
               brandText={currentRoute}
-              secondary={getActiveNavbar(routes)}
               {...rest}
-            /> */}
-
+            />
             <div className="pt-5s mx-auto mb-auto h-full min-h-[84vh] p-2 md:pr-2">
               <Routes>
                 {getRoutes(routes)}
-
                 <Route
                   path="/"
                   element={<Navigate to="/faculty/default" replace />}
                 />
               </Routes>
             </div>
-            <div className="p-3">
-              {/* <Footer /> */}
-            </div>
+            <div className="p-3">{/* Optionally add Footer here */}</div>
           </div>
         </main>
       </div>
