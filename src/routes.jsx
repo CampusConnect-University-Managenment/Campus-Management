@@ -15,7 +15,17 @@ import UploadStudyMaterial from "./pages/faculty/Exam_InterFace/Components/Uploa
 // Auth Views
 
 //student
+// Student Views
 import MyProfile from "./pages/student/MyProfile";
+import Dashboard from "./pages/student/Dashboard";
+// import Profile from "./pages/student/Profile";
+import CoursesEnrolled from "./pages/student/CoursesEnrolled";
+import PracticeExams from "./pages/student/PracticeExams";
+import ResultsPortal from "./pages/student/ResultsPortal";
+import PerformanceAnalytics from "./pages/student/PerformanceAnalytics";
+import Notifications from "./pages/student/Notifications";
+import HelpSupport from "./pages/student/HelpSupport";
+ 
 // Icons
 
 import {
@@ -52,34 +62,53 @@ const routes = [
 
   // Student Routes
   {
-    name: "Student Dashboard ",
+    name: "Dashboard",
     layout: "/student",
-    path: "default",
+    path: "dashboard",
     icon: <MdDashboard className="h-5 w-5" />,
-    component: <StudentDashboard />,
-  },
-  {
-    //src/pages/student/StudentDashboard/components/
-
-    name: "Profile",
-    layout: "/student",
-    path: "profile",
-    icon: <FaUser className="h-5 w-5" />,
-    component: <MyProfile />,
+    component: <Dashboard />,
   },
   {
     name: "Courses Enrolled",
     layout: "/student",
-    path: "demo",
+    path: "courses",
     icon: <FaBookOpen className="h-5 w-5" />,
-    component: <MyProfile />,
+    component: <CoursesEnrolled />,
   },
   {
     name: "Practice Exams",
     layout: "/student",
-    path: "demo",
+    path: "practice",
     icon: <FaClipboardCheck className="h-5 w-5" />,
-    component: <MyProfile />,
+    component: <PracticeExams />,
+  },
+  {
+    name: "Results Portal",
+    layout: "/student",
+    path: "results",
+    icon: <FaGraduationCap className="h-5 w-5" />,
+    component: <ResultsPortal />,
+  },
+  {
+    name: "Performance Analytics",
+    layout: "/student",
+    path: "analytics",
+    icon: <FaChartBar className="h-5 w-5" />,
+    component: <PerformanceAnalytics />,
+  },
+  {
+    name: "Notifications",
+    layout: "/student",
+    path: "notifications",
+    icon: <FaBell className="h-5 w-5" />,
+    component: <Notifications />,
+  },
+  {
+    name: "Help & Support",
+    layout: "/student",
+    path: "help",
+    icon: <FaQuestionCircle className="h-5 w-5" />,
+    component: <HelpSupport />,
   },
 
   {
@@ -111,7 +140,7 @@ const routes = [
     layout: "/student",
     path: "Performance",
     icon: <FaChartBar className="h-5 w-5" />,
-    component: <Performance />, 
+    component: <Performance />,
   },
   {
     name: "Notifications",
@@ -165,7 +194,6 @@ const routes = [
     component: <FacultyMarksUpdate />,
   },
   {
-
     name: "Upload Question Paper",
     layout: "/faculty",
     path: "UploadMarUpload Question Paperks",
@@ -174,21 +202,19 @@ const routes = [
   },
 
   {
-    name:"Upload Study Materials",
-    layout:"/faculty",
-    path:"UploadStudyMaterials",
-    icon:<MdDashboard className="h-6 w-6" />,
-    component:<UploadStudyMaterial/>
+    name: "Upload Study Materials",
+    layout: "/faculty",
+    path: "UploadStudyMaterials",
+    icon: <MdDashboard className="h-6 w-6" />,
+    component: <UploadStudyMaterial />,
   },
-   {
-    name:"Announcements",
-    layout:"/faculty",
-    path:"Announcements",
-    icon:<MdDashboard className="h-6 w-6" />,
-    component:<Announcements/>
+  {
+    name: "Announcements",
+    layout: "/faculty",
+    path: "Announcements",
+    icon: <MdDashboard className="h-6 w-6" />,
+    component: <Announcements />,
   },
-  
-
 ];
 
 export default routes;
