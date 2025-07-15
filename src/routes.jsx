@@ -17,6 +17,7 @@ import UploadStudyMaterial from "./pages/faculty/Exam_InterFace/Components/Uploa
 
 //student
 import MyProfile from "./pages/student/MyProfile";
+import Courselist from "./pages/student/Coureenrollment/Component/Courselist";
 // Icons
 
 
@@ -71,9 +72,9 @@ const routes = [
   {
     name: "Courses Enrolled",
     layout: "/student",
-    path: "demo",
+    path: "Courselist",
     icon: <FaBookOpen className="h-5 w-5" />,
-    component: <MyProfile/>,
+    component: <Courselist/>,
   },
   {
     name: "Practice Exams",
