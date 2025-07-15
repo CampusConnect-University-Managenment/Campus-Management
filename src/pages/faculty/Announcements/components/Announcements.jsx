@@ -5,7 +5,7 @@ const Announcements = () => {
   const [message, setMessage] = useState("");
   const [course, setCourse] = useState("");
 
-  const handleSubmit = (e) => {
+  const handleSubmit = (e) => {  
     e.preventDefault();
 
     const announcementData = {
