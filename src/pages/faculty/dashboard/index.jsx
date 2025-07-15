@@ -144,20 +144,7 @@ function FacultyDashboard() {
   </ul>
 </div>
 
-{/* Student Messages Preview */}
-<div className="bg-white mt-8 rounded-xl shadow p-6">
-  <h3 className="text-xl font-semibold text-gray-800 mb-4">Student Queries</h3>
-  <div className="space-y-3">
-    <div className="p-3 border rounded-lg">
-      <p className="text-gray-800 font-medium">John Doe</p>
-      <p className="text-sm text-gray-600">"Sir, can you clarify Q3 of the assignment?"</p>
-    </div>
-    <div className="p-3 border rounded-lg">
-      <p className="text-gray-800 font-medium">Anjali R</p>
-      <p className="text-sm text-gray-600">"Requesting extension for the project submission."</p>
-    </div>
-  </div>
-</div>
+
 
 {/* Course Progress */}
 <div className="bg-white mt-8 rounded-xl shadow p-6">
@@ -178,36 +165,9 @@ function FacultyDashboard() {
   </div>
 </div>
 
-{/* Feedback Summary */}
-<div className="bg-white mt-8 rounded-xl shadow p-6">
-  <h3 className="text-xl font-semibold text-gray-800 mb-4">Student Feedback Summary</h3>
-  <ul className="space-y-2 text-sm text-gray-700">
-    <li>👍 92% students found lectures engaging</li>
-    <li>🕒 85% said course pacing was good</li>
-    <li>📚 78% happy with study materials provided</li>
-  </ul>
-</div>
 
-{/* Notifications */}
-<div className="bg-white mt-8 rounded-xl shadow p-6">
-  <h3 className="text-xl font-semibold text-gray-800 mb-4">Reminders</h3>
-  <ul className="list-disc pl-5 text-gray-700 space-y-2">
-    <li>Submit semester attendance by July 20</li>
-    <li>Update assignment grades before July 18</li>
-    <li>Plan syllabus completion report</li>
-  </ul>
-</div>
 
-      {/* Upcoming Calendar (Optional) */}
-      <div className="bg-white mt-8 rounded-xl shadow p-6">
-        <div className="flex items-center gap-2 mb-4">
-          <Calendar className="text-purple-600" />
-          <h3 className="text-xl font-semibold text-gray-800">Upcoming Events</h3>
-        </div>
-        <p className="text-gray-600">• Guest Lecture on AI - July 17, 2025<br />
-          • Final Year Project Review - July 20, 2025<br />
-          • Department Meeting - July 22, 2025</p>
-      </div>
+      
     </div>
   );
 }
