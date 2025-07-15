@@ -12,6 +12,7 @@ import StudentDashboard from "./pages/student/StudentDashBoard/components/Studen
 import FacultyMarksUpdate from "./pages/faculty/Exam_InterFace/Components/Upload_Marks";
 import UploadQuestionPaper from "./pages/faculty/Exam_InterFace/Components/Upload_QuestionPaper";
 import UploadStudyMaterial from "./pages/faculty/Exam_InterFace/Components/Upload_StudyMaterials";
+import FacultyManagement from "./pages/admin/faculty/index"
 // Auth Views
 
 //student
@@ -51,6 +52,13 @@ const routes = [
     path: "default",
     icon: <MdDashboard className="h-5 w-5" />,
     component: <AdminDashboard />,
+  },
+  {
+    name: "FacultyManagement",
+    layout: "/admin",
+    path: "faculty",
+    icon: <MdGroups className="h-6 w-6" />,
+    component: <FacultyManagement />,
   },
   {
     name: "All Students",
