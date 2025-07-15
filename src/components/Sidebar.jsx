@@ -10,9 +10,11 @@ const Sidebar = ({ role }) => {
       { icon: <Users />, text: 'Faculty', to: '/admin/faculty' },
       { icon: <BookOpen />, text: 'Student', to: '/admin/student' },
     ],
-    student: [
-      { icon: <ClipboardList />, text: 'Exam Interface', to: '/student/examinterface' },
-    ],
+   student: [
+  { icon: <ClipboardList />, text: 'Exam Interface', to: '/student/examinterface' },
+  { icon: <ClipboardList />, text: 'Performance Analytics', to: '/student/performance' },
+],
+
     faculty: [
       { icon: <Home />, text: 'Faculty Home', to: '/faculty/home' },
     ],
