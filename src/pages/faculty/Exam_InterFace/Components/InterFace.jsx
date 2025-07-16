@@ -1,6 +1,6 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
-import { FaClipboardList, FaFileUpload, FaBookOpen } from "react-icons/fa";
+import { FaClipboardList, FaFileUpload, FaBookOpen, FaUserCircle } from "react-icons/fa"; // ✅ Add FaUserCircle
 
 const Interface = () => {
   const navigate = useNavigate();
@@ -26,8 +26,25 @@ const Interface = () => {
     },
   ];
 
+  // ✅ Handle profile click
+  const handleProfileClick = () => {
+    navigate("/faculty/profile"); // Navigate to faculty profile
+  };
+
   return (
-    <div className="mt-[100px]  pt-24 pb-36 px-6 bg-gray-100 font-inter">
+    <div className="relative mt-[100px] pt-24 pb-36 px-6 bg-gray-100 font-inter">
+
+      {/* ✅ Profile Icon Top-Right */}
+      <div className="absolute top-6 right-6">
+        <button
+          onClick={handleProfileClick}
+          className="text-gray-700 hover:text-blue-600 text-3xl"
+          title="View Profile"
+        >
+          <FaUserCircle />
+        </button>
+      </div>
+
       <h2 className="text-3xl font-bold text-center text-[#2e3a59] mb-12">
         📚 Exam Upload Interface
       </h2>
@@ -50,3 +67,4 @@ const Interface = () => {
 };
 
 export default Interface;
+//interface.jsx navigate
