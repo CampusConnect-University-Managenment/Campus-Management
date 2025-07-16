@@ -35,7 +35,7 @@ const Notifications = () => {
   };
 
   return (
-    <div className="space-y-2">
+    <div className="space-y-2 mt-24">
       <div className="flex justify-between items-center mb-2">
         <h2 className="text-xl font-bold">Notifications</h2>
         <button

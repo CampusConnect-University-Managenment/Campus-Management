@@ -38,10 +38,14 @@ import {
   FaClipboardCheck,
   FaGraduationCap,
   FaQuestionCircle,
+  
 } from "react-icons/fa";
 
 import { MdDashboard, MdGroups } from "react-icons/md";
-
+import { MdLibraryBooks } from 'react-icons/md';
+import { MdNotifications } from 'react-icons/md';
+import { MdUploadFile } from 'react-icons/md';
+import { MdCampaign } from 'react-icons/md'
 import FacultyDashboard from "./pages/faculty/dashboard";
 import ExamSchedule from "./pages/admin/exam/components/examschedule";
 //import { FaUser } from "react-icons/fa";
@@ -185,28 +189,28 @@ const routes = [
     name: "ClassList",
     layout: "/faculty",
     path: "ClassList",
-    icon: <MdDashboard className="h-6 w-6" />,
+    icon: <MdGroups className="h-6 w-6" />,
     component: <ClassList />,
   },
   {
     name: "Attendace Upload",
     layout: "/faculty",
     path: "Attendance",
-    icon: <MdDashboard className="h-6 w-6" />,
+    icon: <MdUploadFile className="h-6 w-6" />,
     component: <AttendanceUpload />,
   },
   {
     name: "Notification and Message",
     layout: "/faculty",
     path: "Notification&Message",
-    icon: <MdDashboard className="h-6 w-6" />,
+    icon: <MdNotifications className="h-6 w-6" />,
     component: <Notification_Message />,
   },
   {
     name: "Exam InterFace",
     layout: "/faculty",
     path: "ExamInterFace",
-    icon: <MdDashboard className="h-6 w-6" />,
+    icon: <MdLibraryBooks className="h-6 w-6" />,
     component: <Interface />,
     children: [
       {
@@ -233,7 +237,7 @@ const routes = [
     name: "Announcements",
     layout: "/faculty",
     path: "Announcements",
-    icon: <MdDashboard className="h-6 w-6" />,
+    icon: <MdCampaign className="h-6 w-6" />,
     component: <Announcements />,
   },
 ];
