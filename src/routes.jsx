@@ -9,9 +9,10 @@ import ClassList from "./pages/faculty/ClassList";
 import Performance from './pages/student/Performance-analysis/component/Performance';
 import Announcements from "./pages/faculty/Announcements/components/Announcements";
 import StudentDashboard from "./pages/student/StudentDashBoard/components/StudentDashboard";
-import FacultyMarksUpdate from "./pages/faculty/Exam_InterFace/Components/Upload_Marks";
-import UploadQuestionPaper from "./pages/faculty/Exam_InterFace/Components/Upload_QuestionPaper";
-import UploadStudyMaterial from "./pages/faculty/Exam_InterFace/Components/Upload_StudyMaterials";
+import Interface from "./pages/faculty/Exam_InterFace/Components/InterFace";
+import FacultyMarksUpdate from "./pages/faculty/Exam_InterFace/Components/Upload_Components/Upload_Marks";
+import UploadQuestionPaper from "./pages/faculty/Exam_InterFace/Components/Upload_Components/Upload_QuestionPaper";
+import UploadStudyMaterial from "./pages/faculty/Exam_InterFace/Components/Upload_Components/Upload_StudyMaterials";
 import FacultyManagement from "./pages/admin/faculty/index"
 // Auth Views
 
@@ -195,26 +196,31 @@ const routes = [
     component: <Notification_Message />,
   },
   {
-    name: "Upload Marks",
+    name: "Exam InterFace",
     layout: "/faculty",
-    path: "UploadMarks",
+    path: "ExamInterFace",
     icon: <MdDashboard className="h-6 w-6" />,
-    component: <FacultyMarksUpdate />,
-  },
-  {
-    name: "Upload Question Paper",
-    layout: "/faculty",
-    path: "UploadMarUpload Question Paperks",
-    icon: <MdDashboard className="h-6 w-6" />,
-    component: <UploadQuestionPaper />,
-  },
-
-  {
-    name: "Upload Study Materials",
-    layout: "/faculty",
-    path: "UploadStudyMaterials",
-    icon: <MdDashboard className="h-6 w-6" />,
-    component: <UploadStudyMaterial />,
+    component: <Interface />,
+    children: [
+      {
+        name: "Upload Marks",
+        layout: "/faculty",
+        path: "ExamInterFace/upload-marks",
+        component: <FacultyMarksUpdate />
+      },
+      {
+        name: "Upload Question Paper",
+        layout: "/faculty",
+        path: "ExamInterFace/upload-question",
+        component: <UploadQuestionPaper />
+      },
+      {
+        name: "Upload Study Material",
+        layout: "/faculty",
+        path: "ExamInterFace/upload-material",
+        component: <UploadStudyMaterial />
+      }
+    ]
   },
   {
     name: "Announcements",
