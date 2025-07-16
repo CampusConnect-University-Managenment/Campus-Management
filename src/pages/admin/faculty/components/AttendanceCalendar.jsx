@@ -1,89 +1,70 @@
-import React, { useState } from 'react';
-import { format, startOfMonth, endOfMonth, eachDayOfInterval, getDay } from 'date-fns';
+import React from 'react';
+import {
+  format,
+  startOfMonth,
+  endOfMonth,
+  eachDayOfInterval,
+  getDay,
+  isToday
+} from 'date-fns';
 
-const departments = ['All', 'CSE', 'IT', 'EEE', 'ECE', 'MECH', 'CIVIL'];
-
-const sampleFaculty = [
-  { id: 1, name: 'Dr. Lisa Anderson', department: 'CIVIL' },
-  { id: 2, name: 'Dr. John Smith', department: 'CSE' },
-];
+const daysOfWeek = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
 
 const AttendanceCalendar = () => {
-  const [filter, setFilter] = useState('All');
-  const [attendance, setAttendance] = useState({}); // { 'facultyId_date': true/false }
+  const today = new Date(); // Will always reflect current system date
+  const monthStart = startOfMonth(today);
+  const monthEnd = endOfMonth(today);
 
-  const today = new Date();
   const daysInMonth = eachDayOfInterval({
-    start: startOfMonth(today),
-    end: endOfMonth(today),
+    start: monthStart,
+    end: monthEnd,
   });
 
-  const filteredFaculty =
-    filter === 'All' ? sampleFaculty : sampleFaculty.filter(f => f.department === filter);
-
-  const toggleAttendance = (facultyId, date) => {
-    const key = `${facultyId}_${date}`;
-    setAttendance(prev => ({
-      ...prev,
-      [key]: !prev[key],
-    }));
-  };
+  const leadingEmptyDays = getDay(monthStart); // Days to skip before 1st day of month
 
   return (
-    <div className="mt-8">
-      <div className="flex justify-between items-center mb-4">
-        <h2 className="text-xl font-bold">Attendance Tracking</h2>
-        <select
-          className="p-2 border rounded-md"
-          value={filter}
-          onChange={(e) => setFilter(e.target.value)}
-        >
-          {departments.map((dept) => (
-            <option key={dept} value={dept}>
-              {dept}
-            </option>
-          ))}
-        </select>
+    <div className="max-w-4xl mx-auto mt-8 p-6 bg-white shadow-xl rounded-2xl">
+      {/* Show current date */}
+      <div className="text-center mb-6">
+        <p className="text-lg text-gray-600">
+          Today is{' '}
+          <span className="text-blue-600 font-bold">
+            {format(today, 'EEEE, dd MMMM yyyy')}
+          </span>
+        </p>
+        <h2 className="text-2xl font-bold mt-1">
+          {format(today, 'MMMM yyyy')} Calendar
+        </h2>
       </div>
 
-      <div className="overflow-auto">
-        <table className="min-w-full text-sm border rounded-lg">
-          <thead>
-            <tr className="bg-gray-100 sticky top-0">
-              <th className="border px-2 py-1 text-left">Faculty</th>
-              {daysInMonth.map((day) => (
-                <th key={day} className="border px-1 text-xs">
-                  {format(day, 'd')}
-                </th>
-              ))}
-            </tr>
-          </thead>
-          <tbody>
-            {filteredFaculty.map((faculty) => (
-              <tr key={faculty.id} className="hover:bg-gray-50">
-                <td className="border px-2 py-1 whitespace-nowrap font-medium">{faculty.name}</td>
-                {daysInMonth.map((day) => {
-                  const dateStr = format(day, 'yyyy-MM-dd');
-                  const key = `${faculty.id}_${dateStr}`;
-                  const isPresent = attendance[key];
+      {/* Calendar Grid */}
+      <div className="grid grid-cols-7 gap-2 text-center text-sm font-medium text-gray-700">
+        {/* Day headers */}
+        {daysOfWeek.map((day) => (
+          <div key={day} className="py-2 border-b border-gray-300">
+            {day}
+          </div>
+        ))}
 
-                  return (
-                    <td
-                      key={key}
-                      className={`border text-center cursor-pointer ${
-                        isPresent ? 'bg-green-200' : 'bg-red-200'
-                      }`}
-                      onClick={() => toggleAttendance(faculty.id, dateStr)}
-                      title={isPresent ? 'Present' : 'Absent'}
-                    >
-                      {isPresent ? '✔' : '✘'}
-                    </td>
-                  );
-                })}
-              </tr>
-            ))}
-          </tbody>
-        </table>
+        {/* Empty cells before 1st */}
+        {Array.from({ length: leadingEmptyDays }).map((_, i) => (
+          <div key={`empty-${i}`} />
+        ))}
+
+        {/* Actual calendar days */}
+        {daysInMonth.map((day) => (
+          <div
+            key={day}
+            className={`p-3 rounded-lg shadow-sm transition-all ${
+              isToday(day)
+                ? 'bg-blue-600 text-white font-semibold border border-blue-800'
+                : 'bg-gray-100 text-gray-800 hover:bg-blue-100'
+            }`}
+          >
+            <div className="text-base">{format(day, 'd')}</div>
+            <div className="text-xs">{format(day, 'EEE')}</div>
+          </div>
+        ))}
       </div>
     </div>
   );
