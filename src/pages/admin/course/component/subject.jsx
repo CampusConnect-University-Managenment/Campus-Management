@@ -354,7 +354,7 @@ function Courses() {
   };
 
   return (
-    <div className="max-w-7xl mx-auto">
+    <div className="max-w-7xl mx-auto mt-24">
       <div className="text-left text-gray-800 mt-4 mb-6 flex items-center gap-2">
         <span className="text-3xl">📚</span>
         <h1 className="text-3xl font-bold">Courses</h1>

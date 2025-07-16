@@ -100,7 +100,7 @@ const ClassList = () => {
   };
 
   return (
-    <div className="table-container">
+    <div className="table-container mt-24">
       <h2>📋 Faculty Class List</h2>
       <table className="class-table">
         <thead>
