@@ -24,6 +24,7 @@ const Announcements = () => {
   };
 
   return (
+  <div className="mt-32">
     <div style={styles.container}>
       <h2>Post Course Announcement</h2>
       <form onSubmit={handleSubmit} style={styles.form}>
@@ -61,6 +62,7 @@ const Announcements = () => {
 
         <button type="submit" style={styles.button}>Post Announcement</button>
       </form>
+    </div>
     </div>
   );
 };

@@ -36,7 +36,7 @@ const Header = () => {
   const { ref, inView } = useInView({ triggerOnce: true });
 
   return (
-    <div className="p-6 bg-gray-50 min-h-screen">
+    <div className="p-6 bg-gray-50 min-h-screen mt-24">
       {/* Welcome */}
       <div className="mb-8">
         <h1 className="text-3xl font-bold text-gray-900 tracking-tight">Hello, Dr. Sarah Johnson</h1>

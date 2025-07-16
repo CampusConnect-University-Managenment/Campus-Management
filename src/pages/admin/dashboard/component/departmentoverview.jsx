@@ -63,9 +63,10 @@ const DepartmentOverview = () => {
           const totalClass = isHighTotal ? "text-gray-900" : "text-gray-900";
 
           return (
-            <div
-              key={dept.name}
-              className="bg-white rounded-2xl shadow-sm p-6 border hover:shadow-md transition-all duration-300 transform hover:-translate-y-1"
+        
+
+            <div key={dept.name}
+              className="bg-white rounded-2xl shadow-sm p-6 border hover:shadow-md transition-all duration-300 transform hover:-translate-y-1 "
             >
               <div className="flex justify-between items-center mb-2">
                 <div className="flex items-center gap-2">
@@ -111,6 +112,8 @@ const DepartmentOverview = () => {
       </div>
     </div>
     </div>
+    
+    
   );
 };
 
