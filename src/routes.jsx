@@ -9,6 +9,7 @@ import ClassList from "./pages/faculty/ClassList";
 import Performance from './pages/student/Performance-analysis/component/Performance';
 import Announcements from "./pages/faculty/Announcements/components/Announcements";
 import StudentDashboard from "./pages/student/StudentDashBoard/components/StudentDashboard";
+import FacultyProfile from "./pages/faculty/Profile";
 import Interface from "./pages/faculty/Exam_InterFace/Components/InterFace";
 import FacultyMarksUpdate from "./pages/faculty/Exam_InterFace/Components/Upload_Components/Upload_Marks";
 import UploadQuestionPaper from "./pages/faculty/Exam_InterFace/Components/Upload_Components/Upload_QuestionPaper";
@@ -27,7 +28,7 @@ import ResultsPortal from "./pages/student/ResultsPortal";
 import PerformanceAnalytics from "./pages/student/PerformanceAnalytics";
 import Notifications from "./pages/student/Notifications";
 import HelpSupport from "./pages/student/HelpSupport";
- 
+
 // Icons
 
 import {
@@ -38,7 +39,7 @@ import {
   FaClipboardCheck,
   FaGraduationCap,
   FaQuestionCircle,
-  
+
 } from "react-icons/fa";
 
 import { MdDashboard, MdGroups } from "react-icons/md";
@@ -205,6 +206,13 @@ const routes = [
     path: "Notification&Message",
     icon: <MdNotifications className="h-6 w-6" />,
     component: <Notification_Message />,
+  },
+  {
+    name: "My Profile",
+    layout: "/faculty",
+    path: "profile",
+    icon: <FaUser className="h-6 w-6" />,
+    component: <FacultyProfile />,
   },
   {
     name: "Exam InterFace",
