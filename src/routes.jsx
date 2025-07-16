@@ -41,7 +41,7 @@ import {
 } from "react-icons/fa";
 
 import { MdDashboard, MdGroups } from "react-icons/md";
-
+import { MdLibraryBooks } from 'react-icons/md';
 import FacultyDashboard from "./pages/faculty/dashboard";
 import ExamSchedule from "./pages/admin/exam/components/examschedule";
 //import { FaUser } from "react-icons/fa";
@@ -199,7 +199,7 @@ const routes = [
     name: "Exam InterFace",
     layout: "/faculty",
     path: "ExamInterFace",
-    icon: <MdDashboard className="h-6 w-6" />,
+    icon: <MdLibraryBooks className="h-6 w-6" />,
     component: <Interface />,
     children: [
       {
