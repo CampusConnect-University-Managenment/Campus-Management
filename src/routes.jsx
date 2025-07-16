@@ -22,12 +22,13 @@ import MyProfile from "./pages/student/MyProfile";
 import Dashboard from "./pages/student/Dashboard";
 // import Profile from "./pages/student/Profile";
 import CoursesEnrolled from "./pages/student/CoursesEnrolled";
-import PracticeExams from "./pages/student/PracticeExams";
-import ResultsPortal from "./pages/student/ResultsPortal";
-import PerformanceAnalytics from "./pages/student/PerformanceAnalytics";
+import ExamInterface from "./pages/student/Updated/ExamInterface";
+import PerformanceAnalytics from "./pages/student/Updated/perform";
+import PracticeExam from "./pages/student/Updated/practice";
+import ResultPortal from "./pages/student/Updated/result";
 import Notifications from "./pages/student/Notifications";
 import HelpSupport from "./pages/student/HelpSupport";
- 
+
 // Icons
 
 import {
@@ -85,25 +86,31 @@ const routes = [
     component: <CoursesEnrolled />,
   },
   {
-    name: "Practice Exams",
+    name: "Exam Interface",
     layout: "/student",
-    path: "practice",
+    path: "exam-interface",
     icon: <FaClipboardCheck className="h-5 w-5" />,
-    component: <PracticeExams />,
-  },
-  {
-    name: "Results Portal",
-    layout: "/student",
-    path: "results",
-    icon: <FaGraduationCap className="h-5 w-5" />,
-    component: <ResultsPortal />,
-  },
-  {
-    name: "Performance Analytics",
-    layout: "/student",
-    path: "analytics",
-    icon: <FaChartBar className="h-5 w-5" />,
-    component: <PerformanceAnalytics />,
+    component: <ExamInterface />,
+    children: [
+      {
+        name: "Practice Exams",
+        layout: "/student",
+        path: "exam-interface/practice",
+        component: <PracticeExam />,
+      },
+      {
+        name: "Performance Analytics",
+        layout: "/student",
+        path: "exam-interface/performance",
+        component: <PerformanceAnalytics />,
+      },
+      {
+        name: "Result Portal",
+        layout: "/student",
+        path: "exam-interface/result",
+        component: <ResultPortal />,
+      },
+    ],
   },
   {
     name: "Notifications",
