@@ -1,0 +1,58 @@
+// /faculty/components/FacultyCards.jsx
+import React from 'react';
+import { FaUsers, FaCalendarAlt, FaBuilding, FaChartLine } from 'react-icons/fa';
+
+const FacultyCards = () => {
+  const stats = [
+    {
+      title: 'Total Faculty',
+      value: 6,
+      icon: <FaUsers />,
+      color: 'from-blue-400 to-blue-600',
+      description: 'Active faculty members',
+    },
+    {
+      title: 'Average Attendance',
+      value: '93.3%',
+      icon: <FaChartLine />,
+      color: 'from-green-400 to-green-600',
+      description: 'Overall attendance rate',
+    },
+    {
+      title: 'Total Working Days',
+      value: 22,
+      icon: <FaCalendarAlt />,
+      color: 'from-purple-400 to-purple-600',
+      description: 'Days per month',
+    },
+    {
+      title: 'Total Departments',
+      value: 6,
+      icon: <FaBuilding />,
+      color: 'from-orange-400 to-orange-600',
+      description: 'Academic departments',
+    },
+  ];
+
+  return (
+    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+      {stats.map((stat, index) => (
+        <div
+          key={index}
+          className={`rounded-2xl p-4 shadow-md text-white bg-gradient-to-r ${stat.color}`}
+        >
+          <div className="flex items-center space-x-4">
+            <div className="text-3xl">{stat.icon}</div>
+            <div>
+              <div className="text-xl font-semibold">{stat.title}</div>
+              <div className="text-2xl">{stat.value}</div>
+              <div className="text-sm opacity-80">{stat.description}</div>
+            </div>
+          </div>
+        </div>
+      ))}
+    </div>
+  );
+};
+
+export default FacultyCards;
