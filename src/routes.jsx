@@ -67,6 +67,13 @@ const routes = [
     icon: <MdGroups className="h-6 w-6" />,
     component: <AllStudents />,
   },
+  {
+    name: "Notification and Message",
+    layout: "/admin",
+    path: "Notification_Message",
+    icon: <MdDashboard className="h-6 w-6" />,
+    component: <Notification_Message />,
+  },
 
   // Student Routes
   {
