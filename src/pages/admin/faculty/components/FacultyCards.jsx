@@ -1,33 +1,45 @@
-// /faculty/components/FacultyCards.jsx
 import React from 'react';
 import { FaUsers, FaCalendarAlt, FaBuilding, FaChartLine } from 'react-icons/fa';
 
-const FacultyCards = () => {
+const ALL_DEPARTMENTS = ['CSE', 'IT', 'EEE', 'ECE', 'MECH', 'CIVIL'];
+
+const FacultyCards = ({ facultyList, attendanceRecords }) => {
+  const totalFaculty = facultyList.length;
+
+  // Average attendance
+  const attendanceValues = Object.values(attendanceRecords)
+    .flatMap(record => Object.values(record)); // Flatten daily attendance
+  const presentCount = attendanceValues.filter(val => val === 'Present').length;
+  const totalMarked = attendanceValues.length;
+  const averageAttendance = totalMarked
+    ? ((presentCount / totalMarked) * 100).toFixed(1) + '%'
+    : 'N/A';
+
   const stats = [
     {
       title: 'Total Faculty',
-      value: 6,
+      value: totalFaculty,
       icon: <FaUsers />,
       color: 'from-blue-400 to-blue-600',
       description: 'Active faculty members',
     },
     {
       title: 'Average Attendance',
-      value: '93.3%',
+      value: averageAttendance,
       icon: <FaChartLine />,
       color: 'from-green-400 to-green-600',
-      description: 'Overall attendance rate',
+      description: 'Based on daily presence',
     },
     {
       title: 'Total Working Days',
       value: 22,
       icon: <FaCalendarAlt />,
       color: 'from-purple-400 to-purple-600',
-      description: 'Days per month',
+      description: 'Days this month',
     },
     {
       title: 'Total Departments',
-      value: 6,
+      value: ALL_DEPARTMENTS.length,
       icon: <FaBuilding />,
       color: 'from-orange-400 to-orange-600',
       description: 'Academic departments',
