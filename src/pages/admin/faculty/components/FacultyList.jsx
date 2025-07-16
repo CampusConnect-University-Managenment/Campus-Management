@@ -1,6 +1,7 @@
+// FacultyList.js
 import React, { useState } from 'react';
-
-const departments = ['All', 'CSE', 'IT', 'EEE', 'ECE', 'MECH', 'CIVIL'];
+import FacultyForm from './FacultyForm';
+import FacultyCards from './FacultyCards'; // Adjust path if needed
 
 const initialFaculty = [
   {
@@ -9,7 +10,6 @@ const initialFaculty = [
     email: 'lisa.anderson@university.edu',
     department: 'CIVIL',
     role: 'Assistant Professor',
-    attendance: 94.1,
   },
   {
     id: 2,
@@ -17,79 +17,193 @@ const initialFaculty = [
     email: 'john.smith@university.edu',
     department: 'CSE',
     role: 'Professor',
-    attendance: 95.5,
   },
 ];
 
 const FacultyList = () => {
-  const [faculty, setFaculty] = useState(initialFaculty);
+  const [facultyList, setFacultyList] = useState(initialFaculty);
   const [filter, setFilter] = useState('All');
+  const [showForm, setShowForm] = useState(false);
+  const [formData, setFormData] = useState({
+    id: null,
+    name: '',
+    email: '',
+    department: 'CSE',
+    role: '',
+  });
 
-  const handleDelete = (id) => {
-    setFaculty((prev) => prev.filter((f) => f.id !== id));
+  const [attendanceRecords, setAttendanceRecords] = useState({});
+
+  const today = new Date().toISOString().split('T')[0];
+
+  const handleMarkAttendance = (id, status) => {
+    setAttendanceRecords((prev) => ({
+      ...prev,
+      [id]: {
+        ...(prev[id] || {}),
+        [today]: status,
+      },
+    }));
   };
 
   const handleEdit = (id) => {
-    alert(`Edit functionality for ID: ${id}`);
-    // You can implement modal/form here
+    const data = facultyList.find((f) => f.id === id);
+    setFormData(data);
+    setShowForm(true);
+  };
+
+  const handleDelete = (id) => {
+    const confirm = window.confirm('Are you sure you want to delete?');
+    if (confirm) {
+      setFacultyList((prev) => prev.filter((f) => f.id !== id));
+      setAttendanceRecords((prev) => {
+        const updated = { ...prev };
+        delete updated[id];
+        return updated;
+      });
+    }
+  };
+
+  const handleFormSubmit = (e) => {
+    e.preventDefault();
+    const updated = { ...formData };
+
+    if (formData.id) {
+      setFacultyList((prev) =>
+        prev.map((f) => (f.id === formData.id ? updated : f))
+      );
+    } else {
+      updated.id = Date.now();
+      setFacultyList((prev) => [...prev, updated]);
+    }
+
+    setFormData({
+      id: null,
+      name: '',
+      email: '',
+      department: 'CSE',
+      role: '',
+    });
+    setShowForm(false);
   };
 
   const filteredFaculty =
-    filter === 'All' ? faculty : faculty.filter((f) => f.department === filter);
+    filter === 'All'
+      ? facultyList
+      : facultyList.filter((f) => f.department === filter);
 
   return (
-    <div className="space-y-4">
-      <div className="flex justify-between items-center">
-        <h2 className="text-xl font-bold">Faculty Management</h2>
-        <select
-          className="p-2 border rounded-md"
-          value={filter}
-          onChange={(e) => setFilter(e.target.value)}
-        >
-          {departments.map((dept) => (
-            <option key={dept} value={dept}>
-              {dept}
-            </option>
-          ))}
-        </select>
-        <button
-          className="ml-4 bg-blue-500 text-white px-4 py-2 rounded-md"
-          onClick={() => alert('Add Faculty modal goes here')}
-        >
-          + Add Faculty
-        </button>
+    <div className="space-y-6">
+      {/* ✅ Dashboard Cards: RENDER ONLY ONCE */}
+      <FacultyCards
+        facultyList={facultyList}
+        attendanceRecords={attendanceRecords}
+      />
+
+      {/* 🔍 Filter + Add */}
+      <div className="flex justify-between items-center flex-wrap gap-4">
+        <h2 className="text-2xl font-bold">Faculty Management</h2>
+        <div className="flex items-center gap-4">
+          <select
+            className="border p-2 rounded"
+            value={filter}
+            onChange={(e) => setFilter(e.target.value)}
+          >
+            <option value="All">All</option>
+            <option value="CSE">CSE</option>
+            <option value="IT">IT</option>
+            <option value="EEE">EEE</option>
+            <option value="ECE">ECE</option>
+            <option value="MECH">MECH</option>
+            <option value="CIVIL">CIVIL</option>
+          </select>
+          <button
+            className="bg-blue-600 text-white px-4 py-2 rounded"
+            onClick={() => {
+              setFormData({
+                id: null,
+                name: '',
+                email: '',
+                department: 'CSE',
+                role: '',
+              });
+              setShowForm(true);
+            }}
+          >
+            + Add Faculty
+          </button>
+        </div>
       </div>
 
+      {/* ✍️ Add/Edit Form */}
+      {showForm && (
+        <FacultyForm
+          formData={formData}
+          setFormData={setFormData}
+          onSubmit={handleFormSubmit}
+          onCancel={() => setShowForm(false)}
+        />
+      )}
+
+      {/* 🧑‍🏫 Faculty List */}
       <div className="grid md:grid-cols-2 gap-4">
-        {filteredFaculty.map((f) => (
-          <div
-            key={f.id}
-            className="rounded-xl shadow-md border p-4 flex flex-col space-y-2"
-          >
-            <div className="text-lg font-semibold">{f.name}</div>
-            <div className="text-sm text-gray-600">{f.role}</div>
-            <div className="text-sm">{f.email}</div>
-            <div className="text-sm">Department: {f.department}</div>
-            <div className="text-sm">
-              Attendance Rate:{' '}
-              <span className="text-green-600 font-medium">{f.attendance}%</span>
+        {filteredFaculty.map((f) => {
+          const todayStatus =
+            attendanceRecords[f.id] && attendanceRecords[f.id][today];
+
+          return (
+            <div
+              key={f.id}
+              className="border rounded-xl p-4 shadow-md space-y-2 bg-white"
+            >
+              <h3 className="text-xl font-semibold">{f.name}</h3>
+              <p className="text-sm text-gray-600">{f.role}</p>
+              <p className="text-sm">{f.email}</p>
+              <p className="text-sm">Department: {f.department}</p>
+              <p className="text-sm">
+                Today’s Attendance:{' '}
+                <span
+                  className={`font-medium ${
+                    todayStatus === 'Present'
+                      ? 'text-green-600'
+                      : todayStatus === 'Absent'
+                      ? 'text-red-500'
+                      : 'text-yellow-600'
+                  }`}
+                >
+                  {todayStatus || 'Not Marked'}
+                </span>
+              </p>
+
+              <div className="flex gap-2 pt-2 flex-wrap">
+                <button
+                  className="bg-green-500 text-white px-3 py-1 rounded"
+                  onClick={() => handleMarkAttendance(f.id, 'Present')}
+                >
+                  Present
+                </button>
+                <button
+                  className="bg-red-500 text-white px-3 py-1 rounded"
+                  onClick={() => handleMarkAttendance(f.id, 'Absent')}
+                >
+                  Absent
+                </button>
+                <button
+                  className="bg-yellow-500 text-white px-3 py-1 rounded"
+                  onClick={() => handleEdit(f.id)}
+                >
+                  Edit
+                </button>
+                <button
+                  className="bg-gray-600 text-white px-3 py-1 rounded"
+                  onClick={() => handleDelete(f.id)}
+                >
+                  Delete
+                </button>
+              </div>
             </div>
-            <div className="flex space-x-2 pt-2">
-              <button
-                className="px-3 py-1 bg-yellow-500 text-white rounded"
-                onClick={() => handleEdit(f.id)}
-              >
-                Edit
-              </button>
-              <button
-                className="px-3 py-1 bg-red-500 text-white rounded"
-                onClick={() => handleDelete(f.id)}
-              >
-                Delete
-              </button>
-            </div>
-          </div>
-        ))}
+          );
+        })}
       </div>
     </div>
   );
