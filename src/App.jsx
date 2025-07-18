@@ -9,11 +9,13 @@ import NotificationMessage from './pages/admin/Notification_Message/index.jsx'; 
 const App = () => {
   return (
     <Routes>
-      <Route path="admin/*" element={<AdminRoute />} />
+      <Route path="admin/*" element={<AdminRoute />}>
+      <Route path="notification-message" element={<NotificationMessage />} />
+     </Route>
       <Route path="student/*" element={<StudentRoute/>} />
       <Route path="faculty/*" element={<FacultyRoute/>}/>
       <Route path="/*" element={<AdminRoute />} />
-      <Route path="admin/Notification_Message" element={<NotificationMessage />} /> {/* changed route path */}
+     
     </Routes>
   );
 };

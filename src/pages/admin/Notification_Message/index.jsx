@@ -7,7 +7,7 @@ import useSocket from './hooks/useSocket';
 import { mockUsers, mockChats } from './utils/mockData';
 import './App.css';
 
-function Notification_Message() {
+function NotificationMessage() {
   const [currentUser, setCurrentUser] = useState(mockUsers[0]);
   const [selectedChat, setSelectedChat] = useState(null);
   const [chats, setChats] = useState(mockChats);
@@ -114,4 +114,4 @@ function Notification_Message() {
   );
 }
 
-export default Notification_Message;
+export default NotificationMessage;
