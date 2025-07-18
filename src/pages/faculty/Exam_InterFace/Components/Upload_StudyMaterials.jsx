@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import React, { useState } from "react";
+
 const UploadStudyMaterial = () => {
   const [formData, setFormData] = useState({
     subject: "",
@@ -16,26 +17,43 @@ const UploadStudyMaterial = () => {
     }));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
+
     if (!formData.subject || !formData.file || !formData.date) {
       alert("Please fill in all required fields.");
       return;
     }
 
-    console.log("Uploading Study Material...");
-    console.log("Form Data:", formData);
-    alert("Study Material upload simulated");
+    const data = new FormData();
+    data.append("subject", formData.subject);
+    data.append("category", formData.category);
+    data.append("date", formData.date);
+    data.append("description", formData.description);
+    data.append("file", formData.file);
 
-    setFormData({
-      subject: "",
-      category: "notes",
-      date: "",
-      description: "",
-      file: null,
-    });
+    try {
+      const response = await fetch(
+        "http://localhost:8080/api/study-materials",
+        {
+          method: "POST",
+          body: data,
+        }
+      );
 
-    document.getElementById("studyFileInput").value = "";
+      if (!response.ok) {
+        throw new Error("Upload failed");
+      }
+
+      const result = await response.json();
+      console.log("✅ Upload success:", result);
+      alert("Study material uploaded successfully!");
+
+      handleReset();
+    } catch (error) {
+      console.error("❌ Upload error:", error);
+      alert("Failed to upload study material.");
+    }
   };
 
   const handleReset = () => {
@@ -51,9 +69,10 @@ const UploadStudyMaterial = () => {
 
   return (
     <div className="mt-[100px] max-w-xl mx-auto mt-10 p-6 bg-white shadow-lg rounded-lg">
-      <h2 className="text-2xl font-bold text-center mb-6">Upload Study Material</h2>
+      <h2 className="text-2xl font-bold text-center mb-6">
+        Upload Study Material
+      </h2>
       <form onSubmit={handleSubmit} className="space-y-4">
-
         {/* Subject */}
         <div>
           <label className="block font-medium text-sm mb-1">Subject</label>
@@ -70,7 +89,9 @@ const UploadStudyMaterial = () => {
 
         {/* Category */}
         <div>
-          <label className="block font-medium text-sm mb-1">Material Category</label>
+          <label className="block font-medium text-sm mb-1">
+            Material Category
+          </label>
           <select
             name="category"
             value={formData.category}
@@ -99,7 +120,9 @@ const UploadStudyMaterial = () => {
 
         {/* Description */}
         <div>
-          <label className="block font-medium text-sm mb-1">Description (optional)</label>
+          <label className="block font-medium text-sm mb-1">
+            Description (optional)
+          </label>
           <textarea
             name="description"
             value={formData.description}
@@ -123,7 +146,9 @@ const UploadStudyMaterial = () => {
             required
           />
           {formData.file && (
-            <p className="text-sm mt-1 text-gray-600">Selected File: {formData.file.name}</p>
+            <p className="text-sm mt-1 text-gray-600">
+              Selected File: {formData.file.name}
+            </p>
           )}
         </div>
 

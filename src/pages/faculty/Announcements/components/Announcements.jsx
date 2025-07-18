@@ -5,7 +5,7 @@ const Announcements = () => {
   const [message, setMessage] = useState("");
   const [course, setCourse] = useState("");
 
-  const handleSubmit = (e) => {  
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
     const announcementData = {
@@ -15,12 +15,31 @@ const Announcements = () => {
       postedAt: new Date().toLocaleString(),
     };
 
-    console.log("✅ Announcement Submitted:", announcementData);
+    try {
+      const response = await fetch("http://localhost:8080/api/announcements", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(announcementData),
+      });
 
-    // Clear form
-    setTitle("");
-    setMessage("");
-    setCourse("");
+      if (!response.ok) {
+        throw new Error("Failed to post announcement");
+      }
+
+      const result = await response.json();
+      console.log("✅ Announcement Submitted:", result);
+      alert("Announcement posted successfully!");
+
+      // Clear form
+      setTitle("");
+      setMessage("");
+      setCourse("");
+    } catch (error) {
+      console.error("❌ Error posting announcement:", error);
+      alert("Something went wrong. Please try again.");
+    }
   };
 
   return (
@@ -59,7 +78,9 @@ const Announcements = () => {
           style={{ ...styles.input, height: "100px" }}
         ></textarea>
 
-        <button type="submit" style={styles.button}>Post Announcement</button>
+        <button type="submit" style={styles.button}>
+          Post Announcement
+        </button>
       </form>
     </div>
   );
