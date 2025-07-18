@@ -66,41 +66,53 @@ function ClassList() {
   const hours = Array.from({ length: 7 }, (_, i) => i + 1); // Hours 1 to 7
 
   return (
-    <div className="ClassList-container">
-      <h2>Faculty Weekly Timetable - Showcase Version</h2>
 
-      <div className="timetable-grid">
-        {/* Header Row: Empty top-left corner and Hours */}
-        <div className="grid-cell header-cell corner-cell"></div>
-        {hours.map(hour => (
-          <div key={`hour-${hour}`} className="grid-cell header-cell hour-header">
-            Hour {hour}
-          </div>
-        ))}
-
-        {/* Rows for each Day */}
-        {days.map(day => (
-          <React.Fragment key={day}>
-            <div className="grid-cell header-cell day-header">{day}</div> {/* Day Header */}
-            {hours.map(hour => {
-              const classData = staticTimetableData[day]?.[hour]; // Get data for the specific day and hour
-              return (
-                <div key={`${day}-${hour}`} className="grid-cell class-slot">
-                  {classData ? (
-                    <div className="class-details">
-                      <div className="subject">{classData.subject}</div>
-                      <div className="batch">{classData.batch}</div>
-                      <div className="room">{classData.room}</div>
-                    </div>
-                  ) : (
-                    <div className="empty-slot">Free</div>
-                  )}
-                </div>
-              );
-            })}
-          </React.Fragment>
-        ))}
-      </div>
+    <div className="table-container mt-24">
+      <h2>📋 Faculty Class List</h2>
+      <table className="class-table">
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Class Name</th>
+            <th>Subject</th>
+            <th>Section</th>
+            <th>Semester</th>
+            <th>Timings</th>
+            <th>Room No</th>
+            <th>📄 Students</th>
+            <th>📊 Attendance</th>
+            <th>📚 Notes</th>
+            <th>🗓️ Timetable</th>
+            <th>📝 Assignments</th>
+            <th>📢 Announce</th>
+            <th>📈 Performance</th>
+            <th>⚙️ Edit</th>
+            <th>❌ Delete</th>
+          </tr>
+        </thead>
+        <tbody>
+          {classData.map((cls, index) => (
+            <tr key={cls.id}>
+              <td>{index + 1}</td>
+              <td>{cls.className}</td>
+              <td>{cls.subject}</td>
+              <td>{cls.section}</td>
+              <td>{cls.semester}</td>
+              <td>{cls.timings}</td>
+              <td>{cls.roomNo}</td>
+              <td><button onClick={() => handleAction('View Students', cls.className)}>View</button></td>
+              <td><button onClick={() => handleAction('Attendance', cls.className)}>Mark/View</button></td>
+              <td><button onClick={() => handleAction('Notes', cls.className)}>Manage</button></td>
+              <td><button onClick={() => handleAction('Timetable', cls.className)}>View</button></td>
+              <td><button onClick={() => handleAction('Assignments', cls.className)}>Manage</button></td>
+              <td><button onClick={() => handleAction('Announcement', cls.className)}>Post</button></td>
+              <td><button onClick={() => handleAction('Performance', cls.className)}>Track</button></td>
+              <td><button onClick={() => handleAction('Edit Class', cls.className)}>Edit</button></td>
+              <td><button onClick={() => handleAction('Delete Class', cls.className)}>Delete</button></td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
     </div>
   );
 }

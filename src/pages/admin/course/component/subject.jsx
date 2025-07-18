@@ -354,60 +354,61 @@ function Courses() {
   };
 
   return (
-    <div className="max-w-7xl mx-auto">
-      <div className="text-left text-gray-800 mt-4 mb-6 flex items-center gap-2">
-        <span className="text-3xl">📚</span>
-        <h1 className="text-3xl font-bold">Courses</h1>
-      </div>
-
-      <div className="mb-4">
-        <label className="block font-medium text-gray-600">
-          Browse and manage available courses for your selected degree, year and
-          department.
-        </label>
-      </div>
-
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
-        <div>
-          <label className="block font-medium mb-1">Degree</label>
-          <select
-            value={degree}
-            onChange={(e) => {
-              setDegree(e.target.value);
-              setYear("");
-              setDepartment("");
-            }}
-            className="w-full p-2 border rounded-md"
-          >
-            <option value="">Select Degree</option>
-            {Object.keys(mockCourses).map((deg) => (
-              <option key={deg} value={deg}>
-                {deg}
-              </option>
-            ))}
-          </select>
+    <div className="w-full min-h-screen bg-gradient-to-tr from-[#eef2ff] to-[#fdfbff] px-10 pt-28 pb-16">
+      <div className="max-w-7xl mx-auto">
+        <div className="text-left text-gray-800 mt-4 mb-6 flex items-center gap-2">
+          <span className="text-3xl">📚</span>
+          <h1 className="text-3xl font-bold">Courses</h1>
         </div>
 
-        <div>
-          <label className="block font-medium mb-1">Year</label>
-          <select
-            value={year}
-            onChange={(e) => {
-              setYear(e.target.value);
-              setDepartment("");
-            }}
-            disabled={!degree}
-            className="w-full p-2 border rounded-md disabled:opacity-50"
-          >
-            <option value="">Select Year</option>
-            {degree &&
-              Object.keys(mockCourses[degree]).map((yr) => (
-                <option key={yr} value={yr}>
-                  {yr}
+        <div className="mb-4">
+          <label className="block font-medium text-gray-600">
+            Browse and manage available courses for your selected degree, year
+            and department.
+          </label>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+          <div>
+            <label className="block font-medium mb-1">Degree</label>
+            <select
+              value={degree}
+              onChange={(e) => {
+                setDegree(e.target.value);
+                setYear("");
+                setDepartment("");
+              }}
+              className="w-full p-2 border rounded-md"
+            >
+              <option value="">Select Degree</option>
+              {Object.keys(mockCourses).map((deg) => (
+                <option key={deg} value={deg}>
+                  {deg}
                 </option>
               ))}
-          </select>
-        </div>
+            </select>
+          </div>
+
+          <div>
+            <label className="block font-medium mb-1">Year</label>
+            <select
+              value={year}
+              onChange={(e) => {
+                setYear(e.target.value);
+                setDepartment("");
+              }}
+              disabled={!degree}
+              className="w-full p-2 border rounded-md disabled:opacity-50"
+            >
+              <option value="">Select Year</option>
+              {degree &&
+                Object.keys(mockCourses[degree]).map((yr) => (
+                  <option key={yr} value={yr}>
+                    {yr}
+                  </option>
+                ))}
+            </select>
+          </div>
 
         <div>
           <label className="block font-medium mb-1">Department</label>
@@ -441,166 +442,167 @@ function Courses() {
             </button>
           </div>
 
-          {courses.length === 0 ? (
-            <p className="text-gray-500 mb-6">
-              No courses available for {department} in {degree} - {year}.
-            </p>
-          ) : (
-            <>
-              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-                {courses.map((course, index) => (
-                  <div
-                    key={index}
-                    className="bg-white rounded-lg shadow overflow-hidden flex flex-col justify-between"
-                  >
-                    <div
-                      className="h-40 flex items-center justify-center text-white text-center"
-                      style={{ backgroundColor: course.color }}
-                    >
-                      <div>
-                        <h4 className="font-bold text-lg">{course.title}</h4>
-                        <p>{course.subtitle}</p>
-                      </div>
-                    </div>
-                    <div className="p-4 flex-1 flex flex-col justify-between">
-                      <div>
-                        <span className="inline-block border border-blue-500 text-blue-500 text-xs px-2 py-1 rounded mb-2">
-                          {course.category}
-                        </span>
-                        <h5 className="font-semibold mb-2">
-                          {course.description}
-                        </h5>
-                        <div className="flex items-center gap-2 mb-2">
-                          <img
-                            src={course.image}
-                            alt={course.instructor}
-                            className="w-8 h-8 rounded-full"
-                          />
-                          <p className="text-sm">{course.instructor}</p>
-                        </div>
-                        <div className="flex justify-between text-sm text-gray-600 border-t pt-2 mt-2">
-                          <div className="flex items-center gap-1">
-                            📘 <span>{course.lessons} Lessons</span>
-                          </div>
-                          <div className="flex items-center gap-1">
-                            👥 <span>{course.students} Students</span>
-                          </div>
-                        </div>
-                        <div className="mt-3 flex gap-1 text-yellow-400">
-                          {[...Array(5)].map((_, i) => (
-                            <span key={i}>★</span>
-                          ))}
-                        </div>
-                      </div>
-                      <div className="mt-4">
-                        <button
-                          onClick={() => handleDeleteCourse(index)}
-                          className="w-full bg-red-600 text-white text-sm py-2 rounded hover:bg-red-700 transition"
-                        >
-                          Delete
-                        </button>
-                      </div>
-                    </div>
-                  </div>
-                ))}
-              </div>
-              <p className="text-sm text-gray-500 mt-3">
-                Above courses are designed to help students of {department} in{" "}
-                {degree} - {year} gain practical skills.
+            {courses.length === 0 ? (
+              <p className="text-gray-500 mb-6">
+                No courses available for {department} in {degree} - {year}.
               </p>
-            </>
-          )}
-        </>
-      )}
+            ) : (
+              <>
+                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+                  {courses.map((course, index) => (
+                    <div
+                      key={index}
+                      className="bg-white rounded-lg shadow overflow-hidden flex flex-col justify-between"
+                    >
+                      <div
+                        className="h-40 flex items-center justify-center text-white text-center"
+                        style={{ backgroundColor: course.color }}
+                      >
+                        <div>
+                          <h4 className="font-bold text-lg">{course.title}</h4>
+                          <p>{course.subtitle}</p>
+                        </div>
+                      </div>
+                      <div className="p-4 flex-1 flex flex-col justify-between">
+                        <div>
+                          <span className="inline-block border border-blue-500 text-blue-500 text-xs px-2 py-1 rounded mb-2">
+                            {course.category}
+                          </span>
+                          <h5 className="font-semibold mb-2">
+                            {course.description}
+                          </h5>
+                          <div className="flex items-center gap-2 mb-2">
+                            <img
+                              src={course.image}
+                              alt={course.instructor}
+                              className="w-8 h-8 rounded-full"
+                            />
+                            <p className="text-sm">{course.instructor}</p>
+                          </div>
+                          <div className="flex justify-between text-sm text-gray-600 border-t pt-2 mt-2">
+                            <div className="flex items-center gap-1">
+                              📘 <span>{course.lessons} Lessons</span>
+                            </div>
+                            <div className="flex items-center gap-1">
+                              👥 <span>{course.students} Students</span>
+                            </div>
+                          </div>
+                          <div className="mt-3 flex gap-1 text-yellow-400">
+                            {[...Array(5)].map((_, i) => (
+                              <span key={i}>★</span>
+                            ))}
+                          </div>
+                        </div>
+                        <div className="mt-4">
+                          <button
+                            onClick={() => handleDeleteCourse(index)}
+                            className="w-full bg-red-600 text-white text-sm py-2 rounded hover:bg-red-700 transition"
+                          >
+                            Delete
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+                <p className="text-sm text-gray-500 mt-3">
+                  Above courses are designed to help students of {department} in{" "}
+                  {degree} - {year} gain practical skills.
+                </p>
+              </>
+            )}
+          </>
+        )}
 
-      {showForm && (
-        <div className="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50">
-          <div className="bg-white p-6 rounded-lg shadow-lg w-[90%] md:w-[500px]">
-            <h2 className="text-xl font-semibold mb-4">
-              Add New Course for {department}
-            </h2>
-            <div className="grid gap-3">
-              <input
-                type="text"
-                placeholder="Course Title"
-                className="border p-2 rounded"
-                value={newCourse.title}
-                onChange={(e) =>
-                  setNewCourse({ ...newCourse, title: e.target.value })
-                }
-              />
-              <input
-                type="text"
-                placeholder="Subtitle"
-                className="border p-2 rounded"
-                value={newCourse.subtitle}
-                onChange={(e) =>
-                  setNewCourse({ ...newCourse, subtitle: e.target.value })
-                }
-              />
-              <input
-                type="text"
-                placeholder="Instructor"
-                className="border p-2 rounded"
-                value={newCourse.instructor}
-                onChange={(e) =>
-                  setNewCourse({ ...newCourse, instructor: e.target.value })
-                }
-              />
-              <input
-                type="text"
-                placeholder="Description"
-                className="border p-2 rounded"
-                value={newCourse.description}
-                onChange={(e) =>
-                  setNewCourse({ ...newCourse, description: e.target.value })
-                }
-              />
-              <input
-                type="number"
-                placeholder="Students"
-                className="border p-2 rounded"
-                value={newCourse.students}
-                onChange={(e) =>
-                  setNewCourse({ ...newCourse, students: +e.target.value })
-                }
-              />
-              <input
-                type="number"
-                placeholder="Lessons"
-                className="border p-2 rounded"
-                value={newCourse.lessons}
-                onChange={(e) =>
-                  setNewCourse({ ...newCourse, lessons: +e.target.value })
-                }
-              />
-              <input
-                type="text"
-                placeholder="Image URL"
-                className="border p-2 rounded"
-                value={newCourse.image}
-                onChange={(e) =>
-                  setNewCourse({ ...newCourse, image: e.target.value })
-                }
-              />
-            </div>
-            <div className="flex justify-end gap-2 mt-4">
-              <button
-                className="bg-gray-300 px-4 py-2 rounded"
-                onClick={() => setShowForm(false)}
-              >
-                Cancel
-              </button>
-              <button
-                className="bg-blue-600 text-white px-4 py-2 rounded"
-                onClick={handleAddCourse}
-              >
-                Create
-              </button>
+        {showForm && (
+          <div className="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50">
+            <div className="bg-white p-6 rounded-lg shadow-lg w-[90%] md:w-[500px]">
+              <h2 className="text-xl font-semibold mb-4">
+                Add New Course for {department}
+              </h2>
+              <div className="grid gap-3">
+                <input
+                  type="text"
+                  placeholder="Course Title"
+                  className="border p-2 rounded"
+                  value={newCourse.title}
+                  onChange={(e) =>
+                    setNewCourse({ ...newCourse, title: e.target.value })
+                  }
+                />
+                <input
+                  type="text"
+                  placeholder="Subtitle"
+                  className="border p-2 rounded"
+                  value={newCourse.subtitle}
+                  onChange={(e) =>
+                    setNewCourse({ ...newCourse, subtitle: e.target.value })
+                  }
+                />
+                <input
+                  type="text"
+                  placeholder="Instructor"
+                  className="border p-2 rounded"
+                  value={newCourse.instructor}
+                  onChange={(e) =>
+                    setNewCourse({ ...newCourse, instructor: e.target.value })
+                  }
+                />
+                <input
+                  type="text"
+                  placeholder="Description"
+                  className="border p-2 rounded"
+                  value={newCourse.description}
+                  onChange={(e) =>
+                    setNewCourse({ ...newCourse, description: e.target.value })
+                  }
+                />
+                <input
+                  type="number"
+                  placeholder="Students"
+                  className="border p-2 rounded"
+                  value={newCourse.students}
+                  onChange={(e) =>
+                    setNewCourse({ ...newCourse, students: +e.target.value })
+                  }
+                />
+                <input
+                  type="number"
+                  placeholder="Lessons"
+                  className="border p-2 rounded"
+                  value={newCourse.lessons}
+                  onChange={(e) =>
+                    setNewCourse({ ...newCourse, lessons: +e.target.value })
+                  }
+                />
+                <input
+                  type="text"
+                  placeholder="Image URL"
+                  className="border p-2 rounded"
+                  value={newCourse.image}
+                  onChange={(e) =>
+                    setNewCourse({ ...newCourse, image: e.target.value })
+                  }
+                />
+              </div>
+              <div className="flex justify-end gap-2 mt-4">
+                <button
+                  className="bg-gray-300 px-4 py-2 rounded"
+                  onClick={() => setShowForm(false)}
+                >
+                  Cancel
+                </button>
+                <button
+                  className="bg-blue-600 text-white px-4 py-2 rounded"
+                  onClick={handleAddCourse}
+                >
+                  Create
+                </button>
+              </div>
             </div>
           </div>
-        </div>
-      )}
+        )}
+      </div>
     </div>
   );
 }
