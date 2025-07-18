@@ -103,7 +103,7 @@ export default function Navbar() {
                 />
                 <div>
                   <h4 className="font-semibold text-sm text-gray-900">
-                    Vishwanathan S
+                    Unknown
                   </h4>
                   <p className="text-xs text-orange-500 font-medium">
                     Premium Member
