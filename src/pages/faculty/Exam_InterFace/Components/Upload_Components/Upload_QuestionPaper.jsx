@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate } from "react-router-dom";
 import { FaClipboardList, FaFileUpload, FaBookOpen } from "react-icons/fa";
 
@@ -19,6 +19,8 @@ const UploadQuestionPaper = () => {
       [name]: files ? files[0] : value,
     }));
   };
+
+  useEffect(()=>{window.scrollTo(0,0)},[])
 
   const handleSubmit = (e) => {
     e.preventDefault();

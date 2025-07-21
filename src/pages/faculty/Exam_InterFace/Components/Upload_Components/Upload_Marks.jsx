@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect,useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { FaClipboardList, FaFileUpload, FaBookOpen } from "react-icons/fa";
 
@@ -9,6 +9,7 @@ const FacultyMarksUpdate = () => {
   const [students, setStudents] = useState([{ name: "", marks: "" }]);
   const navigate = useNavigate();
 
+  useEffect(()=>{window.scrollTo(0,0)},[])
 
   const handleInputChange = (index, field, value) => {
     const updated = [...students];
