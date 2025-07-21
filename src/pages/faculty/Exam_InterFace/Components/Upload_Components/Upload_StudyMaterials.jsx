@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect,useState } from 'react';
 import { useNavigate } from "react-router-dom";
 import { FaClipboardList, FaFileUpload, FaBookOpen } from "react-icons/fa";
 
@@ -12,6 +12,8 @@ const navigate = useNavigate();
     description: '',
     file: null,
   });
+
+  useEffect(()=>{window.scrollTo(0,0)},[])
 
   const handleChange = (e) => {
     const { name, value, files } = e.target;

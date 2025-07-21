@@ -1,4 +1,4 @@
-import React from "react";
+import React, { Children } from "react";
 import AdminDashboard from "./pages/admin/dashboard";
 import AdminExam from "./pages/admin/exam";
 import MockCourse from "./pages/admin/course";
@@ -10,7 +10,6 @@ import Performance from "./pages/student/Performance-analysis/component/Performa
 import Announcements from "./pages/faculty/Announcements/components/Announcements";
 import StudentDashboard from "./pages/student/StudentDashBoard/components/StudentDashboard";
 import FacultyProfile from "./pages/faculty/Profile";
-import Interface from "./pages/faculty/Exam_InterFace/Components/InterFace";
 import FacultyMarksUpdate from "./pages/faculty/Exam_InterFace/Components/Upload_Components/Upload_Marks";
 import UploadQuestionPaper from "./pages/faculty/Exam_InterFace/Components/Upload_Components/Upload_QuestionPaper";
 import UploadStudyMaterial from "./pages/faculty/Exam_InterFace/Components/Upload_Components/Upload_StudyMaterials";
@@ -198,6 +197,23 @@ const routes = [
     path: "ClassList",
     icon: <MdGroups className="h-6 w-6" />,
     component: <ClassList />,
+    children:[
+       {
+        layout: "/faculty",
+        path: "ExamInterFace/upload-marks",
+        component: <FacultyMarksUpdate />,
+      },
+      {
+        layout: "/faculty",
+        path: "ExamInterFace/upload-question",
+        component: <UploadQuestionPaper />,
+      },
+      {
+        layout: "/faculty",
+        path: "ExamInterFace/upload-material",
+        component: <UploadStudyMaterial />,
+      },
+    ],
   },
   {
     name: "Attendace Upload",
@@ -221,39 +237,27 @@ const routes = [
     component: <FacultyProfile />,
   },
   {
-    name: "Exam InterFace",
-    layout: "/faculty",
-    path: "ExamInterFace",
-    icon: <MdLibraryBooks className="h-6 w-6" />,
-    component: <Interface />,
-    children: [
-      {
-        name: "Upload Marks",
-        layout: "/faculty",
-        path: "ExamInterFace/upload-marks",
-        component: <FacultyMarksUpdate />,
-      },
-      {
-        name: "Upload Question Paper",
-        layout: "/faculty",
-        path: "ExamInterFace/upload-question",
-        component: <UploadQuestionPaper />,
-      },
-      {
-        name: "Upload Study Material",
-        layout: "/faculty",
-        path: "ExamInterFace/upload-material",
-        component: <UploadStudyMaterial />,
-      },
-    ],
-  },
-  {
     name: "Announcements",
     layout: "/faculty",
     path: "Announcements",
     icon: <MdCampaign className="h-6 w-6" />,
     component: <Announcements />,
   },
+  // {
+  //       layout: "/faculty",
+  //       path: "ExamInterFace/upload-marks",
+  //       component: <FacultyMarksUpdate />,
+  //     },
+  //     {
+  //       layout: "/faculty",
+  //       path: "ExamInterFace/upload-question",
+  //       component: <UploadQuestionPaper />,
+  //     },
+  //     {
+  //       layout: "/faculty",
+  //       path: "ExamInterFace/upload-material",
+  //       component: <UploadStudyMaterial />,
+  //     },
 ];
 
 export default routes;
