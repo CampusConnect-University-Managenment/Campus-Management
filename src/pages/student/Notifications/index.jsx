@@ -78,11 +78,8 @@ function Notifications() {
   };
 
   return (
-    <div className="app">
-      <div className="app-header">
-        <h1>🎓 Campus Connect</h1>
-        <RoleSelector currentUser={currentUser} setCurrentUser={setCurrentUser} users={mockUsers} />
-      </div>
+    <div className="app mt-[80px]">
+      
       
       <div className="app-body">
         <div className="sidebar">
