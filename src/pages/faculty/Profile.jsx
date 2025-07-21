@@ -1,13 +1,25 @@
 import React from "react";
+import { useNavigate } from "react-router-dom";
 
 export default function FacultyProfile() {
+  const navigate = useNavigate();
+
+  const handleEditClick = () => {
+    navigate("/faculty/edit-profile");
+  };
+
   const user = {
     name: "Vishwanathan S",
     email: "vishwanathan@example.com",
+    phone: "+91 9876543210",
     role: "Faculty",
     joined: "Jan 15, 2024",
     department: "Computer Science",
-    avatar: "https://via.placeholder.com/100", // replace with actual image if needed
+    qualification: "M.Tech in Computer Science",
+    experience: "8 years",
+    office: "Room 214, CSE Block",
+    subjects: ["Data Structures", "Operating Systems", "DBMS"],
+    avatar: "https://cdn-icons-png.flaticon.com/512/3135/3135715.png",
   };
 
   return (
@@ -27,34 +39,54 @@ export default function FacultyProfile() {
           </div>
         </div>
 
-        {/* Details Section */}
+        {/* Details */}
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 text-gray-700 text-base">
           <div>
             <h2 className="text-gray-500 font-semibold text-sm mb-1">Department</h2>
             <p className="font-medium">{user.department}</p>
           </div>
-
           <div>
             <h2 className="text-gray-500 font-semibold text-sm mb-1">Joined On</h2>
             <p className="font-medium">{user.joined}</p>
           </div>
-
           <div>
             <h2 className="text-gray-500 font-semibold text-sm mb-1">Email</h2>
             <p className="font-medium">{user.email}</p>
           </div>
-
           <div>
-            <h2 className="text-gray-500 font-semibold text-sm mb-1">Role</h2>
-            <p className="font-medium">{user.role}</p>
+            <h2 className="text-gray-500 font-semibold text-sm mb-1">Phone</h2>
+            <p className="font-medium">{user.phone}</p>
+          </div>
+          <div>
+            <h2 className="text-gray-500 font-semibold text-sm mb-1">Qualification</h2>
+            <p className="font-medium">{user.qualification}</p>
+          </div>
+          <div>
+            <h2 className="text-gray-500 font-semibold text-sm mb-1">Experience</h2>
+            <p className="font-medium">{user.experience}</p>
+          </div>
+          <div>
+            <h2 className="text-gray-500 font-semibold text-sm mb-1">Office Location</h2>
+            <p className="font-medium">{user.office}</p>
+          </div>
+          <div>
+            <h2 className="text-gray-500 font-semibold text-sm mb-1">Subjects Taught</h2>
+            <ul className="list-disc list-inside text-sm text-gray-800">
+              {user.subjects.map((subject, index) => (
+                <li key={index} className="font-medium">{subject}</li>
+              ))}
+            </ul>
           </div>
         </div>
 
-        {/* Buttons (Optional) */}
+        {/* Buttons */}
         <div className="mt-8 flex gap-4">
-          <button className="bg-blue-600 text-white px-6 py-2 rounded-full shadow hover:bg-blue-700 transition">
-            Edit Profile
-          </button>
+          <button
+  onClick={() => navigate("/faculty/edit-profile")}
+  className="px-4 py-2 bg-blue-500 text-white rounded-md shadow hover:bg-blue-600 transition"
+>
+  Edit Profile
+</button>
           <button className="bg-gray-100 text-gray-700 px-6 py-2 rounded-full shadow hover:bg-gray-200 transition">
             Settings
           </button>
@@ -63,4 +95,3 @@ export default function FacultyProfile() {
     </div>
   );
 }
-//profile.jsx
