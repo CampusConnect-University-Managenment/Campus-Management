@@ -5,6 +5,7 @@ import AdminRoute from "./components/layout/AdminRoute";
 import StudentRoute from "./components/layout/StudentRoute";
 import FacultyRoute from './components/layout/FacultyRoute';
 import NotificationMessage from './pages/admin/Notification_Message/index.jsx'; // changed import name
+import Home from "./pages/Auth/index.jsx";
 
 const App = () => {
   return (
@@ -15,6 +16,7 @@ const App = () => {
       <Route path="student/*" element={<StudentRoute/>} />
       <Route path="faculty/*" element={<FacultyRoute/>}/>
       <Route path="/*" element={<AdminRoute />} />
+      <Route path="/auth/login" element={<Home/>}></Route>
      
     </Routes>
   );

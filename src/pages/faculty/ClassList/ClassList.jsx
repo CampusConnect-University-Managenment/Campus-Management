@@ -1,72 +1,105 @@
-// src/pages/faculty/ClassList/ClassList.jsx
-
 import React from 'react';
-import './ClassList.css'; // Make sure this path is correct relative to this file
+import './ClassList.css';
 
-function ClassList() {
-  // --- STATIC TIMETABLE DATA FOR SHOWCASE ---
-  // This data is hardcoded and does not come from a backend.
-  // 'null' signifies an empty/free slot.
-  const staticTimetableData = {
-    "Monday": {
-      1: { id: "m1h1", subject: "Discrete Math", batch: "B.Tech CSE A", room: "LH101" },
-      2: { id: "m1h2", subject: "Data Structures", batch: "B.Tech CSE B", room: "LH102" },
-      3: null, // Free slot
-      4: { id: "m1h4", subject: "Comp. Networks", batch: "B.Tech IT A", room: "LH201" },
-      5: null,
-      6: { id: "m1h6", subject: "Operating Systems", batch: "B.Tech CSE A", room: "LH101" },
-      7: null
-    },
-    "Tuesday": {
-      1: { id: "t1h1", subject: "Algorithms", batch: "B.Tech IT A", room: "LH203" },
-      2: null,
-      3: { id: "t1h3", subject: "Software Engg.", batch: "B.Tech IT B", room: "LH204" },
-      4: { id: "t1h4", subject: "Web Dev", batch: "B.Tech CSE B", room: "LH102" },
-      5: null,
-      6: null,
-      7: { id: "t1h7", subject: "Compiler Design", batch: "B.Tech CSE A", room: "LH101" }
-    },
-    "Wednesday": {
-      1: null,
-      2: { id: "w1h2", subject: "DBMS", batch: "B.Tech CSE B", room: "LH102" },
-      3: { id: "w1h3", subject: "AI Fundamentals", batch: "B.Tech CSE A", room: "LH101" },
-      4: null,
-      5: { id: "w1h5", subject: "Data Science", batch: "B.Tech IT A", room: "LH203" },
-      6: null,
-      7: null
-    },
-    "Thursday": {
-      1: { id: "th1h1", subject: "Cyber Security", batch: "B.Tech IT B", room: "LH204" },
-      2: null,
-      3: null,
-      4: { id: "th1h4", subject: "Cloud Computing", batch: "B.Tech CSE B", room: "LH102" },
-      5: { id: "th1h5", subject: "Mobile App Dev", batch: "B.Tech IT A", room: "LH203" },
-      6: null,
-      7: null
-    },
-    "Friday": {
-      1: null,
-      2: { id: "f1h2", subject: "Operating Systems", batch: "B.Tech CSE A", room: "LH101" },
-      3: { id: "f1h3", subject: "Algorithms", batch: "B.Tech IT A", room: "LH203" },
-      4: null,
-      5: null,
-      6: { id: "f1h6", subject: "Web Dev", batch: "B.Tech CSE B", room: "LH102" },
-      7: null
-    },
-    "Saturday": {
-        1: null, 2: null, 3: null, 4: null, 5: null, 6: null, 7: null // Usually no classes on Saturday
-    },
-    "Sunday": {
-        1: null, 2: null, 3: null, 4: null, 5: null, 6: null, 7: null // Usually no classes on Sunday
-    }
+const classData = [
+  {
+    id: 1,
+    className: 'B.Tech CSE - 2nd Year',
+    subject: 'OOP with Java',
+    section: 'A',
+    semester: '3',
+    timings: '9:00 AM - 10:00 AM',
+    roomNo: 'CS202'
+  },
+  {
+    id: 2,
+    className: 'B.Tech CSE - 3rd Year',
+    subject: 'Data Structures',
+    section: 'B',
+    semester: '5',
+    timings: '10:00 AM - 11:00 AM',
+    roomNo: 'CS303'
+  },
+  {
+    id: 3,
+    className: 'B.Tech IT - 1st Year',
+    subject: 'Programming in C',
+    section: 'A',
+    semester: '1',
+    timings: '11:00 AM - 12:00 PM',
+    roomNo: 'IT101'
+  },
+  {
+    id: 4,
+    className: 'B.Tech ECE - 2nd Year',
+    subject: 'Digital Electronics',
+    section: 'C',
+    semester: '3',
+    timings: '12:00 PM - 1:00 PM',
+    roomNo: 'EC204'
+  },
+  {
+    id: 5,
+    className: 'B.Tech CSE - 4th Year',
+    subject: 'Machine Learning',
+    section: 'B',
+    semester: '7',
+    timings: '1:00 PM - 2:00 PM',
+    roomNo: 'CS407'
+  },
+  {
+    id: 6,
+    className: 'BCA - 2nd Year',
+    subject: 'Web Development',
+    section: 'A',
+    semester: '4',
+    timings: '9:00 AM - 10:00 AM',
+    roomNo: 'BCA302'
+  },
+  {
+    id: 7,
+    className: 'B.Sc CS - 1st Year',
+    subject: 'Mathematics',
+    section: 'A',
+    semester: '2',
+    timings: '10:00 AM - 11:00 AM',
+    roomNo: 'CS105'
+  },
+  {
+    id: 8,
+    className: 'B.Tech ME - 2nd Year',
+    subject: 'Thermodynamics',
+    section: 'D',
+    semester: '3',
+    timings: '11:00 AM - 12:00 PM',
+    roomNo: 'ME204'
+  },
+  {
+    id: 9,
+    className: 'MCA - 1st Year',
+    subject: 'Operating Systems',
+    section: 'A',
+    semester: '1',
+    timings: '12:00 PM - 1:00 PM',
+    roomNo: 'MCA101'
+  },
+  {
+    id: 10,
+    className: 'B.Tech CSE - 3rd Year',
+    subject: 'Database Systems',
+    section: 'B',
+    semester: '5',
+    timings: '2:00 PM - 3:00 PM',
+    roomNo: 'CS305'
+  }
+];
+
+const ClassList = () => {
+  const handleAction = (action, className) => {
+    alert(`${action} for ${className}`);
   };
 
-  // Define the days of the week and hours for the table structure
-  const days = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
-  const hours = Array.from({ length: 7 }, (_, i) => i + 1); // Hours 1 to 7
-
   return (
-
     <div className="table-container mt-24">
       <h2>📋 Faculty Class List</h2>
       <table className="class-table">
@@ -115,6 +148,6 @@ function ClassList() {
       </table>
     </div>
   );
-}
+};
 
 export default ClassList;
