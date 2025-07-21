@@ -16,7 +16,7 @@ import UploadQuestionPaper from "./pages/faculty/Exam_InterFace/Components/Uploa
 import UploadStudyMaterial from "./pages/faculty/Exam_InterFace/Components/Upload_Components/Upload_StudyMaterials";
 import FacultyManagement from "./pages/admin/faculty/index";
 // Auth Views
-import Home from "./pages/Auth/index";
+// import Home from "./pages/Auth/index";
 //student
 // Student Views
 import MyProfile from "./pages/student/MyProfile";
@@ -52,13 +52,13 @@ import ExamSchedule from "./pages/admin/exam/components/examschedule";
 //import { FaUser } from "react-icons/fa";
 const routes = [
   // Auth Routes
-  {
-    name: "Auth",
-    layout: "/auth",
-    path: "login",
-    icon: <MdDashboard className="h-5 w-5" />,
-    component: <Home/>,
-  },
+  // {
+  //   name: "Auth",
+  //   layout: "/auth",
+  //   path: "login",
+  //   icon: <MdDashboard className="h-5 w-5" />,
+  //   component: <Home/>,
+  // },
   // Admin Routes
   {
     name: "Admin Dashboard",
