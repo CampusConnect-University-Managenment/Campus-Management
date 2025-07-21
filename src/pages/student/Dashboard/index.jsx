@@ -29,14 +29,14 @@ export default function StudentDashboard() {
           color="purple"
         />
         <StatCard
-          title="Overall Grade"
-          value="A+"
+          title="Credits Earned"
+          value="120"
           icon={<Star />}
           color="amber"
         />
         <StatCard
-          title="Achievements"
-          value="07"
+          title="Attendance %"
+          value="92%"
           icon={<Rocket />}
           color="rose"
         />
@@ -57,7 +57,9 @@ export default function StudentDashboard() {
 
           {/* Name Section */}
           <div className="pt-8 pb-2 px-4 text-center">
-            <h2 className="text-lg font-semibold text-gray-800">Riya Sharma</h2>
+            <h2 className="text-lg font-semibold text-gray-800">
+              Riya Sharma
+            </h2>
           </div>
 
           {/* Boxed Details Section */}
@@ -71,7 +73,7 @@ export default function StudentDashboard() {
           </div>
         </div>
 
-        {/* 📅 Redesigned Upcoming Schedule */}
+        {/* Upcoming Schedule */}
         <div className="bg-white p-6 rounded-2xl shadow-md lg:col-span-2">
           <h3 className="text-lg font-semibold text-gray-800 mb-6">
             🗓️ Upcoming Schedule
@@ -129,7 +131,7 @@ function DetailRow({ label, value }) {
   );
 }
 
-// New ScheduleItem Component
+// Schedule Item
 function ScheduleItem({ date, time, title }) {
   const [month, day] = date.split(" ");
   return (

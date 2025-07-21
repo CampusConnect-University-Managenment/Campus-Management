@@ -8,12 +8,20 @@ import {
   Legend,
   ResponsiveContainer,
   CartesianGrid,
-  PieChart,
-  Pie,
-  Cell,
 } from "recharts";
 
 const PerformanceChart = ({ students }) => {
+  const departmentAbbreviations = {
+    "Computer Science and Engineering": "CSE",
+    "Electronics and Communication Engineering": "ECE",
+    "Electrical and Electronics Engineering": "EEE",
+    "Information Technology": "IT",
+    "Mechanical Engineering": "ME",
+    "Civil Engineering": "CE",
+    "Artificial Intelligence and Data Science": "AI&DS",
+    // Add more as needed
+  };
+
   const departmentData = {};
 
   students.forEach((student) => {
@@ -27,22 +35,28 @@ const PerformanceChart = ({ students }) => {
   });
 
   const chartData = Object.entries(departmentData).map(([dept, data]) => ({
-    department: dept,
+    department: departmentAbbreviations[dept] || dept, // Use abbreviation if available
     avgCGPA: parseFloat((data.cgpaTotal / data.count).toFixed(2)),
     avgAttendance: parseFloat((data.attendanceTotal / data.count).toFixed(2)),
     strength: data.count,
   }));
 
-  const pieColors = ["#6366f1", "#10b981", "#f59e0b", "#ef4444", "#3b82f6", "#8b5cf6"];
-
   return (
-    <div className="mt-10 grid grid-cols-1 md:grid-cols-2 gap-6">
-      <div>
-        <h3 className="text-xl font-bold text-blue-800 mb-4">📊 Department-wise Performance (Bar)</h3>
-        <ResponsiveContainer width="100%" height={300}>
-          <BarChart data={chartData} margin={{ top: 10, right: 30, left: 0, bottom: 5 }}>
+    <div className="mt-10">
+      <h3 className="text-xl font-bold text-blue-800 mb-4">
+        📊 Department-wise Performance Overview
+      </h3>
+      <div className="w-full h-[350px]">
+        <ResponsiveContainer width="100%" height="100%">
+          <BarChart data={chartData} margin={{ top: 10, right: 30, left: 10, bottom: 50 }}>
             <CartesianGrid strokeDasharray="3 3" />
-            <XAxis dataKey="department" angle={-15} textAnchor="end" interval={0} height={60} />
+            <XAxis
+              dataKey="department"
+              angle={-15}
+              textAnchor="end"
+              interval={0}
+              height={60}
+            />
             <YAxis />
             <Tooltip />
             <Legend />
@@ -52,7 +66,6 @@ const PerformanceChart = ({ students }) => {
           </BarChart>
         </ResponsiveContainer>
       </div>
-
     </div>
   );
 };
