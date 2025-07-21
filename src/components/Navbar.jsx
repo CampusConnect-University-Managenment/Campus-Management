@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
-import { Bell, Search, User } from "lucide-react";
+import { Search, User } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
 export default function Navbar() {
@@ -78,10 +78,7 @@ export default function Navbar() {
 
       {/* 🔔 Bell & 👤 Profile Dropdown */}
       <div className="flex items-center gap-6">
-        <button className="relative p-2 rounded-full bg-gray-100 hover:bg-gray-200">
-          <Bell className="h-5 w-5 text-blue-600" />
-          <span className="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full animate-ping"></span>
-        </button>
+       
 
         {/* 👤 Profile Dropdown */}
         <div className="relative" ref={profileRef}>
@@ -103,7 +100,7 @@ export default function Navbar() {
                 />
                 <div>
                   <h4 className="font-semibold text-sm text-gray-900">
-                    Unknown
+                    Vishwanathan S
                   </h4>
                   <p className="text-xs text-orange-500 font-medium">
                     Premium Member

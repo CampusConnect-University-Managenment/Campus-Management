@@ -1,12 +1,11 @@
 import React from "react";
-import { FaUserGraduate, FaUsers, FaBuilding, FaCheckCircle } from "react-icons/fa";
-import { MdGroups, MdCalendarToday, MdSchool } from "react-icons/md";
-import { RiPresentationLine } from "react-icons/ri";
+import { FaBriefcase, FaUsers, FaBuilding, FaCheckCircle } from "react-icons/fa";
+import { MdGroups } from "react-icons/md";
 
 const AboutStudent = ({ students }) => {
   const total = students.length;
   const active = students.filter((s) => s.status === "Active").length;
-  const graduated = students.filter((s) => s.status === "Graduated").length;
+  const placed = students.filter((s) => s.placement).length;
   const departments = new Set(students.map((s) => s.department)).size;
 
   return (
@@ -32,9 +31,9 @@ const AboutStudent = ({ students }) => {
           gradient="bg-gradient-to-r from-green-400 to-green-600"
         />
         <StatCard
-          icon={<FaUserGraduate className="text-3xl text-white" />}
-          title="Graduated"
-          value={graduated}
+          icon={<FaBriefcase className="text-3xl text-white" />}
+          title="Placed Students"
+          value={placed}
           gradient="bg-gradient-to-r from-violet-500 to-purple-700"
         />
         <StatCard

@@ -9,15 +9,16 @@ import {
   ResponsiveContainer,
   Legend,
 } from "recharts";
-import { GraduationCap, Activity, BookOpen, Star } from "lucide-react";
+import { GraduationCap, Activity, BookOpen } from "lucide-react";
 
+// ✅ Updated to semester-wise percentage data
 const chartData = [
-  { name: "Jan", Score: 72 },
-  { name: "Feb", Score: 78 },
-  { name: "Mar", Score: 82 },
-  { name: "Apr", Score: 75 },
-  { name: "May", Score: 88 },
-  { name: "Jun", Score: 90 },
+  { name: "Sem 1", Percentage: 78 },
+  { name: "Sem 2", Percentage: 82 },
+  { name: "Sem 3", Percentage: 75 },
+  { name: "Sem 4", Percentage: 88 },
+  { name: "Sem 5", Percentage: 84 },
+  { name: "Sem 6", Percentage: 90 },
 ];
 
 const quickStats = [
@@ -37,17 +38,10 @@ const quickStats = [
   },
   {
     id: 3,
-    title: "Subjects Passed",
-    value: "34",
+    title: "Credits",
+    value: "102",
     icon: <BookOpen className="text-blue-600 w-5 h-5" />,
     color: "from-blue-100 to-blue-200",
-  },
-  {
-    id: 4,
-    title: "Rank",
-    value: "12th",
-    icon: <Star className="text-yellow-500 w-5 h-5" />,
-    color: "from-yellow-100 to-yellow-200",
   },
 ];
 
@@ -59,7 +53,7 @@ export default function PerformanceAnalytics() {
       </h1>
 
       {/* Quick Stats */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
         {quickStats.map((stat) => (
           <div
             key={stat.id}
@@ -76,10 +70,10 @@ export default function PerformanceAnalytics() {
         ))}
       </div>
 
-      {/* Bar Chart */}
+      {/* ✅ Bar Chart for Semester-Wise Performance */}
       <div className="bg-white rounded-2xl shadow-md p-6">
         <h2 className="text-lg font-semibold text-gray-800 mb-4">
-          📈 Monthly Performance Score
+          🎓 Semester-wise Percentage
         </h2>
         <ResponsiveContainer width="100%" height={300}>
           <BarChart data={chartData}>
@@ -92,7 +86,7 @@ export default function PerformanceAnalytics() {
             />
             <Legend />
             <Bar
-              dataKey="Score"
+              dataKey="Percentage"
               fill="url(#barGradient)"
               radius={[10, 10, 0, 0]}
               barSize={40}

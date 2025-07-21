@@ -2,8 +2,8 @@ import React from "react";
 
 export default function FacultyProfile() {
   const user = {
-    name: "Unknown",
-    email: "Unknown@example.com",
+    name: "Vishwanathan S",
+    email: "vishwanathan@example.com",
     role: "Faculty",
     joined: "Jan 15, 2024",
     department: "Computer Science",

@@ -1,6 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { Home, Users, BookOpen, ClipboardList } from 'lucide-react';
+<Route path="/admin/notification-message" element={<NotificationMessage />} />
 
 const Sidebar = ({ role }) => {
   const menuItems = {
@@ -9,10 +10,12 @@ const Sidebar = ({ role }) => {
       { icon: <ClipboardList />, text: 'Exam', to: '/admin/exam' },
       { icon: <Users />, text: 'Faculty', to: '/admin/faculty' },
       { icon: <BookOpen />, text: 'Student', to: '/admin/student' },
+      { icon: <BookOpen />, text: 'Notification', to: '/admin/notification-message' },
     ],
    student: [
   { icon: <ClipboardList />, text: 'Exam Interface', to: '/student/examinterface' },
   { icon: <ClipboardList />, text: 'Performance Analytics', to: '/student/performance' },
+   { icon: <BookOpen />, text: 'Notification', to: '/admin/notification-message' },
 ],
 
     faculty: [
