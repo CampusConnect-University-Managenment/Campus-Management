@@ -6,18 +6,19 @@ import StudentRoute from "./components/layout/StudentRoute";
 import FacultyRoute from './components/layout/FacultyRoute';
 import NotificationMessage from './pages/admin/Notification_Message/index.jsx'; // changed import name
 import Home from "./pages/Auth/index.jsx";
-
+import AuthRoute from "./components/layout/AuthRoute.jsx"
 const App = () => {
   return (
     <Routes>
+     
       <Route path="admin/*" element={<AdminRoute />}>
       <Route path="notification-message" element={<NotificationMessage />} />
      </Route>
       <Route path="student/*" element={<StudentRoute/>} />
       <Route path="faculty/*" element={<FacultyRoute/>}/>
       <Route path="/*" element={<AdminRoute />} />
-      <Route path="/auth/login" element={<Home/>}></Route>
      
+       <Route path="/auth/*" element={<AuthRoute />} />
     </Routes>
   );
 };
