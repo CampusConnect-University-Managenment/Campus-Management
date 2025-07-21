@@ -48,6 +48,7 @@ import { MdUploadFile } from "react-icons/md";
 import { MdCampaign } from "react-icons/md";
 import FacultyDashboard from "./pages/faculty/dashboard";
 import ExamSchedule from "./pages/admin/exam/components/examschedule";
+// import AddCourse from "./pages/student/CoursesEnrolled/components/AddCourse";
 //import { FaUser } from "react-icons/fa";
 const routes = [
   // Auth Routes
@@ -103,6 +104,12 @@ const routes = [
     icon: <FaBookOpen className="h-5 w-5" />,
     component: <CoursesEnrolled />,
   },
+//   {
+//   name: "Add Course",
+//   layout: "/student",
+//   path: "AddCourse",
+//   component: <AddCourse />,
+// },
   {
     name: "Practice Exams",
     layout: "/student",

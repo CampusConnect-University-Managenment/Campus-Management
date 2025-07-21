@@ -5,6 +5,7 @@ import AboutStudent from "./AboutStudent";
 import AddStudent from "./AddStudent";
 import StudentProfile from "./StudentProfile";
 import PerformanceChart from "./PerformanceChart";
+
 const AllStudents = () => {
   const RECENT_STUDENTS_COUNT = 3;
 
@@ -16,9 +17,11 @@ const AllStudents = () => {
   const [editingStudent, setEditingStudent] = useState(null);
   const [selectedStudent, setSelectedStudent] = useState(null);
   const [showAll, setShowAll] = useState(false);
+  const [currentPage, setCurrentPage] = useState(1);
+  const studentsPerPage = 5;
 
-  const [students, setStudents] = useState([ {
-      id: "STU001",
+  const [students, setStudents] = useState([
+         {id: "STU001",
       name: "Alice Johnson",
       email: "alice.johnson@example.com",
       phone: "+1 555 123 4567",
@@ -127,7 +130,8 @@ const AllStudents = () => {
       cgpa: 8.9,
       attendance: 78,
       bio: "Priya is working on IoT-based academic research and automation projects.",
-    },]);
+    },
+  ]);
 
   const addStudent = (newStudent) => {
     const nextId = `STU${String(students.length + 1).padStart(3, "0")}`;
@@ -150,14 +154,23 @@ const AllStudents = () => {
       s.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
       s.email.toLowerCase().includes(searchTerm.toLowerCase());
     const matchesDept = selectedDept === "All" || s.department === selectedDept;
-    const matchesStatus = selectedStatus === "All" || s.status === selectedStatus;
+    const matchesStatus =
+      selectedStatus === "All" ||
+      (selectedStatus === "Active" && s.status === "Active") ||
+      (selectedStatus === "Placed" && s.placement);
     const matchesYear = selectedYear === "All" || s.year === selectedYear;
     return matchesSearch && matchesDept && matchesStatus && matchesYear;
   });
 
   const departmentOptions = [...new Set(students.map((s) => s.department))];
   const yearOptions = [...new Set(students.map((s) => s.year))];
-  const displayedStudents = showAll ? filteredStudents : filteredStudents.slice(-RECENT_STUDENTS_COUNT);
+
+  const indexOfLastStudent = currentPage * studentsPerPage;
+  const indexOfFirstStudent = indexOfLastStudent - studentsPerPage;
+  const currentStudents = showAll
+    ? filteredStudents.slice(indexOfFirstStudent, indexOfLastStudent)
+    : filteredStudents.slice(-RECENT_STUDENTS_COUNT);
+  const totalPages = Math.ceil(filteredStudents.length / studentsPerPage);
 
   const topCGPAStudents = [...students].sort((a, b) => b.cgpa - a.cgpa).slice(0, 3);
   const placedStudents = students.filter((s) => s.placement);
@@ -185,11 +198,16 @@ const AllStudents = () => {
               <option key={idx} value={dept}>{dept}</option>
             ))}
           </select>
-          <select className="border px-3 py-2 rounded-md" value={selectedStatus} onChange={(e) => setSelectedStatus(e.target.value)}>
-            <option value="All">All Status</option>
-            <option value="Active">Active</option>
-            <option value="Graduated">Graduated</option>
-          </select>
+          <select
+  className="border px-3 py-2 rounded-md"
+  value={selectedStatus}
+  onChange={(e) => setSelectedStatus(e.target.value)}
+>
+  <option value="All">All Status</option>
+  <option value="Active">Active</option>
+  <option value="Placed">Placed</option>
+</select>
+
           <select className="border px-3 py-2 rounded-md" value={selectedYear} onChange={(e) => setSelectedYear(e.target.value)}>
             <option value="All">All Years</option>
             {yearOptions.map((year, idx) => (
@@ -207,10 +225,11 @@ const AllStudents = () => {
           </button>
         </div>
       </div>
-{/* Table */}
-<div className="bg-white rounded-lg shadow overflow-x-auto">
+
+      {/* Table */}
+      <div className="bg-white rounded-lg shadow overflow-x-auto">
         <div className="p-4 border-b font-semibold text-lg text-gray-800 bg-gray-50 rounded-t-lg">
-          Student Records ({displayedStudents.length})
+          Student Records ({filteredStudents.length})
         </div>
         <table className="w-full text-sm text-left text-gray-700">
           <thead className="text-xs uppercase bg-gray-100 text-gray-600">
@@ -224,7 +243,7 @@ const AllStudents = () => {
             </tr>
           </thead>
           <tbody>
-            {displayedStudents.map((s, idx) => (
+            {currentStudents.map((s, idx) => (
               <tr
                 key={idx}
                 className="bg-white hover:bg-gray-50 transition border-b border-gray-100 cursor-pointer"
@@ -269,65 +288,104 @@ const AllStudents = () => {
 
       {/* Show All Button */}
       <div className="p-4 flex justify-center">
-        <button onClick={() => setShowAll(!showAll)} className="px-6 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">
+        <button onClick={() => {
+          setShowAll(!showAll);
+          setCurrentPage(1);
+        }} className="px-6 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">
           {showAll ? "Show Recent Students" : "See All Students"}
         </button>
       </div>
 
-      {/* Top CGPA Students (Updated to Card Grid Layout) */}
-      <div className="mt-10">
-        <h3 className="text-xl font-bold text-blue-800 mb-4">🌟 Top Performing Students (CGPA)</h3>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-          {topCGPAStudents.map((s, idx) => {
-            const medals = ["🥇", "🥈", "🥉"];
-            const bgColors = ["bg-yellow-100", "bg-gray-100", "bg-orange-100"];
-            return (
-              <div
-                key={idx}
-                className={`flex items-center gap-4 p-4 rounded-lg shadow ${bgColors[idx]} hover:shadow-md transition cursor-pointer`}
-                onClick={() => setSelectedStudent(s)}
-              >
-                <div className="text-3xl w-10 text-center">{medals[idx]}</div>
-                <img src={s.avatar} alt={s.name} className="w-12 h-12 rounded-full object-cover" />
-                <div>
-                  <div className="font-semibold text-blue-800 hover:underline">{s.name}</div>
-                  <div className="text-sm text-gray-600">{s.department}</div>
-                  <div className="text-sm font-medium text-green-700">CGPA: {s.cgpa}</div>
-                </div>
-              </div>
-            );
-          })}
+      {/* Pagination */}
+      {showAll && totalPages > 1 && (
+        <div className="flex justify-center mt-4 gap-2">
+          <button
+            onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
+            disabled={currentPage === 1}
+            className="px-3 py-1 rounded bg-gray-200 hover:bg-gray-300 disabled:opacity-50"
+          >
+            Prev
+          </button>
+          {[...Array(totalPages)].map((_, i) => (
+            <button
+              key={i}
+              onClick={() => setCurrentPage(i + 1)}
+              className={`px-3 py-1 rounded ${
+                currentPage === i + 1
+                  ? "bg-blue-600 text-white"
+                  : "bg-gray-200 hover:bg-gray-300"
+              }`}
+            >
+              {i + 1}
+            </button>
+          ))}
+          <button
+            onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
+            disabled={currentPage === totalPages}
+            className="px-3 py-1 rounded bg-gray-200 hover:bg-gray-300 disabled:opacity-50"
+          >
+            Next
+          </button>
         </div>
-      </div>
- 
+      )}
+
+     {/* Top CGPA + Placed Students - Side by Side */}
+<div className="mt-10 grid grid-cols-1 lg:grid-cols-2 gap-8">
+  {/* Top CGPA Students */}
+  <div>
+    <h3 className="text-xl font-bold text-blue-800 mb-4">🌟 Top Performing Students (CGPA)</h3>
+    <div className="space-y-4">
+      {topCGPAStudents.map((s, idx) => {
+        const medals = ["🥇", "🥈", "🥉"];
+        const bgColors = ["bg-yellow-100", "bg-gray-100", "bg-orange-100"];
+        return (
+          <div
+            key={idx}
+            className={`flex items-center gap-4 p-4 rounded-lg shadow ${bgColors[idx] || "bg-gray-50"} hover:shadow-md transition cursor-pointer`}
+            onClick={() => setSelectedStudent(s)}
+          >
+            <div className="text-3xl w-10 text-center">{medals[idx] || "🎓"}</div>
+            <img src={s.avatar} alt={s.name} className="w-12 h-12 rounded-full object-cover" />
+            <div>
+              <div className="font-semibold text-blue-800 hover:underline">{s.name}</div>
+              <div className="text-sm text-gray-600">{s.department}</div>
+              <div className="text-sm font-medium text-green-700">CGPA: {s.cgpa}</div>
+            </div>
+          </div>
+        );
+      })}
+    </div>
+  </div>
+
+  {/* Placed Students */}
+  <div>
+    <h3 className="text-xl font-bold text-green-800 mb-4">🎓 Placed Students</h3>
+    <div className="space-y-4">
+      {placedStudents.map((s, idx) => (
+        <div
+          key={idx}
+          className="bg-green-50 border border-green-200 p-4 rounded-lg shadow cursor-pointer hover:bg-green-100"
+          onClick={() => setSelectedStudent(s)}
+        >
+          <div className="flex items-center gap-4">
+            <img src={s.avatar} alt={s.name} className="w-12 h-12 rounded-full object-cover" />
+            <div>
+              <div className="font-semibold text-green-800 hover:underline">{s.name}</div>
+              <div className="text-sm text-gray-600">{s.placement.position} @ {s.placement.company}</div>
+              <div className="text-sm text-green-700">Package: ₹{s.placement.package} LPA</div>
+              <div className="text-xs text-gray-400">Placed on: {s.placement.date}</div>
+            </div>
+          </div>
+        </div>
+      ))}
+    </div>
+  </div>
+</div>
+
       <PerformanceChart students={students} />
 
-      {/* Placed Students */}
-      <div className="mt-10">
-        <h3 className="text-lg font-semibold mb-4">Placed Students</h3>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-          {placedStudents.map((s, idx) => (
-            <div
-              key={idx}
-              className="bg-green-50 border border-green-200 p-4 rounded-lg shadow cursor-pointer hover:bg-green-100"
-              onClick={() => setSelectedStudent(s)}
-            >
-              <div className="flex items-center gap-4">
-                <img src={s.avatar} alt={s.name} className="w-12 h-12 rounded-full object-cover" />
-                <div>
-                  <div className="font-semibold text-green-800 hover:underline">{s.name}</div>
-                  <div className="text-sm text-gray-600">{s.placement.position} @ {s.placement.company}</div>
-                  <div className="text-sm text-green-700">Package: ₹{s.placement.package} LPA</div>
-                  <div className="text-xs text-gray-400">Placed on: {s.placement.date}</div>
-                </div>
-              </div>
-            </div>
-          ))}
-        </div>
-      </div>
-
       {/* Add Modal */}
-      {showAddModal && (
+    {showAddModal && (
         <div className="fixed inset-0 z-50 bg-black bg-opacity-40 flex items-center justify-center">
           <div className="bg-white rounded-lg p-6 w-full max-w-2xl relative shadow-lg">
             <button
@@ -346,8 +404,9 @@ const AllStudents = () => {
         </div>
       )}
 
+
       {/* Student Profile */}
-      {selectedStudent && (
+     {selectedStudent && (
         <StudentProfile
           student={selectedStudent}
           onClose={() => setSelectedStudent(null)}
