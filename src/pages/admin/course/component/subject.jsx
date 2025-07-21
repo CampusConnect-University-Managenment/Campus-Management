@@ -300,6 +300,8 @@ function Courses() {
   const [department, setDepartment] = useState("");
   const [courses, setCourses] = useState([]);
   const [showForm, setShowForm] = useState(false);
+  const [isEditMode, setIsEditMode] = useState(false);
+  const [editIndex, setEditIndex] = useState(null);
   const [newCourse, setNewCourse] = useState({
     title: "",
     subtitle: "",
@@ -323,13 +325,24 @@ function Courses() {
   const handleAddCourse = () => {
     if (degree && year && department) {
       const courseData = { ...newCourse, category: department };
-      const updatedCourses = [
-        ...(mockCourses[degree][year][department] || []),
-        courseData,
-      ];
-      mockCourses[degree][year][department] = updatedCourses;
-      setCourses(updatedCourses);
+
+      if (isEditMode && editIndex !== null) {
+        const updated = [...courses];
+        updated[editIndex] = courseData;
+        mockCourses[degree][year][department] = updated;
+        setCourses(updated);
+      } else {
+        const updatedCourses = [
+          ...(mockCourses[degree][year][department] || []),
+          courseData,
+        ];
+        mockCourses[degree][year][department] = updatedCourses;
+        setCourses(updatedCourses);
+      }
+
       setShowForm(false);
+      setIsEditMode(false);
+      setEditIndex(null);
       setNewCourse({
         title: "",
         subtitle: "",
@@ -410,38 +423,28 @@ function Courses() {
             </select>
           </div>
 
-        <div>
-          <label className="block font-medium mb-1">Department</label>
-          <select
-            value={department}
-            onChange={(e) => setDepartment(e.target.value)}
-            disabled={!degree || !year}
-            className="w-full p-2 border rounded-md disabled:opacity-50"
-          >
-            <option value="">Select Department</option>
-            {degree &&
-              year &&
-              Object.keys(mockCourses[degree][year]).map((dept) => (
-                <option key={dept} value={dept}>
-                  {dept}
-                </option>
-              ))}
-          </select>
-        </div>
-      </div>
-
-      {degree && year && department && (
-        <>
-          <div className="flex justify-between items-center mb-4">
-            <h2 className="text-xl font-semibold">{department}</h2>
-            <button
-              className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition"
-              onClick={() => setShowForm(true)}
+          <div>
+            <label className="block font-medium mb-1">Department</label>
+            <select
+              value={department}
+              onChange={(e) => setDepartment(e.target.value)}
+              disabled={!degree || !year}
+              className="w-full p-2 border rounded-md disabled:opacity-50"
             >
-              + Add Course
-            </button>
+              <option value="">Select Department</option>
+              {degree &&
+                year &&
+                Object.keys(mockCourses[degree][year]).map((dept) => (
+                  <option key={dept} value={dept}>
+                    {dept}
+                  </option>
+                ))}
+            </select>
           </div>
+        </div>
 
+        {degree && year && department && (
+          <>
             {courses.length === 0 ? (
               <p className="text-gray-500 mb-6">
                 No courses available for {department} in {degree} - {year}.
@@ -493,10 +496,21 @@ function Courses() {
                             ))}
                           </div>
                         </div>
-                        <div className="mt-4">
+                        <div className="mt-4 flex gap-2">
+                          <button
+                            onClick={() => {
+                              setIsEditMode(true);
+                              setEditIndex(index);
+                              setNewCourse(course);
+                              setShowForm(true);
+                            }}
+                            className="w-1/2 bg-yellow-500 text-white text-sm py-2 rounded hover:bg-yellow-600 transition"
+                          >
+                            Update
+                          </button>
                           <button
                             onClick={() => handleDeleteCourse(index)}
-                            className="w-full bg-red-600 text-white text-sm py-2 rounded hover:bg-red-700 transition"
+                            className="w-1/2 bg-red-600 text-white text-sm py-2 rounded hover:bg-red-700 transition"
                           >
                             Delete
                           </button>
@@ -518,7 +532,9 @@ function Courses() {
           <div className="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50">
             <div className="bg-white p-6 rounded-lg shadow-lg w-[90%] md:w-[500px]">
               <h2 className="text-xl font-semibold mb-4">
-                Add New Course for {department}
+                {isEditMode
+                  ? `Update Course for ${department}`
+                  : `Add New Course for ${department}`}
               </h2>
               <div className="grid gap-3">
                 <input
@@ -588,7 +604,11 @@ function Courses() {
               <div className="flex justify-end gap-2 mt-4">
                 <button
                   className="bg-gray-300 px-4 py-2 rounded"
-                  onClick={() => setShowForm(false)}
+                  onClick={() => {
+                    setShowForm(false);
+                    setIsEditMode(false);
+                    setEditIndex(null);
+                  }}
                 >
                   Cancel
                 </button>
@@ -596,7 +616,7 @@ function Courses() {
                   className="bg-blue-600 text-white px-4 py-2 rounded"
                   onClick={handleAddCourse}
                 >
-                  Create
+                  {isEditMode ? "Update" : "Create"}
                 </button>
               </div>
             </div>
