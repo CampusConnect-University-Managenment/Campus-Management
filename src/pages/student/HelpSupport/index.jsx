@@ -3,14 +3,14 @@ import { HelpCircle, Mail, MessageSquare, ChevronDown } from "lucide-react";
 
 const faqs = [
   {
-    question: "How can I reset my password?",
+    question: "How can I update my password?",
     answer:
-      "Go to your profile settings and click on 'Reset Password'. You will receive a confirmation email.",
+      "Go to your profile settings and click on 'Update Password'.",
   },
   {
     question: "How to enroll in a course?",
     answer:
-      "Navigate to the Courses page, select a course, and click the 'Enroll' button.",
+      "Navigate to the 'Courses Enrolled', Click a 'Course Enrollment', and select 'Add New Courses'.",
   },
   {
     question: "Where can I view my grades?",
@@ -20,7 +20,7 @@ const faqs = [
   {
     question: "How to contact faculty?",
     answer:
-      "Go to the Faculty page and click on the contact icon near the faculty's profile.",
+      "Go to the Notification and chat.",
   },
 ];
 
