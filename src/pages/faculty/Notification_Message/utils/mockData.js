@@ -82,3 +82,9 @@ export const mockChats = [
     ]
   }
 ];
+
+export const mockNotifications = [
+  { id: 1, message: 'Welcome faculty! Meeting at 3 PM today.', timestamp: new Date(), type: 'meeting' },
+  { id: 2, message: 'Grade submissions deadline is next week.', timestamp: new Date(), type: 'reminder' },
+  { id: 3, message: 'New event: Science Fair this Friday.', timestamp: new Date(), type: 'event' }
+];

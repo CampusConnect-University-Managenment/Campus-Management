@@ -11,7 +11,25 @@ function NotificationMessage() {
   const [currentUser, setCurrentUser] = useState(mockUsers[0]);
   const [selectedChat, setSelectedChat] = useState(null);
   const [chats, setChats] = useState(mockChats);
-  const [notifications, setNotifications] = useState([]);
+
+  // Dummy notifications based on role
+  const getInitialNotifications = (role) => {
+    if (role === 'student') {
+      return [
+        { id: 1, message: 'Welcome student! Your assignment is due tomorrow.', timestamp: new Date(), type: 'info' },
+        { id: 2, message: 'New event: Science Fair this Friday.', timestamp: new Date(), type: 'event' }
+      ];
+    }
+    if (role === 'faculty') {
+      return [
+        { id: 3, message: 'Faculty meeting at 3 PM today.', timestamp: new Date(), type: 'meeting' },
+        { id: 4, message: 'Grade submissions deadline is next week.', timestamp: new Date(), type: 'reminder' }
+      ];
+    }
+    return [];
+  };
+
+  const [notifications, setNotifications] = useState(getInitialNotifications(mockUsers[0].role));
   const [onlineUsers, setOnlineUsers] = useState(mockUsers);
   
   const socket = useSocket('http://localhost:3001');
