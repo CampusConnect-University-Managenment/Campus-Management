@@ -1,4 +1,5 @@
 import React from 'react';
+
 import { useNavigate } from 'react-router-dom';
 
 function ClassList() {
@@ -145,6 +146,6 @@ function ClassList() {
       </div>
     </div>
   );
-}
+};
 
 export default ClassList;
