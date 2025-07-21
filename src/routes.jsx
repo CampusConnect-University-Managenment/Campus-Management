@@ -1,6 +1,7 @@
 import React from "react";
 import AdminDashboard from "./pages/admin/dashboard";
 import AdminExam from "./pages/admin/exam";
+import NotificationMessage from  "./pages/admin/Notification_Message";
 import MockCourse from "./pages/admin/course";
 import AllStudents from "./pages/admin/students/components/AllStudents";
 import AttendanceUpload from "./pages/faculty/AttendanceUpload";
@@ -86,7 +87,7 @@ const routes = [
     layout: "/admin",
     path: "Notification_Message",
     icon: <MdDashboard className="h-6 w-6" />,
-    component: <Notification_Message />,
+    component: <NotificationMessage />,
   },
 
   // Student Routes
