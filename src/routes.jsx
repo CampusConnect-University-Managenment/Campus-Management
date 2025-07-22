@@ -11,9 +11,12 @@ import Performance from "./pages/student/Performance-analysis/component/Performa
 import Announcements from "./pages/faculty/Announcements/components/Announcements";
 import StudentDashboard from "./pages/student/StudentDashBoard/components/StudentDashboard";
 import FacultyProfile from "./pages/faculty/Profile";
+import EditFacultyProfile from "./pages/faculty/EditProfile";
 import Interface from "./pages/faculty/Exam_InterFace/Components/ExamInterface";
 import ViewStudyMaterial from "./pages/faculty/Exam_InterFace/View_Components/ViewStudyMaterials";
 import ViewQuestionPaper from "./pages/faculty/Exam_InterFace/View_Components/ViewQuestionPaper";
+import ViewAssignmentQuestions from "./pages/faculty/Exam_InterFace/View_Components/ViewAssignment";
+import UploadAssignment from "./pages/faculty/Exam_InterFace/Upload_Components/Upload_Assignment";
 import FacultyMarksUpdate from "./pages/faculty/Exam_InterFace/Upload_Components/Upload_Marks";
 import UploadQuestionPaper from "./pages/faculty/Exam_InterFace/Upload_Components/Upload_QuestionPaper";
 import UploadStudyMaterial from "./pages/faculty/Exam_InterFace/Upload_Components/Upload_StudyMaterials";
@@ -256,6 +259,16 @@ const routes = [
         path:"ExamInterFace/view-question",
         component:<ViewQuestionPaper />,
       },
+       {
+        layout:"/faculty",
+        path:"ExamInterFace/view-assignment",
+        component:<ViewAssignmentQuestions />,
+      },
+       {
+        layout:"/faculty",
+        path:"ExamInterFace/upload-assignment",
+        component:<UploadAssignment />,
+      },
     ],
   },
   {
@@ -271,6 +284,14 @@ const routes = [
     path: "profile",
     icon: <FaUser className="h-6 w-6" />,
     component: <FacultyProfile />,
+  
+  children:[
+    {
+    layout: "/faculty",
+    path: "edit-profile",
+    component: <EditFacultyProfile />,
+    },
+  ],
   },
 ];
 
