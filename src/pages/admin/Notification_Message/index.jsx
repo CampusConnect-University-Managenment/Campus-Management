@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import Sidebar from "../../../components/Sidebar"; // Ensure this path is correct
+import Sidebar from "../../../components/Sidebar"; // Make sure this path is correct
 
 const Notification_Message = () => {
   const [showForm, setShowForm] = useState(false);
@@ -9,31 +9,37 @@ const Notification_Message = () => {
       time: "10:00 AM",
       venue: "Conference Room A",
       date: "",
+      audience: "Faculty",
     },
     {
       name: "Student Orientation",
       time: "2:00 PM",
       venue: "Main Auditorium",
       date: "",
+      audience: "Student",
     },
     {
       name: "Library Workshop",
       time: "3:30 PM",
       venue: "Library Hall",
       date: "",
+      audience: "Both",
     },
     {
       name: "Emergency Drill",
       time: "4:00 PM",
       venue: "Campus Wide",
       date: "",
+      audience: "Both",
     },
   ]);
+
   const [newEvent, setNewEvent] = useState({
     name: "",
     time: "",
     venue: "",
     date: "",
+    audience: "",
   });
 
   const handleInputChange = (e) => {
@@ -59,7 +65,13 @@ const Notification_Message = () => {
 
     setEvents([newEntry, ...events]);
     setShowForm(false);
-    setNewEvent({ name: "", time: "", venue: "", date: "" });
+    setNewEvent({
+      name: "",
+      time: "",
+      venue: "",
+      date: "",
+      audience: "",
+    });
   };
 
   return (
@@ -99,9 +111,7 @@ const Notification_Message = () => {
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium mb-1">
-                  Event Name
-                </label>
+                <label className="block text-sm font-medium mb-1">Event Name</label>
                 <input
                   type="text"
                   name="name"
@@ -133,6 +143,44 @@ const Notification_Message = () => {
                   className="w-full border rounded px-3 py-2"
                 />
               </div>
+              <div>
+                <label className="block text-sm font-medium mb-2">
+                  To whom the notifications should reach?
+                </label>
+                <div className="flex gap-4">
+                  <label className="flex items-center gap-2">
+                    <input
+                      type="radio"
+                      name="audience"
+                      value="Student"
+                      checked={newEvent.audience === "Student"}
+                      onChange={handleInputChange}
+                      required
+                    />
+                    Student
+                  </label>
+                  <label className="flex items-center gap-2">
+                    <input
+                      type="radio"
+                      name="audience"
+                      value="Faculty"
+                      checked={newEvent.audience === "Faculty"}
+                      onChange={handleInputChange}
+                    />
+                    Faculty
+                  </label>
+                  <label className="flex items-center gap-2">
+                    <input
+                      type="radio"
+                      name="audience"
+                      value="Both"
+                      checked={newEvent.audience === "Both"}
+                      onChange={handleInputChange}
+                    />
+                    Both
+                  </label>
+                </div>
+              </div>
               <button
                 type="submit"
                 className="bg-green-500 hover:bg-green-600 text-white px-6 py-2 rounded font-semibold"
@@ -152,6 +200,7 @@ const Notification_Message = () => {
                 <div className="text-lg font-bold">{event.name}</div>
                 <div className="text-sm">🕒 {event.time}</div>
                 <div className="text-sm">📍 {event.venue}</div>
+                <div className="text-sm">🎯 For: {event.audience}</div>
               </div>
             ))}
           </div>
