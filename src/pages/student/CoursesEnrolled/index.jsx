@@ -1,5 +1,6 @@
-import React from "react";
+import React, { useState } from "react";
 import { ArrowRight, User, BookOpen } from "lucide-react";
+import AddCourse from "./AddCourse";
 
 const courses = [
   {
@@ -59,10 +60,27 @@ const courses = [
 ];
 
 export default function CoursesOverview() {
+  const [showAddCourse, setShowAddCourse] = useState(false);
+
+  if (showAddCourse) {
+    return <AddCourse onBack={() => setShowAddCourse(false)} />;
+  }
+
   return (
     <div className="pt-24 px-10 pb-16 min-h-screen bg-gradient-to-tr from-[#f4f6ff] to-[#fbfbff]">
-      <h1 className="text-4xl font-bold text-blue-600 mb-10">📘 My Courses</h1>
+      {/* Header */}
+      <div className="flex items-center justify-between mb-10">
+        <h1 className="text-4xl font-bold text-blue-600">📘 My Courses</h1>
 
+        <button
+          onClick={() => setShowAddCourse(true)}
+          className="bg-blue-600 hover:bg-blue-700 text-white font-semibold px-4 py-2 rounded-lg shadow-md"
+        >
+          + Course Enrollment
+        </button>
+      </div>
+
+      {/* Courses Grid */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
         {courses.map((course) => (
           <div
@@ -72,9 +90,7 @@ export default function CoursesOverview() {
               hover:-translate-y-2 transition duration-300 ease-in-out cursor-pointer`}
           >
             <div className="flex justify-between items-center mb-4">
-              <div className="text-xl font-bold leading-tight">
-                {course.courseName}
-              </div>
+              <div className="text-xl font-bold">{course.courseName}</div>
               <div
                 className={`w-10 h-10 rounded-full flex items-center justify-center ${course.badge}`}
               >
