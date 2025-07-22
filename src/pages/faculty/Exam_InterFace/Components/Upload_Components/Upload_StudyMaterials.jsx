@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect,useState } from 'react';
 import { useNavigate } from "react-router-dom";
 import { FaClipboardList, FaFileUpload, FaBookOpen } from "react-icons/fa";
 
@@ -12,6 +12,8 @@ const navigate = useNavigate();
     description: '',
     file: null,
   });
+
+  useEffect(()=>{window.scrollTo(0,0)},[])
 
   const handleChange = (e) => {
     const { name, value, files } = e.target;
@@ -57,7 +59,7 @@ const navigate = useNavigate();
   return (
     <div className="mt-[100px] min-h-screen bg-[#f0f4f8] px-4 py-10 font-inter">
       <button onClick={() => navigate(-1)} className="bg-blue-500 text-white px-4 py-2 rounded">
-            ← Back to ExamInterFace
+            ← Back
             </button><br/>
       <br/><div className="max-w-3xl mx-auto bg-white rounded-2xl shadow-lg p-8">
         <div className="flex gap-2">

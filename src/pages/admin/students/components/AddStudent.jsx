@@ -9,7 +9,6 @@ const AddStudent = ({ editingStudent, onAddStudent, onEditStudent, onClose }) =>
     department: "",
     degree: "",
     year: "",
-    semester: "",
     status: "Active",
     cgpa: "",
     attendance: "",
@@ -75,13 +74,11 @@ const AddStudent = ({ editingStudent, onAddStudent, onEditStudent, onClose }) =>
     <form onSubmit={handleSubmit} className="space-y-4">
       <h2 className="text-xl font-bold mb-4">{editingStudent ? "Edit Student" : "Add New Student"}</h2>
 
-      {/* Basic Fields */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <input type="text" name="name" value={formData.name} onChange={handleChange} placeholder="Full Name" className="border p-2 rounded" required />
         <input type="email" name="email" value={formData.email} onChange={handleChange} placeholder="Email" className="border p-2 rounded" required />
         <input type="text" name="phone" value={formData.phone} onChange={handleChange} placeholder="Phone" className="border p-2 rounded" required />
 
-        {/* Avatar Upload */}
         <div>
           <label className="block mb-1 font-medium">Upload Profile Picture</label>
           <input
@@ -99,22 +96,25 @@ const AddStudent = ({ editingStudent, onAddStudent, onEditStudent, onClose }) =>
           )}
         </div>
 
-        <input type="text" name="department" value={formData.department} onChange={handleChange} placeholder="Department" className="border p-2 rounded" />
-        <input type="text" name="degree" value={formData.degree} onChange={handleChange} placeholder="Degree" className="border p-2 rounded" />
-        <input type="text" name="year" value={formData.year} onChange={handleChange} placeholder="Year" className="border p-2 rounded" />
-        <input type="text" name="semester" value={formData.semester} onChange={handleChange} placeholder="Semester" className="border p-2 rounded" />
+        <input type="text" name="department" value={formData.department} onChange={handleChange} placeholder="Department" className="border p-2 rounded" required />
+        <input type="text" name="degree" value={formData.degree} onChange={handleChange} placeholder="Degree" className="border p-2 rounded" required />
+        <input type="text" name="year" value={formData.year} onChange={handleChange} placeholder="Year" className="border p-2 rounded" required />
+
         <select name="status" value={formData.status} onChange={handleChange} className="border p-2 rounded">
           <option value="Active">Active</option>
-          <option value="Graduated">Graduated</option>
         </select>
-        <input type="number" step="0.1" name="cgpa" value={formData.cgpa} onChange={handleChange} placeholder="CGPA" className="border p-2 rounded" />
-        <input type="number" name="attendance" value={formData.attendance} onChange={handleChange} placeholder="Attendance %" className="border p-2 rounded" />
+
+        {/* Optional fields only shown in edit mode */}
+        {editingStudent && (
+          <>
+            <input type="number" step="0.1" name="cgpa" value={formData.cgpa} onChange={handleChange} placeholder="CGPA" className="border p-2 rounded" />
+            <input type="number" name="attendance" value={formData.attendance} onChange={handleChange} placeholder="Attendance %" className="border p-2 rounded" />
+            <textarea name="bio" value={formData.bio} onChange={handleChange} placeholder="Bio" className="border p-2 rounded w-full md:col-span-2" rows={3}></textarea>
+          </>
+        )}
       </div>
 
-      {/* Bio */}
-      <textarea name="bio" value={formData.bio} onChange={handleChange} placeholder="Bio" className="border p-2 rounded w-full" rows={3}></textarea>
-
-      {/* Toggle Placement (Edit Only) */}
+      {/* Placement toggle only in edit mode */}
       {editingStudent && (
         <div className="mt-4">
           <label className="flex items-center gap-2">
@@ -136,76 +136,20 @@ const AddStudent = ({ editingStudent, onAddStudent, onEditStudent, onClose }) =>
       {/* Placement Fields */}
       {markAsPlaced && (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4 border-t pt-4">
-          <input
-            type="text"
-            name="company"
-            value={formData.placement?.company || ""}
-            onChange={handlePlacementChange}
-            placeholder="Company Name"
-            className="border p-2 rounded"
-            required
-          />
-          <input
-            type="text"
-            name="location"
-            value={formData.placement?.location || ""}
-            onChange={handlePlacementChange}
-            placeholder="Location"
-            className="border p-2 rounded"
-            required
-          />
-          <input
-            type="text"
-            name="position"
-            value={formData.placement?.position || ""}
-            onChange={handlePlacementChange}
-            placeholder="Position"
-            className="border p-2 rounded"
-            required
-          />
-          <input
-            type="number"
-            step="0.1"
-            name="package"
-            value={formData.placement?.package || ""}
-            onChange={handlePlacementChange}
-            placeholder="Package (LPA)"
-            className="border p-2 rounded"
-            required
-          />
-          <input
-            type="text"
-            name="date"
-            value={formData.placement?.date || ""}
-            onChange={handlePlacementChange}
-            placeholder="Placement Date"
-            className="border p-2 rounded"
-            required
-          />
-          <input
-            type="url"
-            name="proof"
-            value={formData.placement?.proof || ""}
-            onChange={handlePlacementChange}
-            placeholder="Proof URL"
-            className="border p-2 rounded"
-          />
+          <input type="text" name="company" value={formData.placement?.company || ""} onChange={handlePlacementChange} placeholder="Company Name" className="border p-2 rounded" required />
+          <input type="text" name="location" value={formData.placement?.location || ""} onChange={handlePlacementChange} placeholder="Location" className="border p-2 rounded" required />
+          <input type="text" name="position" value={formData.placement?.position || ""} onChange={handlePlacementChange} placeholder="Position" className="border p-2 rounded" required />
+          <input type="number" step="0.1" name="package" value={formData.placement?.package || ""} onChange={handlePlacementChange} placeholder="Package (LPA)" className="border p-2 rounded" required />
+          <input type="text" name="date" value={formData.placement?.date || ""} onChange={handlePlacementChange} placeholder="Placement Date" className="border p-2 rounded" required />
+          <input type="url" name="proof" value={formData.placement?.proof || ""} onChange={handlePlacementChange} placeholder="Proof URL" className="border p-2 rounded" />
         </div>
       )}
 
-      {/* Submit Button */}
       <div className="flex justify-end gap-3 pt-4 border-t mt-4">
-        <button
-          type="button"
-          onClick={onClose}
-          className="px-4 py-2 border rounded hover:bg-gray-100"
-        >
+        <button type="button" onClick={onClose} className="px-4 py-2 border rounded hover:bg-gray-100">
           Cancel
         </button>
-        <button
-          type="submit"
-          className="px-6 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
-        >
+        <button type="submit" className="px-6 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">
           {editingStudent ? "Update Student" : "Add Student"}
         </button>
       </div>

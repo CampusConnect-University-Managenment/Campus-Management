@@ -1,117 +1,169 @@
-import React, { useState, useEffect } from 'react';
-import ChatWindow from './components/ChatWindow';
-import UserList from './components/UserList';
-import NotificationPanel from './components/NotificationPanel';
-import RoleSelector from './components/RoleSelector';
-import useSocket from './hooks/useSocket';
-import { mockUsers, mockChats } from './utils/mockData';
-import './App.css';
+import React, { useState } from "react";
+import Card from "@mui/material/Card";
+import Box from "@mui/material/Box";
+import Typography from "@mui/material/Typography";
+import TextField from "@mui/material/TextField";
+import Button from "@mui/material/Button";
+import Icon from "@mui/material/Icon";
 
-function NotificationMessage() {
-  const [currentUser, setCurrentUser] = useState(mockUsers[0]);
-  const [selectedChat, setSelectedChat] = useState(null);
-  const [chats, setChats] = useState(mockChats);
-  const [notifications, setNotifications] = useState([]);
-  const [onlineUsers, setOnlineUsers] = useState(mockUsers);
-  
-  const socket = useSocket('http://localhost:3001');
+const Notification_Message = () => {
+  const [showForm, setShowForm] = useState(false);
+  const [events, setEvents] = useState([
+    {
+      name: "Faculty Meeting",
+      time: "10:00 AM",
+      venue: "Conference Room A",
+      date: "",
+    },
+    {
+      name: "Student Orientation",
+      time: "2:00 PM",
+      venue: "Main Auditorium",
+      date: "",
+    },
+    {
+      name: "Library Workshop",
+      time: "3:30 PM",
+      venue: "Library Hall",
+      date: "",
+    },
+    {
+      name: "Emergency Drill",
+      time: "4:00 PM",
+      venue: "Campus Wide",
+      date: "",
+    },
+  ]);
 
-  useEffect(() => {
-    if (socket) {
-      socket.on('message', (message) => {
-        setChats(prevChats => 
-          prevChats.map(chat => 
-            chat.id === message.chatId 
-              ? { ...chat, messages: [...chat.messages, message] }
-              : chat
-          )
-        );
-        
-        if (message.senderId !== currentUser.id) {
-          setNotifications(prev => [...prev, {
-            id: Date.now(),
-            message: `New message from ${message.senderName}`,
-            timestamp: new Date(),
-            type: 'message'
-          }]);
-        }
-      });
-    }
-  }, [socket, currentUser.id]);
+  const [newEvent, setNewEvent] = useState({
+    name: "",
+    time: "",
+    venue: "",
+    date: "",
+  });
 
-  const sendMessage = (content) => {
-    if (!selectedChat || !content.trim()) return;
-
-    const message = {
-      id: Date.now(),
-      content,
-      senderId: currentUser.id,
-      senderName: currentUser.name,
-      timestamp: new Date(),
-      chatId: selectedChat.id
-    };
-
-    if (socket) {
-      socket.emit('sendMessage', message);
-    }
-
-    setChats(prevChats => 
-      prevChats.map(chat => 
-        chat.id === selectedChat.id 
-          ? { ...chat, messages: [...chat.messages, message] }
-          : chat
-      )
-    );
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setNewEvent((prev) => ({ ...prev, [name]: value }));
   };
 
-  const getAvailableChats = () => {
-    return chats.filter(chat => {
-      if (currentUser.role === 'admin') return true;
-      if (currentUser.role === 'faculty') {
-        return chat.type === 'faculty' || chat.participants.includes(currentUser.id);
-      }
-      if (currentUser.role === 'student') {
-        return chat.type === 'general' || chat.participants.includes(currentUser.id);
-      }
-      return false;
+  const handleFormSubmit = (e) => {
+    e.preventDefault();
+
+    const istDateTime = new Date(`${newEvent.date}T${newEvent.time}`);
+    const istTimeString = istDateTime.toLocaleTimeString("en-IN", {
+      hour: "2-digit",
+      minute: "2-digit",
+      hour12: true,
+      timeZone: "Asia/Kolkata",
     });
+
+    const newEntry = {
+      ...newEvent,
+      time: istTimeString,
+    };
+
+    setEvents([newEntry, ...events]);
+    setShowForm(false);
+    setNewEvent({ name: "", time: "", venue: "", date: "" });
   };
 
   return (
-    <div className="app">
-      <div className="app-header">
-        <h1>🎓 Campus Connect</h1>
-        <RoleSelector currentUser={currentUser} setCurrentUser={setCurrentUser} users={mockUsers} />
-      </div>
-      
-      <div className="app-body">
-        <div className="sidebar">
-          <UserList 
-            users={onlineUsers}
-            chats={getAvailableChats()}
-            selectedChat={selectedChat}
-            onChatSelect={setSelectedChat}
-            currentUser={currentUser}
-          />
-        </div>
-        
-        <div className="main-content">
-          <ChatWindow 
-            chat={selectedChat}
-            currentUser={currentUser}
-            onSendMessage={sendMessage}
-          />
-        </div>
-        
-        <div className="notifications">
-          <NotificationPanel 
-            notifications={notifications}
-            onClearNotifications={() => setNotifications([])}
-          />
-        </div>
-      </div>
-    </div>
-  );
-}
+    <Card sx={{ p: 3 }}>
+      {/* Header */}
+      <Box display="flex" justifyContent="space-between" alignItems="center" mb={3}>
+        <Typography variant="h5" fontWeight="bold">
+          📢 Notice Board - Today's Events
+        </Typography>
+        <Button
+          variant="contained"
+          color="info"
+          onClick={() => setShowForm(!showForm)}
+          sx={{
+            borderRadius: "50%",
+            minWidth: "36px",
+            width: "36px",
+            height: "36px",
+            p: 0,
+          }}
+        >
+          <Icon>add</Icon>
+        </Button>
+      </Box>
 
-export default NotificationMessage;
+      {/* Form */}
+      {showForm && (
+        <form onSubmit={handleFormSubmit}>
+          <Box mb={3}>
+            <TextField
+              label="Date"
+              name="date"
+              type="date"
+              fullWidth
+              value={newEvent.date}
+              onChange={handleInputChange}
+              InputLabelProps={{ shrink: true }}
+              sx={{ mb: 2 }}
+              required
+            />
+            <TextField
+              label="Event Name"
+              name="name"
+              fullWidth
+              value={newEvent.name}
+              onChange={handleInputChange}
+              sx={{ mb: 2 }}
+              required
+            />
+            <TextField
+              label="Time"
+              name="time"
+              type="time"
+              fullWidth
+              value={newEvent.time}
+              onChange={handleInputChange}
+              InputLabelProps={{ shrink: true }}
+              sx={{ mb: 2 }}
+              required
+            />
+            <TextField
+              label="Venue"
+              name="venue"
+              fullWidth
+              value={newEvent.venue}
+              onChange={handleInputChange}
+              sx={{ mb: 2 }}
+              required
+            />
+            <Button type="submit" variant="contained" color="success">
+              Submit
+            </Button>
+          </Box>
+        </form>
+      )}
+
+      {/* Event List */}
+      <Box>
+        {events.map((event, index) => (
+          <Card
+            key={index}
+            sx={{
+              p: 2,
+              mb: 2,
+              transition: "0.3s",
+              "&:hover": { backgroundColor: "#1976d2", color: "#fff" },
+            }}
+          >
+            <Typography variant="h6" fontWeight="bold">
+              {event.name}
+            </Typography>
+            <Typography variant="body2">🕒 {event.time}</Typography>
+            <Typography variant="body2">📍 {event.venue}</Typography>
+          </Card>
+        ))}
+      </Box>
+    </Card>
+  );
+};
+
+export default Notification_Message;

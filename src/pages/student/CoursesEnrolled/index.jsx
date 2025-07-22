@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { ArrowRight, User, BookOpen, ChevronDown } from "lucide-react";
+import AddCourse from "./AddCourse"; // ✅ Import AddCourse
 
 const courses = [
   {
@@ -60,38 +61,39 @@ const courses = [
 
 export default function CoursesOverview() {
   const [showDropdown, setShowDropdown] = useState(false);
+  const [showAddCourse, setShowAddCourse] = useState(false); // ✅ Navigation state
 
   const toggleDropdown = () => {
     setShowDropdown((prev) => !prev);
   };
 
+  if (showAddCourse) {
+    return <AddCourse onBack={() => setShowAddCourse(false)} />; // ✅ Show AddCourse
+  }
+
   return (
     <div className="pt-24 px-10 pb-16 min-h-screen bg-gradient-to-tr from-[#f4f6ff] to-[#fbfbff]">
       {/* Header row */}
       <div className="flex items-center justify-between mb-10">
-        {/* Left: My Courses Title */}
         <h1 className="text-4xl font-bold text-blue-600">📘 My Courses</h1>
 
-        {/* Right: Dropdown */}
+        {/* Dropdown */}
         <div className="relative">
           <button
             onClick={toggleDropdown}
             className="bg-blue-600 hover:bg-blue-700 text-white font-semibold px-4 py-2 rounded-lg flex items-center gap-1 shadow-md"
           >
-            + Enrolled Course <ChevronDown size={16} />
+            + Course Enrollment <ChevronDown size={16} />
           </button>
 
           {showDropdown && (
             <div className="absolute right-0 mt-2 bg-white border rounded-md shadow-lg w-48 z-50">
               <ul className="text-sm text-gray-700">
-                <li className="hover:bg-gray-100 px-4 py-2 cursor-pointer">
+                <li
+                  onClick={() => setShowAddCourse(true)} // ✅ Navigation trigger
+                  className="hover:bg-gray-100 px-4 py-2 cursor-pointer"
+                >
                   Add New Course
-                </li>
-                <li className="hover:bg-gray-100 px-4 py-2 cursor-pointer">
-                  Import from Excel
-                </li>
-                <li className="hover:bg-gray-100 px-4 py-2 cursor-pointer">
-                  Sync with Portal
                 </li>
               </ul>
             </div>

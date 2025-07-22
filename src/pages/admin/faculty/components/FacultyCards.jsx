@@ -1,3 +1,4 @@
+import { h2 } from 'framer-motion/client';
 import React from 'react';
 import { FaUsers, FaCalendarAlt, FaBuilding, FaChartLine } from 'react-icons/fa';
 
