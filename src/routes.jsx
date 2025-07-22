@@ -1,7 +1,7 @@
 import React, { Children } from "react";
 import AdminDashboard from "./pages/admin/dashboard";
 import AdminExam from "./pages/admin/exam";
-import NotificationMessage from  "./pages/admin/Notification_Message";
+import NotificationMessage from "./pages/admin/Notification_Message";
 import MockCourse from "./pages/admin/course";
 import AllStudents from "./pages/admin/students/components/AllStudents";
 import AttendanceUpload from "./pages/faculty/AttendanceUpload";
@@ -20,6 +20,7 @@ import FacultyManagement from "./pages/admin/faculty/index";
 //student
 // Student Views
 import MyProfile from "./pages/student/MyProfile";
+import EditFacultyProfile from "./pages/faculty/EditProfile";
 import Dashboard from "./pages/student/Dashboard";
 // import Profile from "./pages/student/Profile";
 import CoursesEnrolled from "./pages/student/CoursesEnrolled";
@@ -104,12 +105,12 @@ const routes = [
     icon: <FaBookOpen className="h-5 w-5" />,
     component: <CoursesEnrolled />,
   },
-//   {
-//   name: "Add Course",
-//   layout: "/student",
-//   path: "AddCourse",
-//   component: <AddCourse />,
-// },
+  //   {
+  //   name: "Add Course",
+  //   layout: "/student",
+  //   path: "AddCourse",
+  //   component: <AddCourse />,
+  // },
   {
     name: "Practice Exams",
     layout: "/student",
@@ -194,6 +195,21 @@ const routes = [
 
   // Faculty Routes
   {
+    name: "My Profile",
+    layout: "/faculty",
+    path: "profile",
+    icon: <FaUser className="h-6 w-6" />,
+    component: <FacultyProfile />,
+  },
+  {
+    name: "Edit Profile",
+    layout: "/faculty",
+    path: "edit-profile",
+    icon: <FaUser className="h-6 w-6" />, // Optional icon
+    component: <EditFacultyProfile />,
+  },
+
+  {
     name: "Faculty Dashboard",
     layout: "/faculty",
     path: "default",
@@ -206,8 +222,8 @@ const routes = [
     path: "ClassList",
     icon: <MdGroups className="h-6 w-6" />,
     component: <ClassList />,
-    children:[
-       {
+    children: [
+      {
         layout: "/faculty",
         path: "ExamInterFace/upload-marks",
         component: <FacultyMarksUpdate />,
@@ -238,13 +254,7 @@ const routes = [
     icon: <MdNotifications className="h-6 w-6" />,
     component: <Notification_Message />,
   },
-  {
-    name: "My Profile",
-    layout: "/faculty",
-    path: "profile",
-    icon: <FaUser className="h-6 w-6" />,
-    component: <FacultyProfile />,
-  },
+
   {
     name: "Announcements",
     layout: "/faculty",

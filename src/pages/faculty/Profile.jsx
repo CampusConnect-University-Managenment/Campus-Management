@@ -9,8 +9,8 @@ export default function FacultyProfile() {
   };
 
   const user = {
-    name: "Vishwanathan S",
-    email: "vishwanathan@example.com",
+    name: "Ramesh S",
+    email: "Ramesh@example.com",
     phone: "+91 9876543210",
     role: "Faculty",
     joined: "Jan 15, 2024",
@@ -82,11 +82,11 @@ export default function FacultyProfile() {
         {/* Buttons */}
         <div className="mt-8 flex gap-4">
           <button
-  onClick={() => navigate("/faculty/edit-profile")}
-  className="px-4 py-2 bg-blue-500 text-white rounded-md shadow hover:bg-blue-600 transition"
->
-  Edit Profile
-</button>
+            onClick={() => navigate("/faculty/edit-profile")}
+            className="px-4 py-2 bg-blue-500 text-white rounded-md shadow hover:bg-blue-600 transition"
+          >
+            Edit Profile
+          </button>
           <button className="bg-gray-100 text-gray-700 px-6 py-2 rounded-full shadow hover:bg-gray-200 transition">
             Settings
           </button>
