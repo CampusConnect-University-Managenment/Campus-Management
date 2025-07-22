@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { FaFilePdf, FaFileWord, FaDownload } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 
-// Sample assignment data
+// Sample assignment data with postedDate and deadline
 const assignments = [
   {
     name: "CSE A - OOPS Assignment 1",
@@ -11,6 +11,8 @@ const assignments = [
     department: "CSE",
     section: "A",
     url: "/assignments/oops-assignment1.pdf",
+    postedDate: "2025-07-20",
+    deadline: "2025-07-30",
   },
   {
     name: "ECE B - Signals Assignment",
@@ -19,6 +21,8 @@ const assignments = [
     department: "ECE",
     section: "B",
     url: "/assignments/signals-assignment.docx",
+    postedDate: "2025-07-18",
+    deadline: "2025-07-28",
   },
   {
     name: "MECH C - Thermo Assignment",
@@ -27,6 +31,8 @@ const assignments = [
     department: "MECH",
     section: "C",
     url: "/assignments/thermo-assignment.pdf",
+    postedDate: "2025-07-15",
+    deadline: "2025-07-25",
   },
   {
     name: "CIVIL A - Survey Assignment",
@@ -35,6 +41,8 @@ const assignments = [
     department: "CIVIL",
     section: "A",
     url: "/assignments/survey-assignment.docx",
+    postedDate: "2025-07-10",
+    deadline: "2025-07-22",
   },
 ];
 
@@ -44,6 +52,7 @@ const ViewAssignmentQuestions = () => {
     department: "All",
     section: "All",
   });
+
   const navigate = useNavigate();
 
   const handleFilterChange = (field, value) => {
@@ -53,8 +62,7 @@ const ViewAssignmentQuestions = () => {
   const filteredAssignments = assignments.filter((assignment) => {
     return (
       (filters.year === "All" || assignment.year === filters.year) &&
-      (filters.department === "All" ||
-        assignment.department === filters.department) &&
+      (filters.department === "All" || assignment.department === filters.department) &&
       (filters.section === "All" || assignment.section === filters.section)
     );
   });
@@ -67,6 +75,7 @@ const ViewAssignmentQuestions = () => {
       >
         ← Back
       </button>
+
       <h2 className="text-3xl font-bold text-center text-[#2e3a59] mb-2">
         📝 View Assignment Questions
       </h2>
@@ -129,8 +138,10 @@ const ViewAssignmentQuestions = () => {
                 <div>
                   <p className="text-gray-800 font-medium">{assignment.name}</p>
                   <p className="text-sm text-gray-500">
-                    {assignment.year} Year • {assignment.department} • Section{" "}
-                    {assignment.section}
+                    {assignment.year} Year • {assignment.department} • Section {assignment.section}
+                  </p>
+                  <p className="text-xs text-gray-400">
+                    Posted: {assignment.postedDate} | Deadline: {assignment.deadline}
                   </p>
                 </div>
               </div>
