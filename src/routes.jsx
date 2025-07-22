@@ -93,6 +93,7 @@ const routes = [
   path: "CoursesEnrolled",
   name: "Courses Enrolled",
   layout: "/student",
+  icon:<FaBookOpen className="h-5 w-5"/>,
   component: <CoursesEnrolled />,
   children: [
     {
