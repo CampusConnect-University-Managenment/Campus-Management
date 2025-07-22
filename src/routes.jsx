@@ -128,6 +128,14 @@ const routes = [
     icon: <FaBell className="h-5 w-5" />,
     component: <Notifications />,
   },
+  
+   {
+     name: "My Profile",
+     layout: "/student",
+     path: "profile",
+     icon: <FaUser className="h-6 w-6" />,
+     component: <MyProfile />,
+   },
   {
     name: "Help & Support",
     layout: "/student",
