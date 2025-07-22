@@ -13,7 +13,6 @@ const formatDate = (dateStr) => {
 };
 
 const priorityOrder = { High: 1, Medium: 2, Low: 3 };
-
 const Notification = () => {
   const { ref } = useInView({ triggerOnce: true });
 
