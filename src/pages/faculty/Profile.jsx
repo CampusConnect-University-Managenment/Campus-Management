@@ -1,12 +1,8 @@
-import React from "react";
-import { useNavigate } from "react-router-dom";
+import React, { useState } from "react";
+import EditProfile from "./EditProfile"; // adjust path if needed
 
 export default function FacultyProfile() {
-  const navigate = useNavigate();
-
-  const handleEditClick = () => {
-    navigate("/faculty/edit-profile");
-  };
+  const [isEditing, setIsEditing] = useState(false);
 
   const user = {
     name: "Ramesh S",
@@ -21,6 +17,16 @@ export default function FacultyProfile() {
     subjects: ["Data Structures", "Operating Systems", "DBMS"],
     avatar: "https://cdn-icons-png.flaticon.com/512/3135/3135715.png",
   };
+
+  if (isEditing) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center py-10 px-4">
+        <div className="w-full max-w-3xl bg-white rounded-2xl shadow-xl p-8 border border-gray-200">
+          <EditProfile user={user} onCancel={() => setIsEditing(false)} />
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-gray-50 flex items-center justify-center py-10 px-4">
@@ -82,7 +88,7 @@ export default function FacultyProfile() {
         {/* Buttons */}
         <div className="mt-8 flex gap-4">
           <button
-            onClick={() => navigate("/faculty/edit-profile")}
+            onClick={() => setIsEditing(true)}
             className="px-4 py-2 bg-blue-500 text-white rounded-md shadow hover:bg-blue-600 transition"
           >
             Edit Profile
