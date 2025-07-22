@@ -167,37 +167,6 @@ const routes = [
     icon: <FaBookOpen className="h-5 w-5" />,
     component: <ExamSchedule />,
   },
-
-  // {
-  //   name: "Results Portal",
-  //   layout: "/student",
-  //   path: "demo",
-  //   icon: <FaGraduationCap className="h-5 w-5" />,
-  //   component: <MyProfile />,
-  // },
-
-  // {
-  //   name: "Performance Analytics",
-  //   layout: "/student",
-  //   path: "Performance",
-  //   icon: <FaChartBar className="h-5 w-5" />,
-  //   component: <Performance />,
-  // },
-  // {
-  //   name: "Notifications",
-  //   layout: "/student",
-  //   path: "demo",
-  //   icon: <FaBell className="h-5 w-5" />,
-  //   component: <MyProfile />,
-  // },
-  // {
-  //   name: "Help & Support",
-  //   layout: "/student",
-  //   path: "demo",
-  //   icon: <FaQuestionCircle className="h-5 w-5" />,
-  //   component: <MyProfile />,
-  // },
-
   // Faculty Routes
   {
     name: "Faculty Dashboard",
