@@ -1,28 +1,35 @@
-import React, { Children } from "react";
+import React from "react";
+import {
+  FaBookOpen, FaUser, FaBell, FaChartBar,
+  FaClipboardCheck, FaGraduationCap, FaQuestionCircle
+} from "react-icons/fa";
+import {
+  MdDashboard, MdGroups, MdLibraryBooks,
+  MdNotifications, MdUploadFile, MdCampaign
+} from "react-icons/md";
+
+// Admin
 import AdminDashboard from "./pages/admin/dashboard";
 import AdminExam from "./pages/admin/exam";
 import NotificationMessage from "./pages/admin/Notification_Message";
 import MockCourse from "./pages/admin/course";
 import AllStudents from "./pages/admin/students/components/AllStudents";
+import FacultyManagement from "./pages/admin/faculty/index";
+
+// Faculty
+import FacultyDashboard from "./pages/faculty/dashboard";
+import FacultyProfile from "./pages/faculty/Profile";
+import EditFacultyProfile from "./pages/faculty/EditProfile";
+import ClassList from "./pages/faculty/ClassList";
 import AttendanceUpload from "./pages/faculty/AttendanceUpload";
 import Notification_Message from "./pages/faculty/Notification_Message";
-import ClassList from "./pages/faculty/ClassList";
-
 import Announcements from "./pages/faculty/Announcements/components/Announcements";
-import StudentDashboard from "./pages/student/StudentDashBoard/components/StudentDashboard";
-import FacultyProfile from "./pages/faculty/Profile";
 import FacultyMarksUpdate from "./pages/faculty/Exam_InterFace/Components/Upload_Components/Upload_Marks";
 import UploadQuestionPaper from "./pages/faculty/Exam_InterFace/Components/Upload_Components/Upload_QuestionPaper";
 import UploadStudyMaterial from "./pages/faculty/Exam_InterFace/Components/Upload_Components/Upload_StudyMaterials";
-import FacultyManagement from "./pages/admin/faculty/index";
-// Auth Views
-// import Home from "./pages/Auth/index";
-//student
-// Student Views
-import MyProfile from "./pages/student/MyProfile";
-import EditFacultyProfile from "./pages/faculty/EditProfile";
+
+// Student
 import Dashboard from "./pages/student/Dashboard";
-// import Profile from "./pages/student/Profile";
 import CoursesEnrolled from "./pages/student/CoursesEnrolled";
 import PracticeExams from "./pages/student/PracticeExams";
 import ResultsPortal from "./pages/student/ResultsPortal";
@@ -30,37 +37,11 @@ import PerformanceAnalytics from "./pages/student/PerformanceAnalytics";
 import Notifications from "./pages/student/Notifications";
 import HelpSupport from "./pages/student/HelpSupport";
 
-// Icons
-
-import {
-  FaBookOpen,
-  FaUser,
-  FaBell,
-  FaChartBar,
-  FaClipboardCheck,
-  FaGraduationCap,
-  FaQuestionCircle,
-} from "react-icons/fa";
-
-import { MdDashboard, MdGroups } from "react-icons/md";
-import { MdLibraryBooks } from "react-icons/md";
-import { MdNotifications } from "react-icons/md";
-import { MdUploadFile } from "react-icons/md";
-import { MdCampaign } from "react-icons/md";
-import FacultyDashboard from "./pages/faculty/dashboard";
+// Exam
 import ExamSchedule from "./pages/admin/exam/components/examschedule";
-// import AddCourse from "./pages/student/CoursesEnrolled/components/AddCourse";
-//import { FaUser } from "react-icons/fa";
+
 const routes = [
-  // Auth Routes
-  // {
-  //   name: "Auth",
-  //   layout: "/auth",
-  //   path: "login",
-  //   icon: <MdDashboard className="h-5 w-5" />,
-  //   component: <Home/>,
-  // },
-  // Admin Routes
+  // ===== ADMIN ROUTES =====
   {
     name: "Admin Dashboard",
     layout: "/admin",
@@ -69,7 +50,7 @@ const routes = [
     component: <AdminDashboard />,
   },
   {
-    name: "FacultyManagement",
+    name: "Faculty Management",
     layout: "/admin",
     path: "faculty",
     icon: <MdGroups className="h-6 w-6" />,
@@ -86,11 +67,25 @@ const routes = [
     name: "Notification and Message",
     layout: "/admin",
     path: "Notification_Message",
-    icon: <MdDashboard className="h-6 w-6" />,
+    icon: <MdNotifications className="h-6 w-6" />,
     component: <NotificationMessage />,
   },
+  {
+    name: "Courses",
+    layout: "/admin",
+    path: "course",
+    icon: <MdLibraryBooks className="h-6 w-6" />,
+    component: <MockCourse />,
+  },
+  {
+    name: "Exams",
+    layout: "/admin",
+    path: "exam",
+    icon: <FaBookOpen className="h-5 w-5" />,
+    component: <ExamSchedule />,
+  },
 
-  // Student Routes
+  // ===== STUDENT ROUTES =====
   {
     name: "Dashboard",
     layout: "/student",
@@ -105,12 +100,6 @@ const routes = [
     icon: <FaBookOpen className="h-5 w-5" />,
     component: <CoursesEnrolled />,
   },
-  //   {
-  //   name: "Add Course",
-  //   layout: "/student",
-  //   path: "AddCourse",
-  //   component: <AddCourse />,
-  // },
   {
     name: "Practice Exams",
     layout: "/student",
@@ -155,40 +144,7 @@ const routes = [
     component: <HelpSupport />,
   },
 
-  {
-    name: "Courses",
-    layout: "/admin",
-    path: "course",
-    icon: <FaBookOpen className="h-5 w-5" />,
-    component: <MockCourse />,
-  },
-
-  {
-    name: "Exams",
-    layout: "/admin",
-    path: "exam",
-    icon: <FaBookOpen className="h-5 w-5" />,
-    component: <ExamSchedule />,
-  },
-
-
-
-  // Faculty Routes
-  {
-    name: "My Profile",
-    layout: "/faculty",
-    path: "profile",
-    icon: <FaUser className="h-6 w-6" />,
-    component: <FacultyProfile />,
-  },
-  {
-    name: "Edit Profile",
-    layout: "/faculty",
-    path: "edit-profile",
-    icon: <FaUser className="h-6 w-6" />, // Optional icon
-    component: <EditFacultyProfile />,
-  },
-
+  // ===== FACULTY ROUTES =====
   {
     name: "Faculty Dashboard",
     layout: "/faculty",
@@ -197,44 +153,41 @@ const routes = [
     component: <FacultyDashboard />,
   },
   {
-    name: "ClassList",
+    name: "My Profile",
+    layout: "/faculty",
+    path: "profile",
+    icon: <FaUser className="h-6 w-6" />,
+    component: <FacultyProfile />,
+    children:[
+      {
+    layout: "/faculty",
+    path: "edit-profile",
+    component: <EditFacultyProfile />,
+  },
+    ],
+  },
+  // ❌ Hide this from Sidebar
+  {
+    name: "Class List",
     layout: "/faculty",
     path: "ClassList",
     icon: <MdGroups className="h-6 w-6" />,
     component: <ClassList />,
-    children: [
-      {
-        layout: "/faculty",
-        path: "ExamInterFace/upload-marks",
-        component: <FacultyMarksUpdate />,
-      },
-      {
-        layout: "/faculty",
-        path: "ExamInterFace/upload-question",
-        component: <UploadQuestionPaper />,
-      },
-      {
-        layout: "/faculty",
-        path: "ExamInterFace/upload-material",
-        component: <UploadStudyMaterial />,
-      },
-    ],
   },
   {
-    name: "Attendace Upload",
+    name: "Attendance Upload",
     layout: "/faculty",
     path: "Attendance",
     icon: <MdUploadFile className="h-6 w-6" />,
     component: <AttendanceUpload />,
   },
   {
-    name: "Notification and Message",
+    name: "Notification & Message",
     layout: "/faculty",
     path: "Notification&Message",
     icon: <MdNotifications className="h-6 w-6" />,
     component: <Notification_Message />,
   },
-
   {
     name: "Announcements",
     layout: "/faculty",
@@ -242,21 +195,23 @@ const routes = [
     icon: <MdCampaign className="h-6 w-6" />,
     component: <Announcements />,
   },
-  // {
-  //       layout: "/faculty",
-  //       path: "ExamInterFace/upload-marks",
-  //       component: <FacultyMarksUpdate />,
-  //     },
-  //     {
-  //       layout: "/faculty",
-  //       path: "ExamInterFace/upload-question",
-  //       component: <UploadQuestionPaper />,
-  //     },
-  //     {
-  //       layout: "/faculty",
-  //       path: "ExamInterFace/upload-material",
-  //       component: <UploadStudyMaterial />,
-  //     },
+
+  // ❌ These are inner upload routes (not sidebar items)
+  {
+    layout: "/faculty",
+    path: "ExamInterFace/upload-marks",
+    component: <FacultyMarksUpdate />,
+  },
+  {
+    layout: "/faculty",
+    path: "ExamInterFace/upload-question",
+    component: <UploadQuestionPaper />,
+  },
+  {
+    layout: "/faculty",
+    path: "ExamInterFace/upload-material",
+    component: <UploadStudyMaterial />,
+  },
 ];
 
 export default routes;
