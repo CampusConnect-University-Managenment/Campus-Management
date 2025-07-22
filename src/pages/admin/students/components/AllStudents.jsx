@@ -5,6 +5,7 @@ import AboutStudent from "./AboutStudent";
 import AddStudent from "./AddStudent";
 import StudentProfile from "./StudentProfile";
 import PerformanceChart from "./PerformanceChart";
+import BulkAddStudents from "./BulkAddStudents";
 
 const AllStudents = () => {
   const RECENT_STUDENTS_COUNT = 3;
@@ -14,6 +15,7 @@ const AllStudents = () => {
   const [selectedStatus, setSelectedStatus] = useState("All");
   const [selectedYear, setSelectedYear] = useState("All");
   const [showAddModal, setShowAddModal] = useState(false);
+  const [showBulkModal, setShowBulkModal] = useState(false);
   const [editingStudent, setEditingStudent] = useState(null);
   const [selectedStudent, setSelectedStudent] = useState(null);
   const [showAll, setShowAll] = useState(false);
@@ -214,15 +216,24 @@ const AllStudents = () => {
               <option key={idx} value={year}>{year}</option>
             ))}
           </select>
-          <button
-            className="bg-gray-900 text-white px-4 py-2 rounded-md flex items-center gap-2 hover:bg-black"
-            onClick={() => {
-              setEditingStudent(null);
-              setShowAddModal(true);
-            }}
-          >
-            <FaPlus /> Add Student
-          </button>
+          <div className="flex gap-2">
+  <button
+    className="bg-gray-900 text-white px-4 py-2 rounded-md flex items-center gap-2 hover:bg-black"
+    onClick={() => {
+      setEditingStudent(null);
+      setShowAddModal(true);
+    }}
+  >
+    <FaPlus /> Add Student
+  </button>
+  <button
+    className="bg-blue-600 text-white px-4 py-2 rounded-md flex items-center gap-2 hover:bg-blue-700"
+    onClick={() => setShowBulkModal(true)}
+  >
+    📄 Bulk Upload
+  </button>
+</div>
+
         </div>
       </div>
 
@@ -403,7 +414,30 @@ const AllStudents = () => {
           </div>
         </div>
       )}
-
+      {showBulkModal && (
+  <div className="fixed inset-0 z-50 bg-black bg-opacity-40 flex items-center justify-center">
+    <div className="bg-white rounded-lg p-6 w-full max-w-2xl relative shadow-lg">
+      <button
+        onClick={() => setShowBulkModal(false)}
+        className="absolute top-2 right-4 text-gray-500 hover:text-red-600 text-xl"
+      >
+        &times;
+      </button>
+      <BulkAddStudents
+        onClose={() => setShowBulkModal(false)}
+        onBulkAdd={(bulkList) => {
+          const startIndex = students.length + 1;
+          const newStudents = bulkList.map((s, i) => ({
+            ...s,
+            id: `STU${String(startIndex + i).padStart(3, "0")}`,
+          }));
+          setStudents([...students, ...newStudents]);
+          setShowBulkModal(false);
+        }}
+      />
+    </div>
+  </div>
+)}
 
       {/* Student Profile */}
      {selectedStudent && (

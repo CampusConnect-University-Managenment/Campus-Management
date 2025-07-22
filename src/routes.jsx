@@ -7,7 +7,7 @@ import AllStudents from "./pages/admin/students/components/AllStudents";
 import AttendanceUpload from "./pages/faculty/AttendanceUpload";
 import Notification_Message from "./pages/faculty/Notification_Message";
 import ClassList from "./pages/faculty/ClassList";
-import Performance from "./pages/student/Performance-analysis/component/Performance";
+// import Performance from "./pages/student/Performance-analysis/component/Performance";
 import Announcements from "./pages/faculty/Announcements/components/Announcements";
 import StudentDashboard from "./pages/student/StudentDashBoard/components/StudentDashboard";
 import FacultyProfile from "./pages/faculty/Profile";
@@ -30,11 +30,11 @@ import Dashboard from "./pages/student/Dashboard";
 // import Profile from "./pages/student/Profile";
 import CoursesEnrolled from "./pages/student/CoursesEnrolled";
 import PracticeExams from "./pages/student/PracticeExams";
-import ResultsPortal from "./pages/student/ResultsPortal";
+import ResultsPortal from "./pages/student/ResultsPortal/index";
 import PerformanceAnalytics from "./pages/student/PerformanceAnalytics";
 import Notifications from "./pages/student/Notifications";
 import HelpSupport from "./pages/student/HelpSupport";
-
+import Studymaterial from "./pages/student/CoursesEnrolled/Studymaterial"
 // Icons
 
 import {
@@ -103,13 +103,21 @@ const routes = [
     icon: <MdDashboard className="h-5 w-5" />,
     component: <Dashboard />,
   },
-  {
-    name: "Courses Enrolled",
-    layout: "/student",
-    path: "courses",
-    icon: <FaBookOpen className="h-5 w-5" />,
-    component: <CoursesEnrolled />,
-  },
+{
+  path: "CoursesEnrolled",
+  name: "Courses Enrolled",
+  layout: "/student",
+  icon:<FaBookOpen className="h-5 w-5"/>,
+  component: <CoursesEnrolled />,
+  children: [
+    {
+      path: "Studymaterial",
+      name: "Study Material",
+      component: <Studymaterial />
+    }
+  ]
+}
+,
 //   {
 //   name: "Add Course",
 //   layout: "/student",
