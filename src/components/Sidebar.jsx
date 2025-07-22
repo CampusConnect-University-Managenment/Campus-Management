@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { Home, Users, BookOpen, ClipboardList } from 'lucide-react';
-<Route path="/admin/notification-message" element={<NotificationMessage />} />
+
 
 const Sidebar = ({ role }) => {
   const menuItems = {
@@ -23,18 +23,7 @@ const Sidebar = ({ role }) => {
     ],
   };
 
-  const items = menuItems[role] || [];
-
-  return (
-    <div className="w-64 bg-gray-900 text-white p-4 space-y-4">
-      <div className="text-2xl font-bold mb-6">CREATIVE TIM</div>
-      <nav className="space-y-2">
-        {items.map((item, idx) => (
-          <SidebarItem key={idx} icon={item.icon} text={item.text} to={item.to} />
-        ))}
-      </nav>
-    </div>
-  );
+  
 };
 
 const SidebarItem = ({ icon, text, to }) => (

@@ -1,10 +1,5 @@
 import React, { useState } from "react";
-import Card from "@mui/material/Card";
-import Box from "@mui/material/Box";
-import Typography from "@mui/material/Typography";
-import TextField from "@mui/material/TextField";
-import Button from "@mui/material/Button";
-import Icon from "@mui/material/Icon";
+import Sidebar from "../../../components/Sidebar"; // Make sure this path is correct
 
 const Notification_Message = () => {
   const [showForm, setShowForm] = useState(false);
@@ -14,24 +9,28 @@ const Notification_Message = () => {
       time: "10:00 AM",
       venue: "Conference Room A",
       date: "",
+      audience: "Faculty",
     },
     {
       name: "Student Orientation",
       time: "2:00 PM",
       venue: "Main Auditorium",
       date: "",
+      audience: "Student",
     },
     {
       name: "Library Workshop",
       time: "3:30 PM",
       venue: "Library Hall",
       date: "",
+      audience: "Both",
     },
     {
       name: "Emergency Drill",
       time: "4:00 PM",
       venue: "Campus Wide",
       date: "",
+      audience: "Both",
     },
   ]);
 
@@ -40,6 +39,7 @@ const Notification_Message = () => {
     time: "",
     venue: "",
     date: "",
+    audience: "",
   });
 
   const handleInputChange = (e) => {
@@ -65,104 +65,148 @@ const Notification_Message = () => {
 
     setEvents([newEntry, ...events]);
     setShowForm(false);
-    setNewEvent({ name: "", time: "", venue: "", date: "" });
+    setNewEvent({
+      name: "",
+      time: "",
+      venue: "",
+      date: "",
+      audience: "",
+    });
   };
 
   return (
-    <Card sx={{ p: 3 }}>
-      {/* Header */}
-      <Box display="flex" justifyContent="space-between" alignItems="center" mb={3}>
-        <Typography variant="h5" fontWeight="bold">
-          📢 Notice Board - Today's Events
-        </Typography>
-        <Button
-          variant="contained"
-          color="info"
-          onClick={() => setShowForm(!showForm)}
-          sx={{
-            borderRadius: "50%",
-            minWidth: "36px",
-            width: "36px",
-            height: "36px",
-            p: 0,
-          }}
-        >
-          <Icon>add</Icon>
-        </Button>
-      </Box>
+    <div className="flex min-h-screen bg-gray-50 mt-[50px]">
+      {/* Sidebar */}
+      <Sidebar role="admin" />
 
-      {/* Form */}
-      {showForm && (
-        <form onSubmit={handleFormSubmit}>
-          <Box mb={3}>
-            <TextField
-              label="Date"
-              name="date"
-              type="date"
-              fullWidth
-              value={newEvent.date}
-              onChange={handleInputChange}
-              InputLabelProps={{ shrink: true }}
-              sx={{ mb: 2 }}
-              required
-            />
-            <TextField
-              label="Event Name"
-              name="name"
-              fullWidth
-              value={newEvent.name}
-              onChange={handleInputChange}
-              sx={{ mb: 2 }}
-              required
-            />
-            <TextField
-              label="Time"
-              name="time"
-              type="time"
-              fullWidth
-              value={newEvent.time}
-              onChange={handleInputChange}
-              InputLabelProps={{ shrink: true }}
-              sx={{ mb: 2 }}
-              required
-            />
-            <TextField
-              label="Venue"
-              name="venue"
-              fullWidth
-              value={newEvent.venue}
-              onChange={handleInputChange}
-              sx={{ mb: 2 }}
-              required
-            />
-            <Button type="submit" variant="contained" color="success">
-              Submit
-            </Button>
-          </Box>
-        </form>
-      )}
+      {/* Main Content */}
+      <div className="flex-1 p-8">
+        <div className="bg-white rounded-lg shadow p-6">
+          {/* Header */}
+          <div className="flex justify-between items-center mb-6">
+            <h2 className="text-2xl font-bold flex items-center gap-2">
+              📢 Notice Board - Today's Events
+            </h2>
+            <button
+              className="bg-blue-500 hover:bg-blue-600 text-white rounded-full w-9 h-9 flex items-center justify-center"
+              onClick={() => setShowForm(!showForm)}
+              aria-label="Add Event"
+            >
+              <span className="text-xl font-bold">+</span>
+            </button>
+          </div>
 
-      {/* Event List */}
-      <Box>
-        {events.map((event, index) => (
-          <Card
-            key={index}
-            sx={{
-              p: 2,
-              mb: 2,
-              transition: "0.3s",
-              "&:hover": { backgroundColor: "#1976d2", color: "#fff" },
-            }}
-          >
-            <Typography variant="h6" fontWeight="bold">
-              {event.name}
-            </Typography>
-            <Typography variant="body2">🕒 {event.time}</Typography>
-            <Typography variant="body2">📍 {event.venue}</Typography>
-          </Card>
-        ))}
-      </Box>
-    </Card>
+          {/* Form Section */}
+          {showForm && (
+            <form onSubmit={handleFormSubmit} className="mb-6 space-y-4">
+              <div>
+                <label className="block text-sm font-medium mb-1">Date</label>
+                <input
+                  type="date"
+                  name="date"
+                  value={newEvent.date}
+                  onChange={handleInputChange}
+                  required
+                  className="w-full border rounded px-3 py-2"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium mb-1">Event Name</label>
+                <input
+                  type="text"
+                  name="name"
+                  value={newEvent.name}
+                  onChange={handleInputChange}
+                  required
+                  className="w-full border rounded px-3 py-2"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium mb-1">Time</label>
+                <input
+                  type="time"
+                  name="time"
+                  value={newEvent.time}
+                  onChange={handleInputChange}
+                  required
+                  className="w-full border rounded px-3 py-2"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium mb-1">Venue</label>
+                <input
+                  type="text"
+                  name="venue"
+                  value={newEvent.venue}
+                  onChange={handleInputChange}
+                  required
+                  className="w-full border rounded px-3 py-2"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium mb-2">
+                  To whom the notifications should reach?
+                </label>
+                <div className="flex gap-4">
+                  <label className="flex items-center gap-2">
+                    <input
+                      type="radio"
+                      name="audience"
+                      value="Student"
+                      checked={newEvent.audience === "Student"}
+                      onChange={handleInputChange}
+                      required
+                    />
+                    Student
+                  </label>
+                  <label className="flex items-center gap-2">
+                    <input
+                      type="radio"
+                      name="audience"
+                      value="Faculty"
+                      checked={newEvent.audience === "Faculty"}
+                      onChange={handleInputChange}
+                    />
+                    Faculty
+                  </label>
+                  <label className="flex items-center gap-2">
+                    <input
+                      type="radio"
+                      name="audience"
+                      value="Both"
+                      checked={newEvent.audience === "Both"}
+                      onChange={handleInputChange}
+                    />
+                    Both
+                  </label>
+                </div>
+              </div>
+              <button
+                type="submit"
+                className="bg-green-500 hover:bg-green-600 text-white px-6 py-2 rounded font-semibold"
+              >
+                Submit
+              </button>
+            </form>
+          )}
+
+          {/* Event List */}
+          <div>
+            {events.map((event, index) => (
+              <div
+                key={index}
+                className="bg-blue-50 hover:bg-blue-500 hover:text-white transition-colors rounded-lg p-4 mb-4 shadow"
+              >
+                <div className="text-lg font-bold">{event.name}</div>
+                <div className="text-sm">🕒 {event.time}</div>
+                <div className="text-sm">📍 {event.venue}</div>
+                <div className="text-sm">🎯 For: {event.audience}</div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+    </div>
   );
 };
 
