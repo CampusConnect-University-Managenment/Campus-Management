@@ -1,6 +1,7 @@
-import React from "react";
+import React, { Children } from "react";
 import AdminDashboard from "./pages/admin/dashboard";
 import AdminExam from "./pages/admin/exam";
+import NotificationMessage from "./pages/admin/Notification_Message";
 import MockCourse from "./pages/admin/course";
 import AllStudents from "./pages/admin/students/components/AllStudents";
 import AttendanceUpload from "./pages/faculty/AttendanceUpload";
@@ -10,16 +11,16 @@ import ClassList from "./pages/faculty/ClassList";
 import Announcements from "./pages/faculty/Announcements/components/Announcements";
 import StudentDashboard from "./pages/student/StudentDashBoard/components/StudentDashboard";
 import FacultyProfile from "./pages/faculty/Profile";
-import Interface from "./pages/faculty/Exam_InterFace/Components/InterFace";
 import FacultyMarksUpdate from "./pages/faculty/Exam_InterFace/Components/Upload_Components/Upload_Marks";
 import UploadQuestionPaper from "./pages/faculty/Exam_InterFace/Components/Upload_Components/Upload_QuestionPaper";
 import UploadStudyMaterial from "./pages/faculty/Exam_InterFace/Components/Upload_Components/Upload_StudyMaterials";
 import FacultyManagement from "./pages/admin/faculty/index";
 // Auth Views
-
+// import Home from "./pages/Auth/index";
 //student
 // Student Views
 import MyProfile from "./pages/student/MyProfile";
+import EditFacultyProfile from "./pages/faculty/EditProfile";
 import Dashboard from "./pages/student/Dashboard";
 // import Profile from "./pages/student/Profile";
 import CoursesEnrolled from "./pages/student/CoursesEnrolled";
@@ -48,8 +49,17 @@ import { MdUploadFile } from "react-icons/md";
 import { MdCampaign } from "react-icons/md";
 import FacultyDashboard from "./pages/faculty/dashboard";
 import ExamSchedule from "./pages/admin/exam/components/examschedule";
+// import AddCourse from "./pages/student/CoursesEnrolled/components/AddCourse";
 //import { FaUser } from "react-icons/fa";
 const routes = [
+  // Auth Routes
+  // {
+  //   name: "Auth",
+  //   layout: "/auth",
+  //   path: "login",
+  //   icon: <MdDashboard className="h-5 w-5" />,
+  //   component: <Home/>,
+  // },
   // Admin Routes
   {
     name: "Admin Dashboard",
@@ -77,7 +87,7 @@ const routes = [
     layout: "/admin",
     path: "Notification_Message",
     icon: <MdDashboard className="h-6 w-6" />,
-    component: <Notification_Message />,
+    component: <NotificationMessage />,
   },
 
   // Student Routes
@@ -95,6 +105,12 @@ const routes = [
     icon: <FaBookOpen className="h-5 w-5" />,
     component: <CoursesEnrolled />,
   },
+  //   {
+  //   name: "Add Course",
+  //   layout: "/student",
+  //   path: "AddCourse",
+  //   component: <AddCourse />,
+  // },
   {
     name: "Practice Exams",
     layout: "/student",
@@ -159,6 +175,21 @@ const routes = [
 
   // Faculty Routes
   {
+    name: "My Profile",
+    layout: "/faculty",
+    path: "profile",
+    icon: <FaUser className="h-6 w-6" />,
+    component: <FacultyProfile />,
+  },
+  {
+    name: "Edit Profile",
+    layout: "/faculty",
+    path: "edit-profile",
+    icon: <FaUser className="h-6 w-6" />, // Optional icon
+    component: <EditFacultyProfile />,
+  },
+
+  {
     name: "Faculty Dashboard",
     layout: "/faculty",
     path: "default",
@@ -171,6 +202,23 @@ const routes = [
     path: "ClassList",
     icon: <MdGroups className="h-6 w-6" />,
     component: <ClassList />,
+    children: [
+      {
+        layout: "/faculty",
+        path: "ExamInterFace/upload-marks",
+        component: <FacultyMarksUpdate />,
+      },
+      {
+        layout: "/faculty",
+        path: "ExamInterFace/upload-question",
+        component: <UploadQuestionPaper />,
+      },
+      {
+        layout: "/faculty",
+        path: "ExamInterFace/upload-material",
+        component: <UploadStudyMaterial />,
+      },
+    ],
   },
   {
     name: "Attendace Upload",
@@ -186,40 +234,7 @@ const routes = [
     icon: <MdNotifications className="h-6 w-6" />,
     component: <Notification_Message />,
   },
-  {
-    name: "My Profile",
-    layout: "/faculty",
-    path: "profile",
-    icon: <FaUser className="h-6 w-6" />,
-    component: <FacultyProfile />,
-  },
-  {
-    name: "Exam InterFace",
-    layout: "/faculty",
-    path: "ExamInterFace",
-    icon: <MdLibraryBooks className="h-6 w-6" />,
-    component: <Interface />,
-    children: [
-      {
-        name: "Upload Marks",
-        layout: "/faculty",
-        path: "ExamInterFace/upload-marks",
-        component: <FacultyMarksUpdate />,
-      },
-      {
-        name: "Upload Question Paper",
-        layout: "/faculty",
-        path: "ExamInterFace/upload-question",
-        component: <UploadQuestionPaper />,
-      },
-      {
-        name: "Upload Study Material",
-        layout: "/faculty",
-        path: "ExamInterFace/upload-material",
-        component: <UploadStudyMaterial />,
-      },
-    ],
-  },
+
   {
     name: "Announcements",
     layout: "/faculty",
@@ -227,6 +242,21 @@ const routes = [
     icon: <MdCampaign className="h-6 w-6" />,
     component: <Announcements />,
   },
+  // {
+  //       layout: "/faculty",
+  //       path: "ExamInterFace/upload-marks",
+  //       component: <FacultyMarksUpdate />,
+  //     },
+  //     {
+  //       layout: "/faculty",
+  //       path: "ExamInterFace/upload-question",
+  //       component: <UploadQuestionPaper />,
+  //     },
+  //     {
+  //       layout: "/faculty",
+  //       path: "ExamInterFace/upload-material",
+  //       component: <UploadStudyMaterial />,
+  //     },
 ];
 
 export default routes;

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect,useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { FaClipboardList, FaFileUpload, FaBookOpen } from "react-icons/fa";
 
@@ -9,6 +9,7 @@ const FacultyMarksUpdate = () => {
   const [students, setStudents] = useState([{ name: "", marks: "" }]);
   const navigate = useNavigate();
 
+  useEffect(()=>{window.scrollTo(0,0)},[])
 
   const handleInputChange = (index, field, value) => {
     const updated = [...students];
@@ -48,7 +49,7 @@ const FacultyMarksUpdate = () => {
   return (
     <div className="mt-[100px] min-h-screen bg-[#f0f4f8] px-4 py-10 font-inter">
       <button onClick={() => navigate(-1)} className="bg-blue-500 text-white px-4 py-2 rounded">
-            ← Back to ExamInterFace
+            ← Back
             </button><br/>
       <br/>
       <div className="max-w-6xl mx-auto bg-white rounded-2xl shadow-xl p-8">
