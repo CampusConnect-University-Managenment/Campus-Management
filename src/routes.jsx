@@ -123,6 +123,14 @@ const routes = [
     icon: <FaBell className="h-5 w-5" />,
     component: <Notifications />,
   },
+  
+   {
+     name: "My Profile",
+     layout: "/student",
+     path: "profile",
+     icon: <FaUser className="h-6 w-6" />,
+     component: <MyProfile />,
+   },
   {
     name: "Help & Support",
     layout: "/student",
@@ -147,35 +155,7 @@ const routes = [
     component: <ExamSchedule />,
   },
 
-  // {
-  //   name: "Results Portal",
-  //   layout: "/student",
-  //   path: "demo",
-  //   icon: <FaGraduationCap className="h-5 w-5" />,
-  //   component: <MyProfile />,
-  // },
 
-  // {
-  //   name: "Performance Analytics",
-  //   layout: "/student",
-  //   path: "Performance",
-  //   icon: <FaChartBar className="h-5 w-5" />,
-  //   component: <Performance />,
-  // },
-  // {
-  //   name: "Notifications",
-  //   layout: "/student",
-  //   path: "demo",
-  //   icon: <FaBell className="h-5 w-5" />,
-  //   component: <MyProfile />,
-  // },
-  // {
-  //   name: "Help & Support",
-  //   layout: "/student",
-  //   path: "demo",
-  //   icon: <FaQuestionCircle className="h-5 w-5" />,
-  //   component: <MyProfile />,
-  // },
 
   // Faculty Routes
   {

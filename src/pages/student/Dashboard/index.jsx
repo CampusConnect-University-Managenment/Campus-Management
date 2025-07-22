@@ -97,7 +97,7 @@ export default function StudentDashboard() {
             <div className="bg-gray-50 rounded-xl p-4 shadow-sm space-y-3">
               <DetailRow label="Register No:" value="21CSE019" />
               <DetailRow label="Department:" value="CSE" />
-              <DetailRow label="Batch:" value="2021-2025" />
+              <DetailRow label="Batch:" value="2022" />
               <DetailRow label="Year:" value="3" />
               <DetailRow label="Semester:" value="6" />
             </div>
