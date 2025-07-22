@@ -30,7 +30,7 @@ import Dashboard from "./pages/student/Dashboard";
 // import Profile from "./pages/student/Profile";
 import CoursesEnrolled from "./pages/student/CoursesEnrolled";
 import PracticeExams from "./pages/student/PracticeExams";
-import ResultsPortal from "./pages/student/ResultsPortal";
+import ResultsPortal from "./pages/student/ResultsPortal/index";
 import PerformanceAnalytics from "./pages/student/PerformanceAnalytics";
 import Notifications from "./pages/student/Notifications";
 import HelpSupport from "./pages/student/HelpSupport";
