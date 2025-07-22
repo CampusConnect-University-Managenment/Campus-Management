@@ -28,7 +28,7 @@ import ResultsPortal from "./pages/student/ResultsPortal";
 import PerformanceAnalytics from "./pages/student/PerformanceAnalytics";
 import Notifications from "./pages/student/Notifications";
 import HelpSupport from "./pages/student/HelpSupport";
-
+import Studymaterial from "./pages/student/CoursesEnrolled/Studymaterial"
 // Icons
 
 import {
@@ -89,13 +89,20 @@ const routes = [
     icon: <MdDashboard className="h-5 w-5" />,
     component: <Dashboard />,
   },
-  {
-    name: "Courses Enrolled",
-    layout: "/student",
-    path: "courses",
-    icon: <FaBookOpen className="h-5 w-5" />,
-    component: <CoursesEnrolled />,
-  },
+{
+  path: "CoursesEnrolled",
+  name: "Courses Enrolled",
+  layout: "/student",
+  component: <CoursesEnrolled />,
+  children: [
+    {
+      path: "Studymaterial",
+      name: "Study Material",
+      component: <Studymaterial />
+    }
+  ]
+}
+,
 //   {
 //   name: "Add Course",
 //   layout: "/student",
