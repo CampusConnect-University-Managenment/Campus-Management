@@ -1,3 +1,4 @@
+
 import React from "react";
 import {
   BarChart,
@@ -11,16 +12,17 @@ import {
 } from "recharts";
 import { GraduationCap, Activity, BookOpen } from "lucide-react";
 
-// ✅ Updated to semester-wise percentage data
+// ✅ CGPA data for each semester
 const chartData = [
-  { name: "Sem 1", Percentage: 78 },
-  { name: "Sem 2", Percentage: 82 },
-  { name: "Sem 3", Percentage: 75 },
-  { name: "Sem 4", Percentage: 88 },
-  { name: "Sem 5", Percentage: 84 },
-  { name: "Sem 6", Percentage: 90 },
+  { name: "Sem 1", CGPA: 7.8 },
+  { name: "Sem 2", CGPA: 8.2 },
+  { name: "Sem 3", CGPA: 7.5 },
+  { name: "Sem 4", CGPA: 8.8 },
+  { name: "Sem 5", CGPA: 8.4 },
+  { name: "Sem 6", CGPA: 9.0 },
 ];
 
+// 📊 Stats on top
 const quickStats = [
   {
     id: 1,
@@ -45,6 +47,19 @@ const quickStats = [
   },
 ];
 
+// 🧠 Custom tooltip to avoid colon
+const CustomTooltip = ({ active, payload, label }) => {
+  if (active && payload && payload.length) {
+    return (
+      <div className="bg-white border border-gray-300 rounded p-2 shadow">
+        <p className="text-sm font-medium text-gray-800">{label}</p>
+        <p className="text-sm text-gray-600">CGPA {payload[0].value}</p>
+      </div>
+    );
+  }
+  return null;
+};
+
 export default function PerformanceAnalytics() {
   return (
     <div className="pt-24 px-10 pb-16 min-h-screen bg-gradient-to-tr from-[#f6f8fc] to-[#ffffff]">
@@ -63,36 +78,31 @@ export default function PerformanceAnalytics() {
               <p className="text-sm text-gray-600">{stat.title}</p>
               <h3 className="text-2xl font-bold text-gray-900">{stat.value}</h3>
             </div>
-            <div className="p-2 rounded-full bg-white shadow-sm">
-              {stat.icon}
-            </div>
+            <div className="p-2 rounded-full bg-white shadow-sm">{stat.icon}</div>
           </div>
         ))}
       </div>
 
-      {/* ✅ Bar Chart for Semester-Wise Performance */}
+      {/* ✅ Bar Chart for Semester-Wise CGPA */}
       <div className="bg-white rounded-2xl shadow-md p-6">
         <h2 className="text-lg font-semibold text-gray-800 mb-4">
-          🎓 Semester-wise Percentage
+          🎓 Semester-wise CGPA
         </h2>
         <ResponsiveContainer width="100%" height={300}>
           <BarChart data={chartData}>
             <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
             <XAxis dataKey="name" stroke="#4b5563" />
-            <YAxis domain={[0, 100]} stroke="#4b5563" />
-            <Tooltip
-              cursor={{ fill: "#f3f4f6" }}
-              contentStyle={{ backgroundColor: "#fff", borderColor: "#e5e7eb" }}
-            />
+            <YAxis domain={[0, 10]} stroke="#4b5563" />
+            <Tooltip content={<CustomTooltip />} />
             <Legend />
             <Bar
-              dataKey="Percentage"
-              fill="url(#barGradient)"
+              dataKey="CGPA"
+              fill="url(#cgpaGradient)"
               radius={[10, 10, 0, 0]}
               barSize={40}
             />
             <defs>
-              <linearGradient id="barGradient" x1="0" y1="0" x2="0" y2="1">
+              <linearGradient id="cgpaGradient" x1="0" y1="0" x2="0" y2="1">
                 <stop offset="0%" stopColor="#6366f1" />
                 <stop offset="100%" stopColor="#a5b4fc" />
               </linearGradient>

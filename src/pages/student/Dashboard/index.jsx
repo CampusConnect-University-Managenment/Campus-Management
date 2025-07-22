@@ -1,6 +1,11 @@
-
 import React from "react";
-import { CalendarDays, NotebookPen, Rocket, Star } from "lucide-react";
+import {
+  CalendarDays,
+  NotebookPen,
+  Rocket,
+  Star,
+  GraduationCap,
+} from "lucide-react";
 
 export default function StudentDashboard() {
   const scheduleData = [
@@ -34,7 +39,7 @@ export default function StudentDashboard() {
       </div>
 
       {/* Stats Overview */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-6 mb-12">
         <StatCard
           title="Active Courses"
           value="05"
@@ -58,6 +63,12 @@ export default function StudentDashboard() {
           value="92%"
           icon={<Rocket />}
           color="rose"
+        />
+        <StatCard
+          title="No. of Backlogs"
+          value="02"
+          icon={<GraduationCap />}
+          color="red"
         />
       </div>
 
@@ -84,10 +95,11 @@ export default function StudentDashboard() {
           {/* Boxed Details Section */}
           <div className="px-6 pb-6">
             <div className="bg-gray-50 rounded-xl p-4 shadow-sm space-y-3">
-              <DetailRow label="Roll No:" value="21CSE019" />
+              <DetailRow label="Register No:" value="21CSE019" />
               <DetailRow label="Department:" value="CSE" />
-              <DetailRow label="Year:" value="3rd Year" />
-              <DetailRow label="Semester:" value="6th" />
+              <DetailRow label="Batch:" value="2022" />
+              <DetailRow label="Year:" value="3" />
+              <DetailRow label="Semester:" value="6" />
             </div>
           </div>
         </div>
@@ -150,6 +162,7 @@ function StatCard({ title, value, icon, color }) {
     purple: "bg-purple-100 text-purple-600",
     amber: "bg-amber-100 text-amber-600",
     rose: "bg-rose-100 text-rose-600",
+    red: "bg-red-100 text-red-600",
   }[color];
 
   return (
@@ -167,8 +180,8 @@ function StatCard({ title, value, icon, color }) {
 function DetailRow({ label, value }) {
   return (
     <div className="flex justify-between text-sm">
-      <span>{label}</span>
-      <span>{value}</span>
+      <span className="font-medium text-gray-600">{label}</span>
+      <span className="text-gray-800">{value}</span>
     </div>
   );
 }
@@ -195,4 +208,3 @@ function ScheduleItem({ date, time, title }) {
     </div>
   );
 }
-
