@@ -7,6 +7,7 @@ import AdminMarksUpload from "./pages/admin/dashboard/component/MarksUpload";
 
 import NotificationMessage from "./pages/admin/Notification_Message";
 import MockCourse from "./pages/admin/course";
+import Assign from "./pages/admin/Assign_class"
 import AllStudents from "./pages/admin/students/components/AllStudents";
 import AttendanceUpload from "./pages/faculty/AttendanceUpload";
 import Notification_Message from "./pages/faculty/Notification_Message";
@@ -32,10 +33,11 @@ import ResultsPortal from "./pages/student/ResultsPortal";
 import PerformanceAnalytics from "./pages/student/PerformanceAnalytics";
 import Notifications from "./pages/student/Notifications";
 import HelpSupport from "./pages/student/HelpSupport";
+import Studymaterial from "./pages/student/CoursesEnrolled/Studymaterial";
 import FacultyDashboard from "./pages/faculty/dashboard";
-
 import ExamSchedule from "./pages/admin/exam/components/examschedule";
 
+// Icons
 import {
   FaBookOpen,
   FaUser,
@@ -86,6 +88,13 @@ const routes = [
     component: <NotificationMessage />,
   },
   {
+    name: "Assign Class",
+    layout: "/admin",
+    path: "Assign_class",
+    icon: <MdDashboard className="h-6 w-6" />,
+    component: <Assign />,
+  },
+   {
   name: "Exam Interface",
   layout: "/admin",
   path: "examinterface",
