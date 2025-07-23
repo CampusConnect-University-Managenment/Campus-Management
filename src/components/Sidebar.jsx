@@ -1,49 +1,33 @@
-import React from 'react';
-import { Link } from 'react-router-dom';
-import { Home, Users, BookOpen, ClipboardList } from 'lucide-react';
-<Route path="/admin/notification-message" element={<NotificationMessage />} />
+import React from "react";
+import { Link, useLocation } from "react-router-dom";
+import routes from "../routes"; // adjust path as needed
 
 const Sidebar = ({ role }) => {
-  const menuItems = {
-    admin: [
-      { icon: <Home />, text: 'Dashboard', to: '/admin/dashboard' },
-      { icon: <ClipboardList />, text: 'Exam', to: '/admin/exam' },
-      { icon: <Users />, text: 'Faculty', to: '/admin/faculty' },
-      { icon: <BookOpen />, text: 'Student', to: '/admin/student' },
-      { icon: <BookOpen />, text: 'Notification', to: '/admin/notification-message' },
-    ],
-   student: [
-  { icon: <ClipboardList />, text: 'Exam Interface', to: '/student/examinterface' },
-  { icon: <ClipboardList />, text: 'Performance Analytics', to: '/student/performance' },
-   { icon: <BookOpen />, text: 'Notification', to: '/admin/notification-message' },
-],
+  const location = useLocation();
 
-    faculty: [
-      { icon: <Home />, text: 'Faculty Home', to: '/faculty/home' },
-    ],
-  };
-
-  const items = menuItems[role] || [];
+  // Filter routes based on layout (role) and only include those with `name`
+  const sidebarRoutes = routes.filter(
+    (route) => route.layout === `/${role}` && route.name
+  );
 
   return (
-    <div className="w-64 bg-gray-900 text-white p-4 space-y-4">
-      <div className="text-2xl font-bold mb-6">CREATIVE TIM</div>
-      <nav className="space-y-2">
-        {items.map((item, idx) => (
-          <SidebarItem key={idx} icon={item.icon} text={item.text} to={item.to} />
-        ))}
-      </nav>
+    <div className="space-y-2 p-4">
+      {sidebarRoutes.map((route, index) => (
+        <Link
+          key={index}
+          to={`${route.layout}/${route.path}`}
+          className={`flex items-center gap-3 p-2 rounded-md hover:bg-blue-100 transition ${
+            location.pathname === `${route.layout}/${route.path}`
+              ? "bg-blue-200 font-semibold"
+              : "text-gray-700"
+          }`}
+        >
+          {route.icon}
+          <span>{route.name}</span>
+        </Link>
+      ))}
     </div>
   );
 };
-
-const SidebarItem = ({ icon, text, to }) => (
-  <Link to={to} className="block">
-    <div className="flex items-center gap-3 p-2 hover:bg-gray-800 rounded-md cursor-pointer">
-      {icon}
-      <span>{text}</span>
-    </div>
-  </Link>
-);
 
 export default Sidebar;

@@ -3,17 +3,30 @@ import React, { useState, useEffect } from "react";
 const AddStudent = ({ editingStudent, onAddStudent, onEditStudent, onClose }) => {
   const [formData, setFormData] = useState({
     name: "",
-    email: "",
-    phone: "",
-    avatar: null,
-    department: "",
-    degree: "",
+    regNo: "",
+    batch: "",
+    section: "",
+    dept: "",
+    dob: "",
+    contact: "",
+    mail: "",
+    address: "",
+    adhar: "",
+    tenthMark: "",
+    twelfthMark: "",
+    quota: "",
+    gender: "",
+    bloodGroup: "",
+    photo: "",
+    parentName: "",
+    parentPhoneNo: "",
+    sem: "",
     year: "",
-    semester: "",
-    status: "Active",
+    totalCredits: "",
     cgpa: "",
     attendance: "",
     bio: "",
+    status: "Active",
     placement: null,
   });
 
@@ -34,13 +47,13 @@ const AddStudent = ({ editingStudent, onAddStudent, onEditStudent, onClose }) =>
     }));
   };
 
-  const handleAvatarChange = (e) => {
+  const handlePhotoChange = (e) => {
     const file = e.target.files[0];
     if (file) {
       const imageUrl = URL.createObjectURL(file);
       setFormData((prev) => ({
         ...prev,
-        avatar: imageUrl,
+        photo: imageUrl,
       }));
     }
   };
@@ -73,48 +86,52 @@ const AddStudent = ({ editingStudent, onAddStudent, onEditStudent, onClose }) =>
 
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
-      <h2 className="text-xl font-bold mb-4">{editingStudent ? "Edit Student" : "Add New Student"}</h2>
+      <h2 className="text-xl font-bold mb-4">
+        {editingStudent ? "Edit Student" : "Add New Student"}
+      </h2>
 
-      {/* Basic Fields */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <input type="text" name="name" value={formData.name} onChange={handleChange} placeholder="Full Name" className="border p-2 rounded" required />
-        <input type="email" name="email" value={formData.email} onChange={handleChange} placeholder="Email" className="border p-2 rounded" required />
-        <input type="text" name="phone" value={formData.phone} onChange={handleChange} placeholder="Phone" className="border p-2 rounded" required />
+        <input name="name" value={formData.name} onChange={handleChange} placeholder="Full Name" className="border p-2 rounded" required />
+        <input name="regNo" value={formData.regNo} onChange={handleChange} placeholder="Reg. Number" className="border p-2 rounded" required />
+        <input name="batch" value={formData.batch} onChange={handleChange} placeholder="Batch" className="border p-2 rounded" />
+        <input name="section" value={formData.section} onChange={handleChange} placeholder="Section" className="border p-2 rounded" />
+        <input name="dept" value={formData.dept} onChange={handleChange} placeholder="Department" className="border p-2 rounded" />
+        <input name="dob" type="date" value={formData.dob} onChange={handleChange} placeholder="Date of Birth" className="border p-2 rounded" />
+        <input name="contact" value={formData.contact} onChange={handleChange} placeholder="Student Phone" className="border p-2 rounded" />
+        <input name="mail" type="email" value={formData.mail} onChange={handleChange} placeholder="Student Email" className="border p-2 rounded" />
+        <input name="adhar" value={formData.adhar} onChange={handleChange} placeholder="Aadhar Number" className="border p-2 rounded" />
+        <input name="tenthMark" value={formData.tenthMark} onChange={handleChange} placeholder="10th Mark (%)" className="border p-2 rounded" />
+        <input name="twelfthMark" value={formData.twelfthMark} onChange={handleChange} placeholder="12th Mark (%)" className="border p-2 rounded" />
+        <input name="quota" value={formData.quota} onChange={handleChange} placeholder="Quota (GQ/MQ)" className="border p-2 rounded" />
+        <input name="gender" value={formData.gender} onChange={handleChange} placeholder="Gender" className="border p-2 rounded" />
+        <input name="bloodGroup" value={formData.bloodGroup} onChange={handleChange} placeholder="Blood Group" className="border p-2 rounded" />
+        <input name="parentName" value={formData.parentName} onChange={handleChange} placeholder="Parent Name" className="border p-2 rounded" />
+        <input name="parentPhoneNo" value={formData.parentPhoneNo} onChange={handleChange} placeholder="Parent Phone No" className="border p-2 rounded" />
+        <input name="sem" value={formData.sem} onChange={handleChange} placeholder="Semester" className="border p-2 rounded" />
+        <input name="year" value={formData.year} onChange={handleChange} placeholder="Year" className="border p-2 rounded" />
+        <input name="totalCredits" value={formData.totalCredits} onChange={handleChange} placeholder="Total Credits" className="border p-2 rounded" />
+        <input name="address" value={formData.address} onChange={handleChange} placeholder="Address" className="border p-2 rounded" />
 
-        {/* Avatar Upload */}
-        <div>
-          <label className="block mb-1 font-medium">Upload Profile Picture</label>
-          <input
-            type="file"
-            accept="image/*"
-            onChange={handleAvatarChange}
-            className="border p-2 rounded w-full"
-          />
-          {formData.avatar && (
-            <img
-              src={formData.avatar}
-              alt="Preview"
-              className="mt-2 w-20 h-20 object-cover rounded-full border"
-            />
-          )}
-        </div>
+        {/* Photo URL */}
+        <input name="photo" value={formData.photo} onChange={handleChange} placeholder="Profile Photo URL" className="border p-2 rounded" />
+        
+        {/* OR Upload */}
+        <input type="file" accept="image/*" onChange={handlePhotoChange} className="border p-2 rounded" />
+        {formData.photo && (
+          <img src={formData.photo} alt="Preview" className="w-20 h-20 object-cover rounded-full border" />
+        )}
 
-        <input type="text" name="department" value={formData.department} onChange={handleChange} placeholder="Department" className="border p-2 rounded" />
-        <input type="text" name="degree" value={formData.degree} onChange={handleChange} placeholder="Degree" className="border p-2 rounded" />
-        <input type="text" name="year" value={formData.year} onChange={handleChange} placeholder="Year" className="border p-2 rounded" />
-        <input type="text" name="semester" value={formData.semester} onChange={handleChange} placeholder="Semester" className="border p-2 rounded" />
-        <select name="status" value={formData.status} onChange={handleChange} className="border p-2 rounded">
-          <option value="Active">Active</option>
-          <option value="Graduated">Graduated</option>
-        </select>
-        <input type="number" step="0.1" name="cgpa" value={formData.cgpa} onChange={handleChange} placeholder="CGPA" className="border p-2 rounded" />
-        <input type="number" name="attendance" value={formData.attendance} onChange={handleChange} placeholder="Attendance %" className="border p-2 rounded" />
+        {/* Optional fields only for edit */}
+        {editingStudent && (
+          <>
+            <input name="cgpa" value={formData.cgpa} onChange={handleChange} placeholder="CGPA" className="border p-2 rounded" />
+            <input name="attendance" value={formData.attendance} onChange={handleChange} placeholder="Attendance %" className="border p-2 rounded" />
+            <textarea name="bio" value={formData.bio} onChange={handleChange} placeholder="Bio" className="border p-2 rounded w-full md:col-span-2" rows={3}></textarea>
+          </>
+        )}
       </div>
 
-      {/* Bio */}
-      <textarea name="bio" value={formData.bio} onChange={handleChange} placeholder="Bio" className="border p-2 rounded w-full" rows={3}></textarea>
-
-      {/* Toggle Placement (Edit Only) */}
+      {/* Mark as Placed */}
       {editingStudent && (
         <div className="mt-4">
           <label className="flex items-center gap-2">
@@ -133,79 +150,20 @@ const AddStudent = ({ editingStudent, onAddStudent, onEditStudent, onClose }) =>
         </div>
       )}
 
-      {/* Placement Fields */}
       {markAsPlaced && (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4 border-t pt-4">
-          <input
-            type="text"
-            name="company"
-            value={formData.placement?.company || ""}
-            onChange={handlePlacementChange}
-            placeholder="Company Name"
-            className="border p-2 rounded"
-            required
-          />
-          <input
-            type="text"
-            name="location"
-            value={formData.placement?.location || ""}
-            onChange={handlePlacementChange}
-            placeholder="Location"
-            className="border p-2 rounded"
-            required
-          />
-          <input
-            type="text"
-            name="position"
-            value={formData.placement?.position || ""}
-            onChange={handlePlacementChange}
-            placeholder="Position"
-            className="border p-2 rounded"
-            required
-          />
-          <input
-            type="number"
-            step="0.1"
-            name="package"
-            value={formData.placement?.package || ""}
-            onChange={handlePlacementChange}
-            placeholder="Package (LPA)"
-            className="border p-2 rounded"
-            required
-          />
-          <input
-            type="text"
-            name="date"
-            value={formData.placement?.date || ""}
-            onChange={handlePlacementChange}
-            placeholder="Placement Date"
-            className="border p-2 rounded"
-            required
-          />
-          <input
-            type="url"
-            name="proof"
-            value={formData.placement?.proof || ""}
-            onChange={handlePlacementChange}
-            placeholder="Proof URL"
-            className="border p-2 rounded"
-          />
+          <input name="company" value={formData.placement?.company || ""} onChange={handlePlacementChange} placeholder="Company Name" className="border p-2 rounded" />
+          <input name="location" value={formData.placement?.location || ""} onChange={handlePlacementChange} placeholder="Location" className="border p-2 rounded" />
+          <input name="position" value={formData.placement?.position || ""} onChange={handlePlacementChange} placeholder="Position" className="border p-2 rounded" />
+          <input name="package" value={formData.placement?.package || ""} onChange={handlePlacementChange} placeholder="Package (LPA)" className="border p-2 rounded" />
+          <input name="date" value={formData.placement?.date || ""} onChange={handlePlacementChange} placeholder="Placement Date" className="border p-2 rounded" />
+          <input name="proof" value={formData.placement?.proof || ""} onChange={handlePlacementChange} placeholder="Proof URL" className="border p-2 rounded" />
         </div>
       )}
 
-      {/* Submit Button */}
       <div className="flex justify-end gap-3 pt-4 border-t mt-4">
-        <button
-          type="button"
-          onClick={onClose}
-          className="px-4 py-2 border rounded hover:bg-gray-100"
-        >
-          Cancel
-        </button>
-        <button
-          type="submit"
-          className="px-6 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
-        >
+        <button type="button" onClick={onClose} className="px-4 py-2 border rounded hover:bg-gray-100">Cancel</button>
+        <button type="submit" className="px-6 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">
           {editingStudent ? "Update Student" : "Add Student"}
         </button>
       </div>

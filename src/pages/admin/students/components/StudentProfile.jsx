@@ -1,138 +1,88 @@
 import React from "react";
-import { FaEdit, FaTrash } from "react-icons/fa";
 
 const StudentProfile = ({ student, onClose, onEdit, onDelete }) => {
+
   if (!student) return null;
 
-  const getCgpaColor = (cgpa) => {
-    if (cgpa >= 9) return "bg-green-100 text-green-800";
-    if (cgpa >= 7) return "bg-yellow-100 text-yellow-800";
-    return "bg-red-100 text-red-800";
-  };
-
-  const attendance = parseFloat(student.attendance ?? 0);
-
-  const getAttendanceColor = (percentage) => {
-    if (percentage >= 75) return "bg-green-500";
-    if (percentage >= 50) return "bg-yellow-400";
-    return "bg-red-500";
-  };
-
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
-      <div className="bg-white w-full max-w-3xl p-6 rounded-lg shadow-lg relative overflow-y-auto max-h-[90vh]">
-        <button
-          className="absolute top-3 right-4 text-gray-500 hover:text-red-600 text-2xl font-bold"
-          onClick={onClose}
-        >
-          &times;
-        </button>
+   <div className="fixed inset-0 z-50 flex items-start justify-center overflow-auto bg-black bg-opacity-40 py-10">
 
-        {/* Profile Picture and Basic Info */}
-        <div className="flex items-center gap-6 mb-6">
-          <img
-            src={student.avatar}
-            alt={student.name}
-            className="w-24 h-24 rounded-full object-cover border-2 border-gray-300"
-          />
-          <div>
-            <h2 className="text-2xl font-bold">{student.name}</h2>
-            <p className="text-gray-600">{student.email}</p>
-            <p className="text-gray-600">{student.phone}</p>
-          </div>
+      <div className="bg-white rounded-xl shadow-lg w-full max-w-2xl max-h-[90vh] overflow-y-auto">
+        <div className="flex items-center justify-between px-6 py-4 border-b border-gray-200">
+          <h2 className="text-xl font-semibold text-gray-800">Student Profile</h2>
+          <button
+            onClick={onClose}
+            className="text-gray-600 hover:text-red-600 text-lg font-bold"
+          >
+            ✕
+          </button>
         </div>
 
-        {/* Student Info Grid */}
-        <div className="grid grid-cols-2 gap-4 text-sm text-gray-700 mb-6">
-          <div><strong>ID:</strong> {student.id}</div>
-          <div><strong>Department:</strong> {student.department}</div>
-          <div><strong>Degree:</strong> {student.degree}</div>
-          <div><strong>Year:</strong> {student.year}</div>
-          <div><strong>Semester:</strong> {student.semester}</div>
-          <div>
-            <strong>Status:</strong>{" "}
-            <span
-              className={`inline-block px-2 py-1 rounded-full text-xs ${
-                student.status === "Active"
-                  ? "bg-green-100 text-green-700"
-                  : "bg-purple-100 text-purple-700"
-              }`}
-            >
-              {student.status}
-            </span>
-          </div>
-          <div>
-            <strong>CGPA:</strong>{" "}
-            <span
-              className={`inline-block px-2 py-1 rounded-full text-xs ${getCgpaColor(
-                student.cgpa || 0
-              )}`}
-            >
-              {student.cgpa ?? "N/A"}
-            </span>
-          </div>
-          <div>
-            <strong>Attendance:</strong>
-            <div className="w-full bg-gray-200 rounded-full h-4 mt-1 overflow-hidden">
-              <div
-                className={`h-full rounded-full transition-all duration-300 ${getAttendanceColor(
-                  attendance
-                )}`}
-                style={{ width: `${attendance}%` }}
-              ></div>
+        <div className="px-6 py-4 space-y-6">
+          {/* Profile Header */}
+          <div className="flex items-center space-x-4">
+            <img
+              src={student.photo || "/default-avatar.png"}
+              alt={student.name}
+              className="w-24 h-24 rounded-full object-cover border-2 border-gray-300"
+            />
+            <div>
+              <h3 className="text-2xl font-bold text-gray-800">{student.name}</h3>
+              <p className="text-gray-500">{student.mail}</p>
+              <p className="text-sm text-gray-500">{student.phone}</p>
             </div>
-            <div className="text-xs text-right mt-1">{attendance}%</div>
+          </div>
+
+          {/* Details Grid */}
+          <div className="grid grid-cols-2 gap-4 text-sm text-gray-700">
+            <div><strong>Reg No:</strong> {student.regNo}</div>
+            <div><strong>Batch:</strong> {student.batch}</div>
+            <div><strong>Section:</strong> {student.section}</div>
+            <div><strong>Department:</strong> {student.dept}</div>
+            <div><strong>Semester:</strong> {student.sem}</div>
+            <div><strong>Year:</strong> {student.year}</div>
+            <div><strong>DOB:</strong> {student.dob}</div>
+            <div><strong>Gender:</strong> {student.gender}</div>
+            <div><strong>Blood Group:</strong> {student.bloodGroup}</div>
+            <div><strong>Contact:</strong> {student.contact}</div>
+            <div><strong>Email:</strong> {student.mail}</div>
+            <div><strong>Address:</strong> {student.address}</div>
+            <div><strong>Adhar:</strong> {student.adhar}</div>
+            <div><strong>10th Mark:</strong> {student.tenthMark}</div>
+            <div><strong>12th Mark:</strong> {student.twelfthMark}</div>
+            <div><strong>Quota:</strong> {student.quota}</div>
+            <div><strong>Total Credits:</strong> {student.totalCredits}</div>
+            <div><strong>Parent Name:</strong> {student.parentName}</div>
+            <div><strong>Parent Contact:</strong> {student.parentPhoneNo}</div>
+            <div><strong>CGPA:</strong> {student.cgpa}</div>
+            <div><strong>Attendance:</strong> {student.attendance}</div>
+            <div className="col-span-2">
+              <strong>Bio:</strong> <br />{student.bio}
+            </div>
           </div>
         </div>
 
-        {/* Bio Section */}
-        <div className="border-t pt-4 text-gray-700 mb-6">
-          <h3 className="font-semibold mb-2">Bio Data</h3>
-          <p>{student.bio}</p>
-        </div>
+       <div className="flex justify-end gap-3 px-6 py-4 border-t border-gray-200">
+  <button
+    onClick={() => onEdit(student)}
+    className="bg-yellow-500 hover:bg-yellow-600 text-white font-semibold py-2 px-4 rounded"
+  >
+    Manage
+  </button>
+  <button
+    onClick={() => onDelete(student.regNo)}
+    className="bg-red-500 hover:bg-red-600 text-white font-semibold py-2 px-4 rounded"
+  >
+    Delete
+  </button>
+  <button
+    onClick={onClose}
+    className="bg-gray-300 hover:bg-gray-400 text-gray-800 font-semibold py-2 px-4 rounded"
+  >
+    Close
+  </button>
+</div>
 
-        {/* Placement Details */}
-        {student.placement && (
-          <div className="border-t pt-4 text-gray-700 mb-6">
-            <h3 className="font-semibold mb-2">Placement Details</h3>
-            <ul className="space-y-1 text-sm">
-              <li><strong>Company:</strong> {student.placement.company}</li>
-              <li><strong>Location:</strong> {student.placement.location}</li>
-              <li><strong>Position:</strong> {student.placement.position}</li>
-              <li><strong>Package:</strong> ₹{student.placement.package} LPA</li>
-              <li><strong>Date:</strong> {student.placement.date}</li>
-              {student.placement.proof && (
-                <li>
-                  <strong>Proof:</strong>{" "}
-                  <a
-                    href={student.placement.proof}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-blue-600 underline"
-                  >
-                    View
-                  </a>
-                </li>
-              )}
-            </ul>
-          </div>
-        )}
-
-        {/* Edit / Delete Actions */}
-        <div className="flex gap-4 justify-end">
-          <button
-            onClick={onEdit}
-            className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
-          >
-            <FaEdit /> Edit
-          </button>
-          <button
-            onClick={onDelete}
-            className="flex items-center gap-2 px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700"
-          >
-            <FaTrash /> Delete
-          </button>
-        </div>
       </div>
     </div>
   );

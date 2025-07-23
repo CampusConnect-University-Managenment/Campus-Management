@@ -1,20 +1,14 @@
-// /faculty/index.jsx
-import React, { useState } from 'react';
-import FacultyCards from './components/FacultyCards';
+import React from 'react';
+import FacultyAdminPage from './components/Header';
+// Adjust the path based on where Header.jsx is stored
 
-import FacultyList from './components/FacultyList';
-import AttendanceCalendar from './components/AttendanceCalendar';
-import Notifications from './components/Notifications';
-
-const FacultyDashboard = () => {
+const FacultyPageWrapper = () => {
   return (
-    <div className="p-6 space-y-6">
-      <Notifications />
-      {/* <FacultyCards /> */}
-      <FacultyList />
-      <AttendanceCalendar />
-    </div>
+    <>
+   
+      <FacultyAdminPage />
+    </>
   );
 };
 
-export default FacultyDashboard;
+export default FacultyPageWrapper;

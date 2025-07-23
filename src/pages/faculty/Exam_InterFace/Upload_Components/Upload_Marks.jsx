@@ -1,0 +1,199 @@
+import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { FaClipboardList } from "react-icons/fa";
+
+const FacultyMarksUpdate = () => {
+  const [department, setDepartment] = useState("");
+  const [section, setSection] = useState("");
+  const [className, setClassName] = useState("");
+  const [subject, setSubject] = useState("");
+  const [students, setStudents] = useState([]);
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
+
+  useEffect(() => {
+    // Dummy student data based on class
+    const dummyData = {
+      "1st Year": [
+        { name: "John Doe", marks: "" },
+        { name: "Jane Smith", marks: "" },
+      ],
+      "2nd Year": [
+        { name: "Alice Johnson", marks: "" },
+        { name: "Bob Williams", marks: "" },
+      ],
+      "3rd Year": [
+        { name: "Charlie Brown", marks: "" },
+        { name: "Emily Davis", marks: "" },
+      ],
+      "4th Year": [
+        { name: "David Wilson", marks: "" },
+        { name: "Sophia Taylor", marks: "" },
+      ],
+    };
+
+    if (className) {
+      setStudents(dummyData[className] || []);
+    } else {
+      setStudents([]);
+    }
+  }, [className]);
+
+  const handleInputChange = (index, field, value) => {
+    const updated = [...students];
+    updated[index][field] = value;
+    setStudents(updated);
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+
+    if (!department || !section || !className || !subject) {
+      alert("Please select department, section, class, and subject.");
+      return;
+    }
+
+    if (students.some((s) => !s.name || s.marks === "")) {
+      alert("Please fill all student fields.");
+      return;
+    }
+
+    console.log("Department:", department);
+    console.log("Class:", className);
+    console.log("Section:", section);
+    console.log("Subject:", subject);
+    console.log("Student Marks:", students);
+    alert("Marks submitted (simulation)");
+  };
+
+  return (
+    <div className="mt-[100px] min-h-screen bg-[#f0f4f8] px-4 py-10 font-inter">
+      <button
+        onClick={() => navigate(-1)}
+        className="bg-blue-500 text-white px-4 py-2 rounded"
+      >
+        ← Back
+      </button>
+      <br />
+      <br />
+      <div className="max-w-6xl mx-auto bg-white rounded-2xl shadow-xl p-8">
+        <div className="flex items-center gap-4 mb-8">
+          <FaClipboardList className="text-indigo-600 text-4xl" />
+          <h2 className="text-3xl font-semibold text-[#2e3a59]">
+            Marks Upload
+          </h2>
+        </div>
+
+        {/* Filters */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+          <select
+            value={department}
+            onChange={(e) => setDepartment(e.target.value)}
+            className="w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-400"
+          >
+            <option value="">Select Department</option>
+            <option value="IT">IT</option>
+            <option value="CSE">CSE</option>
+            <option value="ECE">ECE</option>
+            <option value="MECH">MECH</option>
+          </select>
+
+          <select
+            value={className}
+            onChange={(e) => setClassName(e.target.value)}
+            className="w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-400"
+          >
+            <option value="">Select Year</option>
+            <option value="1st Year">1st Year</option>
+            <option value="2nd Year">2nd Year</option>
+            <option value="3rd Year">3rd Year</option>
+            <option value="4th Year">4th Year</option>
+          </select>
+
+          <select
+            value={section}
+            onChange={(e) => setSection(e.target.value)}
+            className="w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-400"
+          >
+            <option value="">Select Section</option>
+            <option value="A">A</option>
+            <option value="B">B</option>
+            <option value="C">C</option>
+          </select>
+
+          
+
+          <select
+            value={subject}
+            onChange={(e) => setSubject(e.target.value)}
+            className="w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-400"
+          >
+            <option value="">Select Subject</option>
+            <option value="Mathematics">Mathematics</option>
+            <option value="Physics">Physics</option>
+            <option value="Computer Networks">Computer Networks</option>
+            <option value="Operating Systems">Operating Systems</option>
+            <option value="Digital Electronics">Digital Electronics</option>
+          </select>
+        </div>
+
+        {/* Student Marks Table */}
+        <form onSubmit={handleSubmit}>
+          <div className="overflow-x-auto mb-6">
+            <table className="min-w-full bg-white border border-gray-200 rounded-lg overflow-hidden">
+              <thead className="bg-indigo-50 text-indigo-700">
+                <tr>
+                  <th className="text-left px-6 py-3">Student Name</th>
+                  <th className="text-center px-6 py-3">Marks</th>
+                </tr>
+              </thead>
+              <tbody>
+                {students.map((student, index) => (
+                  <tr
+                    key={index}
+                    className="border-t hover:bg-indigo-50 transition duration-150"
+                  >
+                    <td className="px-6 py-3">
+                      <input
+                        type="text"
+                        value={student.name}
+                        readOnly
+                        className="w-full bg-gray-100 px-3 py-2 border border-gray-300 rounded-md"
+                      />
+                    </td>
+                    <td className="text-center px-6 py-3">
+                      <input
+                        type="number"
+                        value={student.marks}
+                        onChange={(e) =>
+                          handleInputChange(index, "marks", e.target.value)
+                        }
+                        className="w-24 px-3 py-2 border border-gray-300 rounded-md text-center focus:outline-none focus:ring-2 focus:ring-indigo-300"
+                        placeholder="0"
+                        required
+                      />
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+
+          <div className="flex justify-end">
+            <button
+              type="submit"
+              className="bg-indigo-600 text-white px-6 py-2 rounded-md hover:bg-indigo-700 shadow-md transition"
+            >
+              Submit Marks
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  );
+};
+
+export default FacultyMarksUpdate;

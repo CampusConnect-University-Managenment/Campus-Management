@@ -1,36 +1,43 @@
 import React from "react";
 import AdminDashboard from "./pages/admin/dashboard";
 import AdminExam from "./pages/admin/exam";
+import AdminExamInterface from "./pages/admin/dashboard/component/ExamInterface";
+import AdminExamSchedule from "./pages/admin/dashboard/component/ExamSchedule";
+import AdminMarksUpload from "./pages/admin/dashboard/component/MarksUpload";
+
+import NotificationMessage from "./pages/admin/Notification_Message";
 import MockCourse from "./pages/admin/course";
+import Assign from "./pages/admin/Assign_class"
 import AllStudents from "./pages/admin/students/components/AllStudents";
 import AttendanceUpload from "./pages/faculty/AttendanceUpload";
 import Notification_Message from "./pages/faculty/Notification_Message";
 import ClassList from "./pages/faculty/ClassList";
-import Performance from "./pages/student/Performance-analysis/component/Performance";
 import Announcements from "./pages/faculty/Announcements/components/Announcements";
 import StudentDashboard from "./pages/student/StudentDashBoard/components/StudentDashboard";
 import FacultyProfile from "./pages/faculty/Profile";
-import Interface from "./pages/faculty/Exam_InterFace/Components/InterFace";
-import FacultyMarksUpdate from "./pages/faculty/Exam_InterFace/Components/Upload_Components/Upload_Marks";
-import UploadQuestionPaper from "./pages/faculty/Exam_InterFace/Components/Upload_Components/Upload_QuestionPaper";
-import UploadStudyMaterial from "./pages/faculty/Exam_InterFace/Components/Upload_Components/Upload_StudyMaterials";
+import EditFacultyProfile from "./pages/faculty/EditProfile";
+import Interface from "./pages/faculty/Exam_InterFace/Components/ExamInterface";
+import ViewStudyMaterial from "./pages/faculty/Exam_InterFace/View_Components/ViewStudyMaterials";
+import ViewQuestionPaper from "./pages/faculty/Exam_InterFace/View_Components/ViewQuestionPaper";
+import ViewAssignmentQuestions from "./pages/faculty/Exam_InterFace/View_Components/ViewAssignment";
+import UploadAssignment from "./pages/faculty/Exam_InterFace/Upload_Components/Upload_Assignment";
+import FacultyMarksUpdate from "./pages/faculty/Exam_InterFace/Upload_Components/Upload_Marks";
+import UploadQuestionPaper from "./pages/faculty/Exam_InterFace/Upload_Components/Upload_QuestionPaper";
+import UploadStudyMaterial from "./pages/faculty/Exam_InterFace/Upload_Components/Upload_StudyMaterials";
 import FacultyManagement from "./pages/admin/faculty/index";
-// Auth Views
-
-//student
-// Student Views
 import MyProfile from "./pages/student/MyProfile";
 import Dashboard from "./pages/student/Dashboard";
-// import Profile from "./pages/student/Profile";
 import CoursesEnrolled from "./pages/student/CoursesEnrolled";
 import PracticeExams from "./pages/student/PracticeExams";
 import ResultsPortal from "./pages/student/ResultsPortal";
 import PerformanceAnalytics from "./pages/student/PerformanceAnalytics";
 import Notifications from "./pages/student/Notifications";
 import HelpSupport from "./pages/student/HelpSupport";
+// import Studymaterial from "./pages/student/CoursesEnrolled/Studymaterial";
+import FacultyDashboard from "./pages/faculty/dashboard";
+import ExamSchedule from "./pages/admin/exam/components/examschedule";
 
 // Icons
-
 import {
   FaBookOpen,
   FaUser,
@@ -41,14 +48,15 @@ import {
   FaQuestionCircle,
 } from "react-icons/fa";
 
-import { MdDashboard, MdGroups } from "react-icons/md";
-import { MdLibraryBooks } from "react-icons/md";
-import { MdNotifications } from "react-icons/md";
-import { MdUploadFile } from "react-icons/md";
-import { MdCampaign } from "react-icons/md";
-import FacultyDashboard from "./pages/faculty/dashboard";
-import ExamSchedule from "./pages/admin/exam/components/examschedule";
-//import { FaUser } from "react-icons/fa";
+import {
+  MdDashboard,
+  MdGroups,
+  MdLibraryBooks,
+  MdNotifications,
+  MdUploadFile,
+  MdCampaign,
+} from "react-icons/md";
+
 const routes = [
   // Admin Routes
   {
@@ -77,7 +85,48 @@ const routes = [
     layout: "/admin",
     path: "Notification_Message",
     icon: <MdDashboard className="h-6 w-6" />,
-    component: <Notification_Message />,
+    component: <NotificationMessage />,
+  },
+  {
+    name: "Assign Class",
+    layout: "/admin",
+    path: "Assign_class",
+    icon: <MdDashboard className="h-6 w-6" />,
+    component: <Assign />,
+  },
+   {
+  name: "Exam Interface",
+  layout: "/admin",
+  path: "examinterface",
+  icon: <MdLibraryBooks className="h-6 w-6" />,
+  component: <AdminExamInterface />, // <- should include <Outlet />
+  children: [
+    {
+      layout: "/admin",
+      path: "examinterface/exam-schedule",
+      component: <AdminExamSchedule />,
+    },
+    {
+      layout: "/admin",
+      path: "examinterface/marks-upload",
+      component: <AdminMarksUpload />,
+    },
+  ],
+},
+
+  {
+    name: "Courses",
+    layout: "/admin",
+    path: "course",
+    icon: <FaBookOpen className="h-5 w-5" />,
+    component: <MockCourse />,
+  },
+  {
+    name: "Exams",
+    layout: "/admin",
+    path: "exam",
+    icon: <FaBookOpen className="h-5 w-5" />,
+    component: <ExamSchedule />,
   },
 
   // Student Routes
@@ -123,6 +172,13 @@ const routes = [
     icon: <FaBell className="h-5 w-5" />,
     component: <Notifications />,
   },
+    {
+    name: "My Profile",
+    layout: "/student",
+    path: "profile",
+    icon: <FaUser className="h-6 w-6" />,
+    component: <MyProfile />,
+  },
   {
     name: "Help & Support",
     layout: "/student",
@@ -130,52 +186,6 @@ const routes = [
     icon: <FaQuestionCircle className="h-5 w-5" />,
     component: <HelpSupport />,
   },
-
-  {
-    name: "Courses",
-    layout: "/admin",
-    path: "course",
-    icon: <FaBookOpen className="h-5 w-5" />,
-    component: <MockCourse />,
-  },
-
-  {
-    name: "Exams",
-    layout: "/admin",
-    path: "exam",
-    icon: <FaBookOpen className="h-5 w-5" />,
-    component: <ExamSchedule />,
-  },
-
-  // {
-  //   name: "Results Portal",
-  //   layout: "/student",
-  //   path: "demo",
-  //   icon: <FaGraduationCap className="h-5 w-5" />,
-  //   component: <MyProfile />,
-  // },
-
-  // {
-  //   name: "Performance Analytics",
-  //   layout: "/student",
-  //   path: "Performance",
-  //   icon: <FaChartBar className="h-5 w-5" />,
-  //   component: <Performance />,
-  // },
-  // {
-  //   name: "Notifications",
-  //   layout: "/student",
-  //   path: "demo",
-  //   icon: <FaBell className="h-5 w-5" />,
-  //   component: <MyProfile />,
-  // },
-  // {
-  //   name: "Help & Support",
-  //   layout: "/student",
-  //   path: "demo",
-  //   icon: <FaQuestionCircle className="h-5 w-5" />,
-  //   component: <MyProfile />,
-  // },
 
   // Faculty Routes
   {
@@ -207,36 +217,46 @@ const routes = [
     component: <Notification_Message />,
   },
   {
-    name: "My Profile",
+    name: "Exam Interface",
     layout: "/faculty",
-    path: "profile",
-    icon: <FaUser className="h-6 w-6" />,
-    component: <FacultyProfile />,
-  },
-  {
-    name: "Exam InterFace",
-    layout: "/faculty",
-    path: "ExamInterFace",
+    path: "examinterface",
     icon: <MdLibraryBooks className="h-6 w-6" />,
     component: <Interface />,
     children: [
       {
-        name: "Upload Marks",
         layout: "/faculty",
         path: "ExamInterFace/upload-marks",
         component: <FacultyMarksUpdate />,
       },
       {
-        name: "Upload Question Paper",
         layout: "/faculty",
         path: "ExamInterFace/upload-question",
         component: <UploadQuestionPaper />,
       },
       {
-        name: "Upload Study Material",
         layout: "/faculty",
         path: "ExamInterFace/upload-material",
         component: <UploadStudyMaterial />,
+      },
+      {
+        layout: "/faculty",
+        path: "ExamInterFace/view-material",
+        component: <ViewStudyMaterial />,
+      },
+      {
+        layout: "/faculty",
+        path: "ExamInterFace/view-question",
+        component: <ViewQuestionPaper />,
+      },
+      {
+        layout: "/faculty",
+        path: "ExamInterFace/view-assignment",
+        component: <ViewAssignmentQuestions />,
+      },
+      {
+        layout: "/faculty",
+        path: "ExamInterFace/upload-assignment",
+        component: <UploadAssignment />,
       },
     ],
   },
@@ -246,6 +266,20 @@ const routes = [
     path: "Announcements",
     icon: <MdCampaign className="h-6 w-6" />,
     component: <Announcements />,
+  },
+  {
+    name: "My Profile",
+    layout: "/faculty",
+    path: "profile",
+    icon: <FaUser className="h-6 w-6" />,
+    component: <FacultyProfile />,
+    children: [
+      {
+        layout: "/faculty",
+        path: "edit-profile",
+        component: <EditFacultyProfile />,
+      },
+    ],
   },
 ];
 

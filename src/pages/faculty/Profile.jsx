@@ -51,7 +51,7 @@ const BasicInfoRow = ({ label, value, isEditing, name, type = 'text', onChange }
   const displayValue = (label === 'Birthday' && value && value !== 'Your birthday') ? formatDate(value) : (value || 'N/A');
 
   return (
-    <div className="flex flex-col sm:flex-row py-3 border-b border-gray-200 last:border-b-0">
+    <div className="flex flex-col sm:flex-row py-3 border-b border-gray-200 last:border-b-0 ">
       <div className="w-full sm:w-1/3 text-gray-600 font-medium mb-1 sm:mb-0">{label}</div>
       <div className="w-full sm:w-2/3 text-gray-800">
         {isEditing ? (

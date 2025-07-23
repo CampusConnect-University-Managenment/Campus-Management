@@ -1,4 +1,5 @@
 import React from 'react';
+
 import { useNavigate } from 'react-router-dom';
 
 function ClassList() {
@@ -114,7 +115,7 @@ function ClassList() {
 
                 <td className="border px-6 py-4">
                   <button
-                    onClick={() => handleNavigate('/upload-material', cls)}
+                    onClick={() => handleNavigate('/faculty/ExamInterFace/upload-material', cls)}
                     className="bg-purple-500 hover:bg-purple-600 text-white px-3 py-1 rounded"
                   >
                     Upload
@@ -123,7 +124,7 @@ function ClassList() {
 
                 <td className="border px-6 py-4">
                   <button
-                    onClick={() => handleNavigate('/upload-question', cls)}
+                    onClick={() => handleNavigate('/faculty/ExamInterFace/upload-question', cls)}
                     className="bg-yellow-500 hover:bg-yellow-600 text-white px-3 py-1 rounded"
                   >
                     Upload
@@ -132,7 +133,7 @@ function ClassList() {
 
                 <td className="border px-6 py-4">
                   <button
-                    onClick={() => handleNavigate('/upload-marks', cls)}
+                    onClick={() => handleNavigate('/faculty/ExamInterFace/upload-marks', cls)}
                     className="bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded"
                   >
                     Upload
@@ -145,6 +146,6 @@ function ClassList() {
       </div>
     </div>
   );
-}
+};
 
 export default ClassList;
