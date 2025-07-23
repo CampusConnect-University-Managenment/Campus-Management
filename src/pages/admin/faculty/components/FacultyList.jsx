@@ -1,210 +1,209 @@
-// FacultyList.js
 import React, { useState } from 'react';
-import FacultyForm from './FacultyForm';
-import FacultyCards from './FacultyCards'; // Adjust path if needed
 
-const initialFaculty = [
-  {
-    id: 1,
-    name: 'Dr. Lisa Anderson',
-    email: 'lisa.anderson@university.edu',
-    department: 'CIVIL',
-    role: 'Assistant Professor',
-  },
-  {
-    id: 2,
-    name: 'Dr. John Smith',
-    email: 'john.smith@university.edu',
-    department: 'CSE',
-    role: 'Professor',
-  },
-];
+const FacultyList = ({
+  data,
+  onEdit,
+  onDelete,
+  onMarkAttendance,
+  currentPage,
+  totalPages,
+  onPageChange,
+  attendanceData,
+}) => {
+  const [selectedFaculty, setSelectedFaculty] = useState(null);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [attendanceStatus, setAttendanceStatus] = useState('Present');
+  const [attendanceDate, setAttendanceDate] = useState(new Date().toISOString().split('T')[0]);
 
-const FacultyList = () => {
-  const [facultyList, setFacultyList] = useState(initialFaculty);
-  const [filter, setFilter] = useState('All');
-  const [showForm, setShowForm] = useState(false);
-  const [formData, setFormData] = useState({
-    id: null,
-    name: '',
-    email: '',
-    department: 'CSE',
-    role: '',
-  });
-
-  const [attendanceRecords, setAttendanceRecords] = useState({});
-
-  const today = new Date().toISOString().split('T')[0];
-
-  const handleMarkAttendance = (id, status) => {
-    setAttendanceRecords((prev) => ({
-      ...prev,
-      [id]: {
-        ...(prev[id] || {}),
-        [today]: status,
-      },
-    }));
+  const handleRowClick = (fac) => {
+    setSelectedFaculty(fac);
+    setAttendanceStatus('Present');
+    setAttendanceDate(new Date().toISOString().split('T')[0]);
   };
 
-  const handleEdit = (id) => {
-    const data = facultyList.find((f) => f.id === id);
-    setFormData(data);
-    setShowForm(true);
+  const calculateAttendancePercentage = (facultyId) => {
+    const records = attendanceData[facultyId];
+    if (!records) return 0;
+    const totalDays = Object.keys(records).length || 1;
+    const presentDays = Object.values(records).filter(
+      (status) => status.toLowerCase() === 'present'
+    ).length;
+    return ((presentDays / totalDays) * 100).toFixed(0);
   };
 
-  const handleDelete = (id) => {
-    const confirm = window.confirm('Are you sure you want to delete?');
-    if (confirm) {
-      setFacultyList((prev) => prev.filter((f) => f.id !== id));
-      setAttendanceRecords((prev) => {
-        const updated = { ...prev };
-        delete updated[id];
-        return updated;
-      });
-    }
+  const handleMarkAttendance = () => {
+    onMarkAttendance(selectedFaculty.id, attendanceStatus, attendanceDate);
+    setSelectedFaculty(null);
   };
 
-  const handleFormSubmit = (e) => {
-    e.preventDefault();
-    const updated = { ...formData };
-
-    if (formData.id) {
-      setFacultyList((prev) =>
-        prev.map((f) => (f.id === formData.id ? updated : f))
-      );
-    } else {
-      updated.id = Date.now();
-      setFacultyList((prev) => [...prev, updated]);
-    }
-
-    setFormData({
-      id: null,
-      name: '',
-      email: '',
-      department: 'CSE',
-      role: '',
-    });
-    setShowForm(false);
-  };
-
-  const filteredFaculty =
-    filter === 'All'
-      ? facultyList
-      : facultyList.filter((f) => f.department === filter);
+  const filteredData = data.filter((fac) =>
+    `${fac.firstName} ${fac.lastName}`.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    fac.email.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    fac.department.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    fac.role.toLowerCase().includes(searchQuery.toLowerCase())
+  );
 
   return (
-    <div className="space-y-6">
-      {/* ✅ Dashboard Cards: RENDER ONLY ONCE */}
-      <FacultyCards
-        facultyList={facultyList}
-        attendanceRecords={attendanceRecords}
-      />
-
-      {/* 🔍 Filter + Add */}
-      <div className="flex justify-between items-center flex-wrap gap-4">
-        <h2 className="text-2xl font-bold">Faculty Management</h2>
-        <div className="flex items-center gap-4">
-          <select
-            className="border p-2 rounded"
-            value={filter}
-            onChange={(e) => setFilter(e.target.value)}
-          >
-            <option value="All">All</option>
-            <option value="CSE">CSE</option>
-            <option value="IT">IT</option>
-            <option value="EEE">EEE</option>
-            <option value="ECE">ECE</option>
-            <option value="MECH">MECH</option>
-            <option value="CIVIL">CIVIL</option>
-          </select>
-          <button
-            className="bg-blue-600 text-white px-4 py-2 rounded"
-            onClick={() => {
-              setFormData({
-                id: null,
-                name: '',
-                email: '',
-                department: 'CSE',
-                role: '',
-              });
-              setShowForm(true);
-            }}
-          >
-            + Add Faculty
-          </button>
-        </div>
+    <div className="overflow-x-auto mt-6 max-w-5xl mx-auto">
+      {/* Search */}
+      <div className="mb-4 flex justify-end">
+        <input
+          type="text"
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
+          placeholder="Search faculty..."
+          className="border border-gray-300 rounded-md px-3 py-2 text-sm w-full max-w-xs shadow-sm focus:outline-none focus:ring focus:border-blue-300"
+        />
       </div>
 
-      {/* ✍️ Add/Edit Form */}
-      {showForm && (
-        <FacultyForm
-          formData={formData}
-          setFormData={setFormData}
-          onSubmit={handleFormSubmit}
-          onCancel={() => setShowForm(false)}
-        />
-      )}
+      {/* Table */}
+      <table className="min-w-full bg-white rounded-lg shadow overflow-hidden">
+        <thead className="bg-blue-50 text-blue-900 text-sm font-semibold">
+          <tr>
+            <th className="p-3 text-left">Photo</th>
+            <th className="p-3 text-left">First Name</th>
+            <th className="p-3 text-left">Last Name</th>
+            <th className="p-3 text-left">Email</th>
+            <th className="p-3 text-left">Department</th>
+            <th className="p-3 text-left">Role</th>
+            <th className="p-3 text-center">Actions</th>
+          </tr>
+        </thead>
+        <tbody className="text-sm divide-y divide-gray-200">
+          {filteredData.map((fac) => (
+            <tr key={fac.id} className="hover:bg-blue-50 transition">
+              <td className="p-3">
+                <img
+                  src={fac.photo}
+                  alt={`${fac.firstName} ${fac.lastName}`}
+                  className="w-10 h-10 rounded-full object-cover border"
+                />
+              </td>
+              <td className="p-3">{fac.firstName}</td>
+              <td className="p-3">{fac.lastName}</td>
+              <td className="p-3">{fac.email}</td>
+              <td className="p-3">{fac.department}</td>
+              <td className="p-3">{fac.role}</td>
+              <td className="p-3 text-center">
+                <button
+                  onClick={() => handleRowClick(fac)}
+                  className="px-3 py-1 text-sm rounded-md text-white bg-blue-600 hover:bg-blue-700"
+                >
+                  View Details
+                </button>
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
 
-      {/* 🧑‍🏫 Faculty List */}
-      <div className="grid md:grid-cols-2 gap-4">
-        {filteredFaculty.map((f) => {
-          const todayStatus =
-            attendanceRecords[f.id] && attendanceRecords[f.id][today];
+      {/* Pagination */}
+      <div className="flex justify-center items-center mt-4 space-x-2">
+        <button
+          disabled={currentPage === 1}
+          onClick={() => onPageChange(currentPage - 1)}
+          className="px-3 py-1 bg-gray-200 rounded disabled:opacity-50"
+        >
+          Prev
+        </button>
+        <span className="text-sm">Page {currentPage} of {totalPages}</span>
+        <button
+          disabled={currentPage === totalPages}
+          onClick={() => onPageChange(currentPage + 1)}
+          className="px-3 py-1 bg-gray-200 rounded disabled:opacity-50"
+        >
+          Next
+        </button>
+      </div>
 
-          return (
-            <div
-              key={f.id}
-              className="border rounded-xl p-4 shadow-md space-y-2 bg-white"
+      {/* Modal */}
+      {selectedFaculty && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white rounded-lg max-w-lg w-full p-6 relative shadow-xl">
+            <button
+              onClick={() => setSelectedFaculty(null)}
+              className="absolute top-2 right-2 text-gray-500 hover:text-gray-700 text-2xl"
             >
-              <h3 className="text-xl font-semibold">{f.name}</h3>
-              <p className="text-sm text-gray-600">{f.role}</p>
-              <p className="text-sm">{f.email}</p>
-              <p className="text-sm">Department: {f.department}</p>
-              <p className="text-sm">
-                Today’s Attendance:{' '}
-                <span
-                  className={`font-medium ${
-                    todayStatus === 'Present'
-                      ? 'text-green-600'
-                      : todayStatus === 'Absent'
-                      ? 'text-red-500'
-                      : 'text-yellow-600'
-                  }`}
-                >
-                  {todayStatus || 'Not Marked'}
-                </span>
-              </p>
+              &times;
+            </button>
 
-              <div className="flex gap-2 pt-2 flex-wrap">
-                <button
-                  className="bg-green-500 text-white px-3 py-1 rounded"
-                  onClick={() => handleMarkAttendance(f.id, 'Present')}
-                >
-                  Present
-                </button>
-                <button
-                  className="bg-red-500 text-white px-3 py-1 rounded"
-                  onClick={() => handleMarkAttendance(f.id, 'Absent')}
-                >
-                  Absent
-                </button>
-                <button
-                  className="bg-yellow-500 text-white px-3 py-1 rounded"
-                  onClick={() => handleEdit(f.id)}
-                >
-                  Edit
-                </button>
-                <button
-                  className="bg-gray-600 text-white px-3 py-1 rounded"
-                  onClick={() => handleDelete(f.id)}
-                >
-                  Delete
-                </button>
+            <div className="flex items-center gap-4 mb-4">
+              <img
+                src={selectedFaculty.photo}
+                alt={`${selectedFaculty.firstName} ${selectedFaculty.lastName}`}
+                className="w-20 h-20 rounded-full object-cover border"
+              />
+              <div>
+                <h2 className="text-xl font-semibold">{selectedFaculty.firstName} {selectedFaculty.lastName}</h2>
+                <p className="text-gray-600">{selectedFaculty.email}</p>
+                <p className="text-gray-600">{selectedFaculty.phone}</p>
               </div>
             </div>
-          );
-        })}
-      </div>
+
+            <div className="grid grid-cols-2 gap-4 text-sm mb-4">
+              <div><strong>Department:</strong> {selectedFaculty.department}</div>
+              <div><strong>Role:</strong> {selectedFaculty.role}</div>
+              <div><strong>Degree:</strong> {selectedFaculty.degree}</div>
+              <div><strong>Experience:</strong> {selectedFaculty.experience}</div>
+              <div><strong>Age:</strong> {selectedFaculty.age}</div>
+              <div className="col-span-2"><strong>Address:</strong> {selectedFaculty.address}</div>
+            </div>
+
+            <div className="mt-4">
+              <p className="font-medium">Attendance:</p>
+              <div className="w-full bg-gray-200 rounded-full h-3 mt-1">
+                <div
+                  className="bg-green-500 h-3 rounded-full"
+                  style={{ width: `${calculateAttendancePercentage(selectedFaculty.id)}%` }}
+                ></div>
+              </div>
+              <p className="text-right text-sm mt-1">{calculateAttendancePercentage(selectedFaculty.id)}%</p>
+            </div>
+
+            {/* Mark Attendance */}
+            <div className="mt-6 flex flex-col gap-2">
+              <label className="font-medium">Mark Today's Attendance:</label>
+              <input
+                type="date"
+                value={attendanceDate}
+                onChange={(e) => setAttendanceDate(e.target.value)}
+                className="border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring focus:border-blue-300"
+              />
+              <select
+                value={attendanceStatus}
+                onChange={(e) => setAttendanceStatus(e.target.value)}
+                className="border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring focus:border-blue-300"
+              >
+                <option value="Present">Present</option>
+                <option value="Absent">Absent</option>
+              </select>
+              <button
+                onClick={handleMarkAttendance}
+                className="mt-2 px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700"
+              >
+                Mark Attendance
+              </button>
+            </div>
+
+            {/* Edit/Delete */}
+            <div className="flex justify-end gap-2 mt-6">
+              <button
+                onClick={() => { onEdit(selectedFaculty.id); setSelectedFaculty(null); }}
+                className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
+              >
+                Edit
+              </button>
+              <button
+                onClick={() => { onDelete(selectedFaculty.id); setSelectedFaculty(null); }}
+                className="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700"
+              >
+                Delete
+              </button>
+            </div>
+
+          </div>
+        </div>
+      )}
     </div>
   );
 };
