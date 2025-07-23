@@ -34,6 +34,7 @@ import Notifications from "./pages/student/Notifications";
 import HelpSupport from "./pages/student/HelpSupport";
 import FacultyDashboard from "./pages/faculty/dashboard";
 import ExamSchedule from "./pages/admin/exam/components/examschedule";
+import FaCourse from "./pages/faculty/Course/Course";
 
 import {
   FaBookOpen,
@@ -85,24 +86,24 @@ const routes = [
     component: <NotificationMessage />,
   },
   {
-  name: "Exam Interface",
-  layout: "/admin",
-  path: "examinterface",
-  icon: <MdLibraryBooks className="h-6 w-6" />,
-  component: <AdminExamInterface />, // <- should include <Outlet />
-  children: [
-    {
-      layout: "/admin",
-      path: "examinterface/exam-schedule",
-      component: <AdminExamSchedule />,
-    },
-    {
-      layout: "/admin",
-      path: "examinterface/marks-upload",
-      component: <AdminMarksUpload />,
-    },
-  ],
-},
+    name: "Exam Interface",
+    layout: "/admin",
+    path: "examinterface",
+    icon: <MdLibraryBooks className="h-6 w-6" />,
+    component: <AdminExamInterface />, // <- should include <Outlet />
+    children: [
+      {
+        layout: "/admin",
+        path: "examinterface/exam-schedule",
+        component: <AdminExamSchedule />,
+      },
+      {
+        layout: "/admin",
+        path: "examinterface/marks-upload",
+        component: <AdminMarksUpload />,
+      },
+    ],
+  },
 
   {
     name: "Courses",
@@ -263,6 +264,13 @@ const routes = [
         component: <EditFacultyProfile />,
       },
     ],
+  },
+  {
+    name: "Courses",
+    layout: "/faculty",
+    path: "Course",
+    icon: <MdCampaign className="h-6 w-6" />,
+    component: <FaCourse />,
   },
 ];
 

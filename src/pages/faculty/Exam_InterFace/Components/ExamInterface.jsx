@@ -1,18 +1,28 @@
-import React from "react";
-import { useNavigate } from "react-router-dom";
+import React, { useEffect, useState } from "react";
+import { useNavigate, useLocation } from "react-router-dom";
 import {
   FaClipboardList,
   FaFileUpload,
   FaBookOpen,
   FaEye,
-  FaTasks, // For assignment-related icon
+  FaTasks,
 } from "react-icons/fa";
 
 const Interface = () => {
   const navigate = useNavigate();
+  const location = useLocation();
+  const [popupMessage, setPopupMessage] = useState("");
+
+  // Show popup when navigated with courseName from FacultyCourses
+  useEffect(() => {
+    if (location.state?.showPopup && location.state.courseName) {
+      setPopupMessage(`📤 Upload materials for "${location.state.courseName}"`);
+      // Optional: Clear browser history state so popup doesn’t reappear on refresh
+      window.history.replaceState({}, document.title);
+    }
+  }, [location.state]);
 
   const cards = [
-    
     {
       title: "Upload Question Paper",
       path: "/faculty/ExamInterFace/upload-question",
@@ -59,9 +69,17 @@ const Interface = () => {
 
   return (
     <div className="mt-[10px] pt-24 pb-36 px-6 bg-gray-100 font-inter">
-      <h2 className="text-3xl font-bold text-center text-[#2e3a59] mb-12">
+      <h2 className="text-3xl font-bold text-center text-[#2e3a59] mb-6">
         📚 Exam Upload Interface
       </h2>
+
+      {popupMessage && (
+        <div className="max-w-4xl mx-auto mb-10">
+          <div className="bg-blue-100 border border-blue-400 text-blue-800 px-4 py-3 rounded shadow text-center">
+            {popupMessage}
+          </div>
+        </div>
+      )}
 
       <div className="grid gap-8 sm:grid-cols-2 md:grid-cols-3 max-w-6xl mx-auto">
         {cards.map((card, index) => (
