@@ -1,175 +1,147 @@
-import React from 'react';
+// src/pages/faculty/dashboard/index.jsx
+
+import React, { useState } from "react";
 import {
-  BookOpen, Users, ClipboardCheck, Calendar, ArrowRightCircle,
-  LayoutDashboard, FileText, Megaphone, GraduationCap, UserCircle
-} from 'lucide-react';
+  CalendarClock,
+  BookOpen,
+  FileText,
+  ClipboardCheck,
+  Users,
+} from "lucide-react";
 
-function FacultyDashboard() {
-  const stats = [
-    { title: "Total Students", count: 120, icon: <Users size={28} />, color: "bg-blue-100 text-blue-600" },
-    { title: "Classes Taken", count: 32, icon: <BookOpen size={28} />, color: "bg-green-100 text-green-600" },
-    { title: "Attendance Uploaded", count: 28, icon: <ClipboardCheck size={28} />, color: "bg-yellow-100 text-yellow-600" },
-    { title: "Upcoming Classes", count: 3, icon: <Calendar size={28} />, color: "bg-purple-100 text-purple-600" },
-  ];
+// Reusable Card component
+const Card = ({ title, value, icon }) => (
+  <div className="bg-white rounded-xl shadow p-4 flex flex-col items-center text-center">
+    <div className="mb-2">{icon}</div>
+    <h4 className="text-sm font-semibold text-gray-700">{title}</h4>
+    <p className="text-lg font-bold text-gray-900">{value}</p>
+  </div>
+);
 
-  const actions = [
-  {
-    label: "Upload Attendance",
-    icon: <ClipboardCheck size={32} />,
-    color: "bg-indigo-600",
-    target: "attendance"
-  },
-  {
-    label: "Upload Internal Marks",
-    icon: <FileText size={32} />,
-    color: "bg-pink-600",
-    target: "marks"
-  },
-  {
-    label: "View Student List",
-    icon: <Users size={32} />,
-    color: "bg-teal-600",
-    target: "students"
-  },
-  {
-    label: "Make Announcements",
-    icon: <LayoutDashboard size={32} />,
-    color: "bg-orange-600",
-    target: "announcements"
-  }
-];
-
-
-  const announcements = [
-    { title: "Exam Timetable Released", date: "July 10, 2025" },
-    { title: "Assignment Submission Deadline Extended", date: "July 8, 2025" },
-    { title: "Project Viva Next Week", date: "July 6, 2025" }
-  ];
-
-  const handleNavigate = (target) => {
-    alert(`Navigate to ${target}`);
-    // Use navigate(`/faculty/${target}`) if using React Router
-  };
-
-  return (
-    <div className="p-6 max-w-7xl mx-auto mt-28">
-      {/* Welcome */}
-      <div className="flex justify-between items-center mb-6">
-        <div>
-          <h1 className="text-4xl font-bold text-gray-800">Welcome, Professor 👋</h1>
-          <p className="text-gray-500 mt-1">Here's a quick overview of your dashboard.</p>
-        </div>
-        <div className="flex items-center gap-4 bg-gray-100 p-3 rounded-xl shadow">
-          <UserCircle size={40} className="text-gray-600" />
-          <div>
-            <p className="font-semibold text-gray-800">Dr. A. Suresh</p>
-            <p className="text-sm text-gray-500">Computer Science Department</p>
-          </div>
-        </div>
-      </div>
-
-      {/* Stats Section */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6 mb-10">
-        {stats.map((stat, index) => (
-          <div
-            key={index}
-            className={`rounded-2xl p-5 shadow-md hover:shadow-xl cursor-pointer transition-all ${stat.color}`}
-          >
-            <div className="flex items-center gap-4">
-              <div className="p-3 bg-white rounded-full shadow">{stat.icon}</div>
-              <div>
-                <p className="text-sm font-medium">{stat.title}</p>
-                <p className="text-2xl font-bold">{stat.count}</p>
-              </div>
-            </div>
-          </div>
-        ))}
-      </div>
-
-      {/* Quick Actions */}
-<h2 className="text-2xl font-semibold mb-4 text-gray-700">Quick Actions</h2>
-<div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6 mb-10">
-  {actions.map((action, index) => (
-    <button
-      key={index}
-      onClick={() => handleNavigate(action.target)}
-      className={`rounded-xl p-5 flex flex-col items-center gap-3 text-white shadow-md hover:shadow-lg transition-all ${action.color}`}
-    >
-      {/* Replaced white circle with large solid icon */}
-      <div className="text-white">
-        {action.icon}
-      </div>
-      <p className="text-lg font-medium">{action.label}</p>
-      <ArrowRightCircle size={20} />
-    </button>
-  ))}
-</div>
-
-
-      {/* Charts and Announcements */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        {/* Chart Placeholder */}
-        <div className="bg-white rounded-xl shadow p-6">
-          <h3 className="text-xl font-semibold mb-4 text-gray-800">Class Performance Overview</h3>
-          <div className="h-64 flex items-center justify-center text-gray-400">
-            {/* Use Chart.js or Recharts */}
-            <p>[Graph / Chart Coming Soon]</p>
-          </div>
-        </div>
-
-        {/* Announcements */}
-        <div className="bg-white rounded-xl shadow p-6">
-          <div className="flex items-center gap-2 mb-4">
-            <Megaphone className="text-orange-500" />
-            <h3 className="text-xl font-semibold text-gray-800">Recent Announcements</h3>
-          </div>
-          <ul className="space-y-4">
-            {announcements.map((note, index) => (
-              <li key={index} className="border-l-4 border-orange-400 pl-3">
-                <p className="font-medium text-gray-700">{note.title}</p>
-                <p className="text-sm text-gray-500">{note.date}</p>
-              </li>
-            ))}
-          </ul>
-        </div>
-      </div>
-
-      {/* Recent Activity */}
-<div className="bg-white mt-8 rounded-xl shadow p-6">
-  <h3 className="text-xl font-semibold text-gray-800 mb-4">Recent Activity</h3>
-  <ul className="space-y-4 text-gray-700">
-    <li>✅ Marked attendance for CSE301 - July 14, 2025</li>
-    <li>📝 Uploaded marks for Internal Test 1 - July 13, 2025</li>
-    <li>📢 Posted announcement: "Viva schedule updated" - July 12, 2025</li>
-  </ul>
-</div>
-
-
-
-{/* Course Progress */}
-<div className="bg-white mt-8 rounded-xl shadow p-6">
-  <h3 className="text-xl font-semibold text-gray-800 mb-4">Course Completion</h3>
-  <div className="space-y-4">
-    <div>
-      <p className="font-medium text-gray-700">CSE301 - Data Structures</p>
-      <div className="w-full bg-gray-200 rounded-full h-3">
-        <div className="bg-green-500 h-3 rounded-full w-[75%]"></div>
-      </div>
+// Schedule item component
+const ScheduleItem = ({ date, month, title, time }) => (
+  <div className="flex items-start gap-4">
+    <div className="bg-indigo-100 text-indigo-600 rounded-md px-3 py-1 text-center">
+      <div className="text-xl font-bold">{date}</div>
+      <div className="text-sm">{month}</div>
     </div>
     <div>
-      <p className="font-medium text-gray-700">CSE401 - Compiler Design</p>
-      <div className="w-full bg-gray-200 rounded-full h-3">
-        <div className="bg-blue-500 h-3 rounded-full w-[60%]"></div>
-      </div>
+      <h3 className="font-semibold text-gray-800">{title}</h3>
+      <p className="text-gray-500 text-sm">{time}</p>
     </div>
   </div>
-</div>
+);
 
+const FacultyDashboard = () => {
+  const scheduleData = [
+    { date: "24", month: "Jul", title: "Upload Assignment Marks - DBMS", time: "4:00 PM" },
+    { date: "26", month: "Jul", title: "Internal Test - CN", time: "10:00 AM" },
+    { date: "28", month: "Jul", title: "Department Meeting", time: "2:00 PM" },
+    { date: "30", month: "Jul", title: "Project Review - AI", time: "11:00 AM" },
+    { date: "02", month: "Aug", title: "Lab Submission Deadline", time: "5:00 PM" },
+    { date: "05", month: "Aug", title: "Workshop on IoT", time: "3:00 PM" },
+    { date: "08", month: "Aug", title: "Mock Interview", time: "9:00 AM" },
+  ];
 
+  const recentActivities = [
+    { activity: "Updated Internal Marks for DBMS", time: "Today, 9:45 AM" },
+    { activity: "Attended Department Meeting", time: "Yesterday, 2:00 PM" },
+    { activity: "Uploaded Assignment on CN", time: "3 days ago, 11:30 AM" },
+    { activity: "Reviewed Project Proposals - AI", time: "Last Week, 4:00 PM" },
+  ];
 
-      
+  const [currentPage, setCurrentPage] = useState(0);
+  const itemsPerPage = 3;
+  const totalPages = Math.ceil(scheduleData.length / itemsPerPage);
+
+  const handlePrev = () => {
+    if (currentPage > 0) setCurrentPage(currentPage - 1);
+  };
+
+  const handleNext = () => {
+    if (currentPage < totalPages - 1) setCurrentPage(currentPage + 1);
+  };
+
+  const currentItems = scheduleData.slice(
+    currentPage * itemsPerPage,
+    currentPage * itemsPerPage + itemsPerPage
+  );
+
+  return (
+    <div className="p-6 mt-20 max-w-6xl mx-auto">
+      {/* Header */}
+      <div className="mb-8">
+        <h1 className="text-3xl font-bold text-blue-700">Welcome back, Professor! 👋</h1>
+      </div>
+
+      {/* Statistics Cards */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6 mb-8">
+        <Card title="Courses Handled" value="04" icon={<BookOpen size={24} className="text-blue-600" />} />
+        <Card title="Upcoming Tasks" value="03" icon={<CalendarClock size={24} className="text-purple-600" />} />
+        <Card title="Papers Evaluated" value="120" icon={<FileText size={24} className="text-yellow-600" />} />
+        <Card title="Students" value="110" icon={<Users size={24} className="text-red-600" />} />
+      </div>
+
+      {/* Upcoming Schedule */}
+      <div className="bg-white shadow rounded-xl p-6">
+        <h2 className="text-xl font-semibold text-gray-800 mb-4 flex items-center gap-2">
+          <CalendarClock className="text-indigo-600" />
+          Upcoming Schedule
+        </h2>
+
+        <div className="space-y-4">
+          {currentItems.map((item, index) => (
+            <ScheduleItem
+              key={index}
+              date={item.date}
+              month={item.month}
+              title={item.title}
+              time={item.time}
+            />
+          ))}
+        </div>
+
+        {/* Pagination */}
+        <div className="flex justify-between mt-6">
+          <button
+            onClick={handlePrev}
+            disabled={currentPage === 0}
+            className={`px-4 py-2 rounded-lg text-sm font-medium ${
+              currentPage === 0
+                ? "bg-gray-300 text-gray-600 cursor-not-allowed"
+                : "bg-indigo-600 text-white hover:bg-indigo-700"
+            }`}
+          >
+            Previous
+          </button>
+          <button
+            onClick={handleNext}
+            disabled={currentPage === totalPages - 1}
+            className={`px-4 py-2 rounded-lg text-sm font-medium ${
+              currentPage === totalPages - 1
+                ? "bg-gray-300 text-gray-600 cursor-not-allowed"
+                : "bg-indigo-600 text-white hover:bg-indigo-700"
+            }`}
+          >
+            Next
+          </button>
+        </div>
+      </div>
+
+      {/* Recent Activities */}
+      <div className="mt-10 bg-white shadow rounded-xl p-6">
+        <h2 className="text-xl font-semibold text-gray-800 mb-4">Recent Activities</h2>
+        <ul className="divide-y divide-gray-200">
+          {recentActivities.map((item, index) => (
+            <li key={index} className="py-3">
+              <p className="text-gray-700 font-medium">{item.activity}</p>
+              <p className="text-gray-500 text-sm">{item.time}</p>
+            </li>
+          ))}
+        </ul>
+      </div>
     </div>
   );
-}
+};
 
 export default FacultyDashboard;
