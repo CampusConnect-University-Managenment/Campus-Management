@@ -99,6 +99,18 @@ const UploadAssignment = () => {
           />
         </div>
 
+          <div>
+            <label className="block font-medium mb-1 text-gray-700">Dead Line</label>
+            <input
+              type="date"
+              name="date"
+              value={formData.date}
+              onChange={handleChange}
+              className="w-full px-4 py-2 border border-gray-300 rounded-md"
+              required
+            />
+          </div>
+
         <div className="flex flex-wrap gap-4">
           <div className="flex-1 min-w-[120px]">
             <label className="block font-medium text-gray-700 mb-1">
@@ -117,6 +129,7 @@ const UploadAssignment = () => {
             </select>
           </div>
 
+
           <div className="flex-1 min-w-[120px]">
             <label className="block font-medium text-gray-700 mb-1">
               Department
@@ -133,7 +146,7 @@ const UploadAssignment = () => {
               <option>CIVIL</option>
             </select>
           </div>
-
+          
           <div className="flex-1 min-w-[120px]">
             <label className="block font-medium text-gray-700 mb-1">
               Section

@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import Sidebar from "../../../components/Sidebar"; // Make sure this path is correct
 
 const Notification_Message = () => {
   const [showForm, setShowForm] = useState(false);
@@ -76,9 +75,6 @@ const Notification_Message = () => {
 
   return (
     <div className="flex min-h-screen bg-gray-50 mt-[50px]">
-      {/* Sidebar */}
-      <Sidebar role="admin" />
-
       {/* Main Content */}
       <div className="flex-1 p-8">
         <div className="bg-white rounded-lg shadow p-6">

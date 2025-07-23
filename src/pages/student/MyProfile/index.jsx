@@ -71,15 +71,15 @@ const MyProfile = () => {
       <div className="mt-10 mx-auto max-w-xl bg-gray-100 p-6 rounded-xl shadow-md">
         {/* Compact profile info using grid */}
         <div className="grid grid-cols-2 gap-4 text-sm sm:text-base">
-          <div className="font-medium">Name:</div><div>John Doe</div>
-          <div className="font-medium">Register Number:</div><div>21CSE001</div>
+          <div className="font-medium">Name:</div><div>Riya Sharma</div>
+          <div className="font-medium">Register Number:</div><div>21CSE019</div>
           <div className="font-medium">Department:</div><div>Computer Science and Engineering</div>
           <div className="font-medium">Batch:</div><div>2021</div>
           <div className="font-medium">Year:</div><div>3</div>
           <div className="font-medium">Semester:</div><div>6</div>
-          <div className="font-medium">Father's Name:</div><div>Robert Doe</div>
+          <div className="font-medium">Father's Name:</div><div>Robert Sharma</div>
           <div className="font-medium">Contact:</div><div>+91 9876543210</div>
-          <div className="font-medium">Email:</div><div>john.doe@kce.ac.in</div>
+          <div className="font-medium">Email:</div><div>riya.sharma@kce.ac.in</div>
           <div className="font-medium">Aadhar:</div><div>1234 5678 9012</div>
         </div>
 
