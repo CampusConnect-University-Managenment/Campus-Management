@@ -34,7 +34,7 @@ const ResultsPortal = () => {
     <div className="min-h-screen pt-28 pb-24 px-6 bg-white print:pt-0 print:pb-0 print:px-0 print:bg-white">
       {/* Header */}
       <div className="text-center print:block">
-        <h1 className="text-3xl font-bold text-blue-600 uppercase mb-2 print:text-2xl">ACADEMIX</h1>
+        <h1 className="text-3xl font-bold text-blue-600 uppercase mb-2 print:text-2xl">RESULTS PORTAL</h1>
         <p className="text-lg text-gray-600 mb-4 print:text-base">
         To view your semester marks 
         </p>
@@ -59,12 +59,12 @@ const ResultsPortal = () => {
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 mb-6">
             <div className="bg-gray-50 p-4 rounded shadow text-sm">
               <p className="text-gray-500 mb-1">Name</p>
-              <p className="font-semibold text-gray-900">Riya S</p>
+              <p className="font-semibold text-gray-900">Riya Sharma</p>
        
             </div>
             <div className="bg-gray-50 p-4 rounded shadow text-sm">
                      <p className="text-gray-500 mb-1">Reg No</p>
-              <p className="font-semibold text-gray-900">717822P346</p>
+              <p className="font-semibold text-gray-900">21CSE019</p>
             </div>
              
            <div className="bg-gray-50 p-4 rounded shadow text-sm">
