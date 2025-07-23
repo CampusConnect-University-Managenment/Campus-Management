@@ -3,8 +3,8 @@ import React, { useState } from "react";
 
 export default function HelpSupport() {
   const [formState, setFormState] = useState({
-    name: "John Doe",
-    registerNumber: "21CSR015",
+    name: "Riya Sharma",
+    registerNumber: "21CSE019",
     department: "Computer Science",
     type: "Academic",
     location: "",

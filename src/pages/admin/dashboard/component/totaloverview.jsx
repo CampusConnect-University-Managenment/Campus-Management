@@ -25,7 +25,7 @@ const TotalOverview = () => {
             <div>
               <p className="font-semibold">Total Students</p>
               <h3 className="text-3xl font-bold mt-2">2,847</h3>
-              <p className="mt-1 font-medium">+12% from last Year</p>
+              
             </div>
             <GraduationCap className="w-10 h-10 text-white" />
           </div>
@@ -41,7 +41,7 @@ const TotalOverview = () => {
             <div>
               <p className="font-semibold">Faculty Members</p>
               <h3 className="text-3xl font-bold mt-2">186</h3>
-              <p className="mt-1 font-medium">+3% from last Year</p>
+             
             </div>
             <Users2 className="w-10 h-10 text-white" />
           </div>
@@ -57,7 +57,7 @@ const TotalOverview = () => {
             <div>
               <p className="font-semibold">Admin Staff</p>
               <h3 className="text-3xl font-bold mt-2">4</h3>
-              <p className="mt-1 font-medium">+1% from last Year</p>
+              
             </div>
             <ShieldCheck className="w-10 h-10 text-white" />
           </div>
