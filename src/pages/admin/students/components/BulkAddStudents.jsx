@@ -18,10 +18,10 @@ const BulkAddStudents = ({ onClose, onBulkAdd }) => {
       const worksheet = workbook.Sheets[sheetName];
       const json = XLSX.utils.sheet_to_json(worksheet);
 
-      // Required columns for your app
       const required = [
-        "name", "email", "phone", "department", "degree",
-        "year", "semester", "status", "cgpa", "attendance", "bio"
+        "name", "regNo", "batch", "section", "dept", "dob", "contact", "mail", "address", "adhar",
+        "tenthMark", "twelfthMark", "quota", "gender", "bloodGroup", "photo",
+        "parentName", "parentPhoneNo", "sem", "year", "totalCredits"
       ];
 
       const isValid = json.every(row =>
@@ -29,12 +29,12 @@ const BulkAddStudents = ({ onClose, onBulkAdd }) => {
       );
 
       if (!isValid) {
-        setError("Invalid format. Ensure all columns are present: " + required.join(", "));
+        setError("Invalid format. Ensure all columns are present:\n" + required.join(", "));
         return;
       }
 
       setError("");
-      onBulkAdd(json);
+      onBulkAdd(json);  // Pass parsed data to parent
     };
 
     reader.readAsArrayBuffer(file);
@@ -51,11 +51,15 @@ const BulkAddStudents = ({ onClose, onBulkAdd }) => {
         className="mb-3 border border-gray-300 p-2 rounded w-full"
       />
 
-      {error && <p className="text-red-600 mb-3">{error}</p>}
+      {error && <p className="text-red-600 mb-3 whitespace-pre-wrap">{error}</p>}
 
       <p className="text-sm text-gray-500 mb-4">
         Please upload an Excel file with these columns:<br />
-        <code>name, email, phone, department, degree, year, semester, status, cgpa, attendance, bio</code>
+        <code>
+          name, regNo, batch, section, dept, dob, contact, mail, address, adhar,<br />
+          tenthMark, twelfthMark, quota, gender, bloodGroup, photo,<br />
+          parentName, parentPhoneNo, sem, year, totalCredits
+        </code>
       </p>
 
       <div className="flex justify-end space-x-2">
@@ -66,7 +70,7 @@ const BulkAddStudents = ({ onClose, onBulkAdd }) => {
           Cancel
         </button>
         <button
-          className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
+          className="bg-blue-600 text-white px-4 py-2 rounded opacity-50 cursor-not-allowed"
           disabled
         >
           Add Students
