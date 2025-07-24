@@ -79,12 +79,8 @@ function ClassList() {
               <th className="border px-6 py-3">S.No</th>
               <th className="border px-6 py-3">Course Code & Name</th>
               <th className="border px-6 py-3">Batch (Year - Dept - Section)</th>
-              <th className="border px-6 py-3">Room</th>
-              <th className="border px-6 py-3">Attendance</th>
               <th className="border px-6 py-3">View Students</th>
-              <th className="border px-6 py-3">Study Material</th>
-              <th className="border px-6 py-3">Question Paper</th>
-              <th className="border px-6 py-3">Marks Upload</th>
+              
             </tr>
           </thead>
           <tbody>
@@ -93,16 +89,7 @@ function ClassList() {
                 <td className="border px-6 py-4">{index + 1}</td>
                 <td className="border px-6 py-4">{cls.code} / {cls.subject}</td>
                 <td className="border px-6 py-4">{cls.batch}</td>
-                <td className="border px-6 py-4">{cls.room}</td>
 
-                <td className="border px-6 py-4">
-                  <button
-                    onClick={() => handleNavigate('/upload-attendance', cls)}
-                    className="bg-blue-500 hover:bg-blue-600 text-white px-3 py-1 rounded"
-                  >
-                    Upload
-                  </button>
-                </td>
 
                 <td className="border px-6 py-4">
                   <button
@@ -113,32 +100,6 @@ function ClassList() {
                   </button>
                 </td>
 
-                <td className="border px-6 py-4">
-                  <button
-                    onClick={() => handleNavigate('/faculty/ExamInterFace/upload-material', cls)}
-                    className="bg-purple-500 hover:bg-purple-600 text-white px-3 py-1 rounded"
-                  >
-                    Upload
-                  </button>
-                </td>
-
-                <td className="border px-6 py-4">
-                  <button
-                    onClick={() => handleNavigate('/faculty/ExamInterFace/upload-question', cls)}
-                    className="bg-yellow-500 hover:bg-yellow-600 text-white px-3 py-1 rounded"
-                  >
-                    Upload
-                  </button>
-                </td>
-
-                <td className="border px-6 py-4">
-                  <button
-                    onClick={() => handleNavigate('/faculty/ExamInterFace/upload-marks', cls)}
-                    className="bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded"
-                  >
-                    Upload
-                  </button>
-                </td>
               </tr>
             ))}
           </tbody>
