@@ -80,6 +80,7 @@ function ClassList() {
               <th className="border px-6 py-3">Course Code & Name</th>
               <th className="border px-6 py-3">Batch (Year - Dept - Section)</th>
               <th className="border px-6 py-3">View Students</th>
+
             </tr>
           </thead>
           <tbody>
@@ -88,6 +89,7 @@ function ClassList() {
                 <td className="border px-6 py-4">{index + 1}</td>
                 <td className="border px-6 py-4">{cls.code} / {cls.subject}</td>
                 <td className="border px-6 py-4">{cls.batch}</td>
+
                 <td className="border px-6 py-4">
                   <button
                     onClick={() => handleNavigate('/students', cls)}
@@ -96,8 +98,6 @@ function ClassList() {
                     View
                   </button>
                 </td>
-
-        
               </tr>
             ))}
           </tbody>
