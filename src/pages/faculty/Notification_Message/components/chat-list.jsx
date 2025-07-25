@@ -18,12 +18,12 @@ export default function ChatList({ chats, selectedChat, onSelectChat }) {
   }
 
   return (
-    <div className="overflow-y-auto">
+    <div className="h-full overflow-y-auto">
       {chats.map((chat) => (
         <div
           key={chat.id}
           className={`p-4 border-b border-gray-100 cursor-pointer hover:bg-gray-50 ${
-            selectedChat.id === chat.id ? "bg-blue-50 border-r-2 border-r-blue-500" : ""
+            selectedChat?.id === chat.id ? "bg-blue-50 border-r-2 border-r-blue-500" : ""
           }`}
           onClick={() => onSelectChat(chat)}
         >
@@ -34,9 +34,7 @@ export default function ChatList({ chats, selectedChat, onSelectChat }) {
               {chat.unreadCount > 0 && <Badge className="bg-red-500 text-white text-xs">{chat.unreadCount}</Badge>}
             </div>
           </div>
-
           <p className="text-sm text-gray-600 truncate mb-2">{chat.lastMessage}</p>
-
           <div className="flex justify-between items-center text-xs text-gray-500">
             <div className="flex items-center space-x-1">
               <Users className="w-3 h-3" />

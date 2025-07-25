@@ -1,175 +1,230 @@
-import React from 'react';
+import React, { useState } from "react";
 import {
-  BookOpen, Users, ClipboardCheck, Calendar, ArrowRightCircle,
-  LayoutDashboard, FileText, Megaphone, GraduationCap, UserCircle
-} from 'lucide-react';
+  CalendarClock,
+  CheckCircle,
+  Pencil,
+  Megaphone,
+  Activity,
+  Library,
+  LayoutGrid,
+  GraduationCap,
+  Building2,
+} from "lucide-react";
 
-function FacultyDashboard() {
-  const stats = [
-    { title: "Total Students", count: 120, icon: <Users size={28} />, color: "bg-blue-100 text-blue-600" },
-    { title: "Classes Taken", count: 32, icon: <BookOpen size={28} />, color: "bg-green-100 text-green-600" },
-    { title: "Attendance Uploaded", count: 28, icon: <ClipboardCheck size={28} />, color: "bg-yellow-100 text-yellow-600" },
-    { title: "Upcoming Classes", count: 3, icon: <Calendar size={28} />, color: "bg-purple-100 text-purple-600" },
-  ];
+const Card = ({ title, value, icon }) => (
+  <div className="bg-white rounded-xl shadow p-4 flex flex-col items-center text-center">
+    <div className="mb-2">{icon}</div>
+    <h4 className="text-sm font-semibold text-gray-700">{title}</h4>
+    <p className="text-lg font-bold text-gray-900">{value}</p>
+  </div>
+);
 
-  const actions = [
-  {
-    label: "Upload Attendance",
-    icon: <ClipboardCheck size={32} />,
-    color: "bg-indigo-600",
-    target: "attendance"
-  },
-  {
-    label: "Upload Internal Marks",
-    icon: <FileText size={32} />,
-    color: "bg-pink-600",
-    target: "marks"
-  },
-  {
-    label: "View Student List",
-    icon: <Users size={32} />,
-    color: "bg-teal-600",
-    target: "students"
-  },
-  {
-    label: "Make Announcements",
-    icon: <LayoutDashboard size={32} />,
-    color: "bg-orange-600",
-    target: "announcements"
-  }
-];
+const FacultyDashboard = () => {
+  const [tasks, setTasks] = useState([
+    { date: "24", month: "Jul", title: "Upload Assignment Marks - DBMS", time: "4:00 PM", done: false },
+    { date: "26", month: "Jul", title: "Internal Test - CN", time: "10:00 AM", done: false },
+    { date: "28", month: "Jul", title: "Department Meeting", time: "2:00 PM", done: false },
+  ]);
 
+  const [newTask, setNewTask] = useState({ date: "", month: "", title: "", time: "" });
+  const [isEditing, setIsEditing] = useState(false);
+  const [editIndex, setEditIndex] = useState(null);
 
-  const announcements = [
-    { title: "Exam Timetable Released", date: "July 10, 2025" },
-    { title: "Assignment Submission Deadline Extended", date: "July 8, 2025" },
-    { title: "Project Viva Next Week", date: "July 6, 2025" }
-  ];
+  const [announcements] = useState([
+    { title: "Exam Schedule Released", date: "22 Jul 2025" },
+    { title: "New Course Material Uploaded", date: "21 Jul 2025" },
+    { title: "Semester Registration Deadline", date: "20 Jul 2025" },
+    { title: "Lab Manuals Updated", date: "19 Jul 2025" },
+    { title: "Guest Lecture on AI", date: "18 Jul 2025" },
+  ]);
 
-  const handleNavigate = (target) => {
-    alert(`Navigate to ${target}`);
-    // Use navigate(`/faculty/${target}`) if using React Router
+  const [activities] = useState([
+    "Marked attendance for CSE301",
+    "Uploaded internal marks for DBMS",
+    "Posted assignment for CN",
+    "Created announcement: Project Submission Deadline",
+    "Reviewed lab reports",
+    "Published quiz results",
+  ]);
+
+  const [announcementPage, setAnnouncementPage] = useState(1);
+  const [activityPage, setActivityPage] = useState(1);
+  const itemsPerPage = 3;
+
+  const handleDone = (index) => {
+    const updated = [...tasks];
+    updated[index].done = !updated[index].done;
+    setTasks(updated);
   };
 
-  return (
-    <div className="p-6 max-w-7xl mx-auto mt-28">
-      {/* Welcome */}
-      <div className="flex justify-between items-center mb-6">
-        <div>
-          <h1 className="text-4xl font-bold text-gray-800">Welcome, Professor 👋</h1>
-          <p className="text-gray-500 mt-1">Here's a quick overview of your dashboard.</p>
-        </div>
-        <div className="flex items-center gap-4 bg-gray-100 p-3 rounded-xl shadow">
-          <UserCircle size={40} className="text-gray-600" />
-          <div>
-            <p className="font-semibold text-gray-800">Dr. A. Suresh</p>
-            <p className="text-sm text-gray-500">Computer Science Department</p>
-          </div>
-        </div>
-      </div>
+  const handleEdit = (index) => {
+    setNewTask(tasks[index]);
+    setEditIndex(index);
+    setIsEditing(true);
+  };
 
-      {/* Stats Section */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6 mb-10">
-        {stats.map((stat, index) => (
-          <div
-            key={index}
-            className={`rounded-2xl p-5 shadow-md hover:shadow-xl cursor-pointer transition-all ${stat.color}`}
-          >
-            <div className="flex items-center gap-4">
-              <div className="p-3 bg-white rounded-full shadow">{stat.icon}</div>
-              <div>
-                <p className="text-sm font-medium">{stat.title}</p>
-                <p className="text-2xl font-bold">{stat.count}</p>
-              </div>
+  const handleAddOrUpdate = () => {
+    if (isEditing) {
+      const updated = [...tasks];
+      updated[editIndex] = { ...newTask, done: false };
+      setTasks(updated);
+      setIsEditing(false);
+      setEditIndex(null);
+    } else {
+      setTasks([...tasks, { ...newTask, done: false }]);
+    }
+    setNewTask({ date: "", month: "", title: "", time: "" });
+  };
+
+  const handleDelete = (index) => {
+    const updated = tasks.filter((_, i) => i !== index);
+    setTasks(updated);
+  };
+
+  const paginatedAnnouncements = announcements.slice(
+    (announcementPage - 1) * itemsPerPage,
+    announcementPage * itemsPerPage
+  );
+
+  const paginatedActivities = activities.slice(
+    (activityPage - 1) * itemsPerPage,
+    activityPage * itemsPerPage
+  );
+
+  return (
+    <div className="p-6 mt-20 max-w-6xl mx-auto">
+      <h1 className="text-3xl font-bold text-blue-700 mb-6">Welcome back, Professor! 👋</h1>
+
+      {/* Profile + Stats Section */}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-10">
+        {/* Profile Card */}
+        <div className="bg-white shadow rounded-xl p-6 col-span-1">
+          <div className="flex items-center space-x-4">
+            <img
+              src="https://cdn-icons-png.flaticon.com/512/3135/3135715.png"
+              alt="Faculty"
+              className="w-16 h-16 rounded-full"
+            />
+            <div>
+              <h3 className="text-xl font-bold text-gray-800">Dr. Ashokkumar</h3>
+              <p className="text-gray-500 text-sm">Assistant Professor, CSE</p>
+              <p className="text-gray-400 text-xs mt-1">Faculty ID: FAC1234</p>
             </div>
           </div>
-        ))}
+        </div>
+
+        {/* Stats Cards */}
+        <div className="grid grid-cols-2 gap-6 col-span-2">
+          <Card
+            title="Courses Handling"
+            value="05"
+            icon={<Library size={24} className="text-blue-600" />}
+          />
+          <Card
+            title="Total Classes"
+            value="12"
+            icon={<LayoutGrid size={24} className="text-purple-600" />}
+          />
+          <Card
+            title="Total Students"
+            value="340"
+            icon={<GraduationCap size={24} className="text-green-600" />}
+          />
+          <Card
+            title="Dept Handling"
+            value="6"
+            icon={<Building2 size={24} className="text-teal-600" />}
+          />
+        </div>
       </div>
 
-      {/* Quick Actions */}
-<h2 className="text-2xl font-semibold mb-4 text-gray-700">Quick Actions</h2>
-<div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6 mb-10">
-  {actions.map((action, index) => (
-    <button
-      key={index}
-      onClick={() => handleNavigate(action.target)}
-      className={`rounded-xl p-5 flex flex-col items-center gap-3 text-white shadow-md hover:shadow-lg transition-all ${action.color}`}
-    >
-      {/* Replaced white circle with large solid icon */}
-      <div className="text-white">
-        {action.icon}
-      </div>
-      <p className="text-lg font-medium">{action.label}</p>
-      <ArrowRightCircle size={20} />
-    </button>
-  ))}
-</div>
+      {/* To-do, Announcements, Activities */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-10">
+        {/* To-do List */}
+        <div className="bg-white shadow rounded-xl p-6">
+          <h2 className="text-xl font-semibold text-gray-800 mb-4 flex items-center gap-2">
+            <CalendarClock className="text-indigo-600" /> To-do List
+          </h2>
+          <ul className="space-y-4">
+            {tasks.map((task, index) => (
+              <li
+                key={index}
+                className={`p-4 border rounded-lg flex justify-between items-start ${task.done ? "bg-green-50" : "bg-white"}`}
+              >
+                <div>
+                  <p className="text-gray-800 font-semibold">{task.title}</p>
+                  <p className="text-sm text-gray-500">{`${task.date} ${task.month}, ${task.time}`}</p>
+                </div>
+                <div className="flex gap-2">
+                  <button onClick={() => handleDone(index)} title="Mark as Done">
+                    <CheckCircle className={`w-5 h-5 ${task.done ? "text-green-600" : "text-gray-400"}`} />
+                  </button>
+                  <button onClick={() => handleEdit(index)} title="Edit">
+                    <Pencil className="w-5 h-5 text-blue-500" />
+                  </button>
+                  <button onClick={() => handleDelete(index)} title="Delete">
+                    ❌
+                  </button>
+                </div>
+              </li>
+            ))}
+          </ul>
 
-
-      {/* Charts and Announcements */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        {/* Chart Placeholder */}
-        <div className="bg-white rounded-xl shadow p-6">
-          <h3 className="text-xl font-semibold mb-4 text-gray-800">Class Performance Overview</h3>
-          <div className="h-64 flex items-center justify-center text-gray-400">
-            {/* Use Chart.js or Recharts */}
-            <p>[Graph / Chart Coming Soon]</p>
+          {/* Add/Edit Task */}
+          <div className="mt-6 border-t pt-4">
+            <h3 className="text-lg font-semibold mb-2">{isEditing ? "Edit Task" : "Add New Task"}</h3>
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-2 mb-3">
+              <input className="border p-2 rounded" placeholder="Date" value={newTask.date} onChange={(e) => setNewTask({ ...newTask, date: e.target.value })} />
+              <input className="border p-2 rounded" placeholder="Month" value={newTask.month} onChange={(e) => setNewTask({ ...newTask, month: e.target.value })} />
+              <input className="border p-2 rounded" placeholder="Title" value={newTask.title} onChange={(e) => setNewTask({ ...newTask, title: e.target.value })} />
+              <input className="border p-2 rounded" placeholder="Time" value={newTask.time} onChange={(e) => setNewTask({ ...newTask, time: e.target.value })} />
+            </div>
+            <button
+              onClick={handleAddOrUpdate}
+              className="bg-indigo-600 text-white px-4 py-2 rounded hover:bg-indigo-700"
+            >
+              {isEditing ? "Update Task" : "Add Task"}
+            </button>
           </div>
         </div>
 
         {/* Announcements */}
-        <div className="bg-white rounded-xl shadow p-6">
-          <div className="flex items-center gap-2 mb-4">
-            <Megaphone className="text-orange-500" />
-            <h3 className="text-xl font-semibold text-gray-800">Recent Announcements</h3>
-          </div>
-          <ul className="space-y-4">
-            {announcements.map((note, index) => (
-              <li key={index} className="border-l-4 border-orange-400 pl-3">
-                <p className="font-medium text-gray-700">{note.title}</p>
-                <p className="text-sm text-gray-500">{note.date}</p>
+        <div className="bg-white shadow rounded-xl p-6">
+          <h2 className="text-xl font-semibold text-gray-800 mb-4 flex items-center gap-2">
+            <Megaphone className="text-orange-500" /> Announcements
+          </h2>
+          <ul className="space-y-3">
+            {paginatedAnnouncements.map((ann, idx) => (
+              <li key={idx} className="border-b pb-2">
+                <p className="font-medium text-gray-700">{ann.title}</p>
+                <p className="text-sm text-gray-500">{ann.date}</p>
               </li>
             ))}
           </ul>
+          <div className="flex justify-between mt-4">
+            <button onClick={() => setAnnouncementPage((prev) => Math.max(prev - 1, 1))} disabled={announcementPage === 1} className="px-3 py-1 bg-gray-200 rounded">Prev</button>
+            <button onClick={() => setAnnouncementPage((prev) => prev + 1)} disabled={announcementPage * itemsPerPage >= announcements.length} className="px-3 py-1 bg-gray-200 rounded">Next</button>
+          </div>
+        </div>
+
+        {/* Recent Activities */}
+        <div className="bg-white shadow rounded-xl p-6">
+          <h2 className="text-xl font-semibold text-gray-800 mb-4 flex items-center gap-2">
+            <Activity className="text-green-500" /> Recent Activities
+          </h2>
+          <ul className="list-disc pl-5 space-y-2 text-gray-700">
+            {paginatedActivities.map((item, index) => (
+              <li key={index}>{item}</li>
+            ))}
+          </ul>
+          <div className="flex justify-between mt-4">
+            <button onClick={() => setActivityPage((prev) => Math.max(prev - 1, 1))} disabled={activityPage === 1} className="px-3 py-1 bg-gray-200 rounded">Prev</button>
+            <button onClick={() => setActivityPage((prev) => prev + 1)} disabled={activityPage * itemsPerPage >= activities.length} className="px-3 py-1 bg-gray-200 rounded">Next</button>
+          </div>
         </div>
       </div>
-
-      {/* Recent Activity */}
-<div className="bg-white mt-8 rounded-xl shadow p-6">
-  <h3 className="text-xl font-semibold text-gray-800 mb-4">Recent Activity</h3>
-  <ul className="space-y-4 text-gray-700">
-    <li>✅ Marked attendance for CSE301 - July 14, 2025</li>
-    <li>📝 Uploaded marks for Internal Test 1 - July 13, 2025</li>
-    <li>📢 Posted announcement: "Viva schedule updated" - July 12, 2025</li>
-  </ul>
-</div>
-
-
-
-{/* Course Progress */}
-<div className="bg-white mt-8 rounded-xl shadow p-6">
-  <h3 className="text-xl font-semibold text-gray-800 mb-4">Course Completion</h3>
-  <div className="space-y-4">
-    <div>
-      <p className="font-medium text-gray-700">CSE301 - Data Structures</p>
-      <div className="w-full bg-gray-200 rounded-full h-3">
-        <div className="bg-green-500 h-3 rounded-full w-[75%]"></div>
-      </div>
-    </div>
-    <div>
-      <p className="font-medium text-gray-700">CSE401 - Compiler Design</p>
-      <div className="w-full bg-gray-200 rounded-full h-3">
-        <div className="bg-blue-500 h-3 rounded-full w-[60%]"></div>
-      </div>
-    </div>
-  </div>
-</div>
-
-
-
-      
     </div>
   );
-}
+};
 
 export default FacultyDashboard;

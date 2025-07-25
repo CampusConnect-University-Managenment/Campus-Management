@@ -1,16 +1,18 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate } from "react-router-dom";
-import { FaClipboardList, FaFileUpload, FaBookOpen } from "react-icons/fa";
+import { FaFileUpload } from "react-icons/fa";
 
 const UploadQuestionPaper = () => {
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
-    subject: '',
-    exam: '',
-    date: '',
+    title: '',
     description: '',
     file: null,
   });
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
 
   const handleChange = (e) => {
     const { name, value, files } = e.target;
@@ -22,8 +24,8 @@ const UploadQuestionPaper = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    const { subject, exam, date, file } = formData;
-    if (!subject || !exam || !date || !file) {
+    const { title, file } = formData;
+    if (!title || !file) {
       alert('Please fill in all required fields.');
       return;
     }
@@ -33,9 +35,7 @@ const UploadQuestionPaper = () => {
     alert('Question Paper upload simulated');
 
     setFormData({
-      subject: '',
-      exam: '',
-      date: '',
+      title: '',
       description: '',
       file: null,
     });
@@ -45,9 +45,7 @@ const UploadQuestionPaper = () => {
 
   const handleReset = () => {
     setFormData({
-      subject: '',
-      exam: '',
-      date: '',
+      title: '',
       description: '',
       file: null,
     });
@@ -57,55 +55,29 @@ const UploadQuestionPaper = () => {
   return (
     <div className="mt-[100px] min-h-screen bg-[#f0f4f8] px-4 py-10 font-inter">
       <button onClick={() => navigate(-1)} className="bg-blue-500 text-white px-4 py-2 rounded">
-            ← Back to ExamInterFace
-            </button><br/>
-      <br/><div className="max-w-3xl mx-auto bg-white rounded-2xl shadow-lg p-8">
-        <div className="flex">
-          <div><FaFileUpload className="text-green-600 text-4xl ms-44" /></div>
-          <div>
-        <h2 className="text-3xl font-semibold text-[#2e3a59] text-center mb-8">
-          Upload Question Paper
-        </h2></div>
+        ← Back
+      </button>
+
+      <div className="max-w-3xl mx-auto bg-white rounded-2xl shadow-lg p-8 mt-6">
+        <div className="flex items-center justify-center mb-6">
+          <FaFileUpload className="text-green-600 text-4xl mr-4" />
+          <h2 className="text-3xl font-semibold text-[#2e3a59] text-center">
+            Upload Question Paper
+          </h2>
         </div>
 
+        {/* Form */}
         <form onSubmit={handleSubmit} className="space-y-6">
-          {/* Subject */}
+          {/* Title */}
           <div>
-            <label className="block font-medium mb-1 text-gray-700">Subject</label>
+            <label className="block font-medium mb-1 text-gray-700">Title</label>
             <input
               type="text"
-              name="subject"
-              value={formData.subject}
+              name="title"
+              value={formData.title}
               onChange={handleChange}
-              placeholder="e.g. Operating Systems"
-              className="w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-400"
-              required
-            />
-          </div>
-
-          {/* Exam */}
-          <div>
-            <label className="block font-medium mb-1 text-gray-700">Exam</label>
-            <input
-              type="text"
-              name="exam"
-              value={formData.exam}
-              onChange={handleChange}
-              placeholder="e.g. Midterm, Semester 1"
-              className="w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-400"
-              required
-            />
-          </div>
-
-          {/* Date */}
-          <div>
-            <label className="block font-medium mb-1 text-gray-700">Exam Date</label>
-            <input
-              type="date"
-              name="date"
-              value={formData.date}
-              onChange={handleChange}
-              className="w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-400"
+              placeholder="Enter title for the question paper"
+              className="w-full px-4 py-2 border border-gray-300 rounded-md"
               required
             />
           </div>
@@ -119,7 +91,7 @@ const UploadQuestionPaper = () => {
               onChange={handleChange}
               placeholder="Short note about the question paper"
               rows="3"
-              className="w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-400"
+              className="w-full px-4 py-2 border border-gray-300 rounded-md"
             />
           </div>
 

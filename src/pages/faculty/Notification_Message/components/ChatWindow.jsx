@@ -491,7 +491,7 @@ const ChatWindow = ({ chat, currentUser, onSendMessage, onUpdateChat }) => {
 
   const isGroupChat = chat.type?.toLowerCase() === "group"
   return (
-    <div className="h-screen flex flex-col bg-white relative overflow-hidden">
+    <div className="flex flex-col bg-white relative h-full max-h-full">
       {/* Chat Header with enhanced participant management */}
       <div className="px-4 md:px-6 py-3 md:py-4 border-b border-gray-200 bg-white shadow-sm flex-shrink-0">
         <div className="flex items-center justify-between">
@@ -1045,7 +1045,7 @@ const ChatWindow = ({ chat, currentUser, onSendMessage, onUpdateChat }) => {
       {/* Click outside to close dropdown */}
       {showDropdown && <div className="fixed inset-0 z-40" onClick={() => setShowDropdown(false)} />}
 
-      {/* Messages Container - Enhanced responsiveness and improved spacing */}
+      {/* Messages Container */}
       <div className="flex-1 overflow-y-auto p-3 sm:p-4 md:p-5 bg-gray-50 min-h-0">
         {chat.messages?.length === 0 ? (
           <div className="flex items-center justify-center h-full text-gray-500">
@@ -1111,8 +1111,8 @@ const ChatWindow = ({ chat, currentUser, onSendMessage, onUpdateChat }) => {
         <div ref={messagesEndRef} />
       </div>
 
-      {/* Message Input - Enhanced visibility and positioning */}
-      <div className="flex-shrink-0 bg-white border-t border-gray-200">
+      {/* Message Input - Now fixed at the bottom of the chat window */}
+      <div className="bg-white border-t border-gray-200 px-4 py-3 flex-shrink-0">
         <SimpleMessageInput onSendMessage={onSendMessage} />
       </div>
     </div>
