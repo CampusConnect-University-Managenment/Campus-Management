@@ -241,6 +241,23 @@ const ViewQuestionPaper = () => {
           )}
         </ul>
       </div>
+      <br/>
+      <br/><button
+        onClick={() => navigate("/faculty/ExamInterFace/upload-question")}
+        className="bg-blue-500 text-white px-4 py-2 rounded"
+      >
+        ← Upload new Question paper
+      </button>
+      
+      <div className="flex justify-end p-4">
+      <button
+        onClick={() => navigate("/faculty/ExamInterFace/upload-marks")}
+        className="bg-blue-500 text-white px-4 py-2 rounded"
+      >
+        ← Upload marks
+      </button>
+      </div>
+      
     </div>
   );
 };

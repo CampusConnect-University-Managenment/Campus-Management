@@ -236,13 +236,41 @@ const routes = [
     component: <Notification_Message />,
   },
   {
+    name: "Announcements",
+    layout: "/faculty",
+    path: "Announcements",
+    icon: <MdCampaign className="h-6 w-6" />,
+    component: <Announcements />,
+  },
+  {
+    name: "My Profile",
+    layout: "/faculty",
+    path: "profile",
+    icon: <FaUser className="h-6 w-6" />,
+    component: <FacultyProfile />,
+    children: [
+      {
+        layout: "/faculty",
+        path: "edit-profile",
+        component: <EditFacultyProfile />,
+      },
+    ],
+  },
+  {
+    name: "Courses",
+    layout: "/faculty",
+    path: "Course",
+    icon: <MdCampaign className="h-6 w-6" />,
+    component: <FaCourse />,
+    children:[
+      {
     name: "Exam Interface",
     layout: "/faculty",
     path: "examinterface",
     icon: <MdLibraryBooks className="h-6 w-6" />,
     component: <Interface />,
-    children: [
-      {
+  },
+        {
         layout: "/faculty",
         path: "ExamInterFace/upload-marks",
         component: <FacultyMarksUpdate />,
@@ -278,34 +306,6 @@ const routes = [
         component: <UploadAssignment />,
       },
     ],
-  },
-  {
-    name: "Announcements",
-    layout: "/faculty",
-    path: "Announcements",
-    icon: <MdCampaign className="h-6 w-6" />,
-    component: <Announcements />,
-  },
-  {
-    name: "My Profile",
-    layout: "/faculty",
-    path: "profile",
-    icon: <FaUser className="h-6 w-6" />,
-    component: <FacultyProfile />,
-    children: [
-      {
-        layout: "/faculty",
-        path: "edit-profile",
-        component: <EditFacultyProfile />,
-      },
-    ],
-  },
-  {
-    name: "Courses",
-    layout: "/faculty",
-    path: "Course",
-    icon: <MdCampaign className="h-6 w-6" />,
-    component: <FaCourse />,
   },
 ];
 

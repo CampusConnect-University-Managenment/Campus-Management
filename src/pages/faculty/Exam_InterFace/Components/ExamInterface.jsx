@@ -42,19 +42,19 @@ const Interface = () => {
       description: "Upload assignments for students to complete.",
     },
     {
-      title: "View Question Paper",
+      title: "Question Paper",
       path: "/faculty/ExamInterFace/view-question",
       icon: <FaEye className="text-green-500 text-4xl mb-2" />,
       description: "Browse or download uploaded question papers.",
     },
     {
-      title: "View Study Material",
+      title: "Study Material",
       path: "/faculty/ExamInterFace/view-material",
       icon: <FaEye className="text-blue-500 text-4xl mb-2" />,
       description: "Access and read available study materials.",
     },
     {
-      title: "View Assignment",
+      title: "Assignment",
       path: "/faculty/ExamInterFace/view-assignment",
       icon: <FaTasks className="text-purple-500 text-4xl mb-2" />,
       description: "View or download student assignments.",
@@ -70,7 +70,7 @@ const Interface = () => {
   return (
     <div className="mt-[10px] pt-24 pb-36 px-6 bg-gray-100 font-inter">
       <h2 className="text-3xl font-bold text-center text-[#2e3a59] mb-6">
-        📚 Exam Upload Interface
+        📚 Course Interface
       </h2>
 
       {popupMessage && (
@@ -81,21 +81,24 @@ const Interface = () => {
         </div>
       )}
 
-      <div className="grid gap-8 sm:grid-cols-2 md:grid-cols-3 max-w-6xl mx-auto">
-        {cards.map((card, index) => (
-          <div
-            key={index}
-            onClick={() => navigate(card.path)}
-            className="cursor-pointer bg-white rounded-xl p-6 shadow-md hover:shadow-xl hover:scale-[1.02] transition duration-300 text-center"
-          >
-            {card.icon}
-            <h3 className="text-xl font-semibold text-gray-800 mb-1">
-              {card.title}
-            </h3>
-            <p className="text-sm text-gray-500">{card.description}</p>
-          </div>
-        ))}
+     <div className="grid gap-8 sm:grid-cols-2 md:grid-cols-3 max-w-6xl mx-auto">
+  {cards
+    .filter((card) => !card.title.toLowerCase().includes("upload")) // Hide only upload cards
+    .map((card, index) => (
+      <div
+        key={index}
+        onClick={() => navigate(card.path)}
+        className="cursor-pointer bg-white rounded-xl p-6 shadow-md hover:shadow-xl hover:scale-[1.02] transition duration-300 text-center"
+      >
+        {card.icon}
+        <h3 className="text-xl font-semibold text-gray-800 mb-1">
+          {card.title}
+        </h3>
+        <p className="text-sm text-gray-500">{card.description}</p>
       </div>
+    ))}
+</div>
+
     </div>
   );
 };
