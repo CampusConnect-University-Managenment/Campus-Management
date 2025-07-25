@@ -6,10 +6,6 @@ const UploadStudyMaterial = () => {
   const navigate = useNavigate();
 
   const [formData, setFormData] = useState({
-    department: "",
-    year: "",
-    section: "",
-    subject: "",
     category: "notes",
     date: "",
     description: "",
@@ -31,9 +27,9 @@ const UploadStudyMaterial = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    const { department, year, section, subject, file, date } = formData;
+    const { file, date } = formData;
 
-    if (!department || !year || !section || !subject || !file || !date) {
+    if (!file || !date) {
       alert("Please fill in all required fields.");
       return;
     }
@@ -43,10 +39,6 @@ const UploadStudyMaterial = () => {
     alert("Study Material upload simulated");
 
     setFormData({
-      department: "",
-      year: "",
-      section: "",
-      subject: "",
       category: "notes",
       date: "",
       description: "",
@@ -58,10 +50,6 @@ const UploadStudyMaterial = () => {
 
   const handleReset = () => {
     setFormData({
-      department: "",
-      year: "",
-      section: "",
-      subject: "",
       category: "notes",
       date: "",
       description: "",
@@ -88,90 +76,6 @@ const UploadStudyMaterial = () => {
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-6">
-          {/* Dropdown Filters */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            {/* Department */}
-            <div>
-              <label className="block mb-1 font-medium text-gray-700">
-                Department
-              </label>
-              <select
-                name="department"
-                value={formData.department}
-                onChange={handleChange}
-                className="w-full px-4 py-2 border border-gray-300 rounded-md"
-                required
-              >
-                <option value="">Select Department</option>
-                <option value="CSE">Computer Science</option>
-                <option value="ECE">Electronics</option>
-                <option value="EEE">Electrical</option>
-                <option value="MECH">Mechanical</option>
-                <option value="CIVIL">Civil</option>
-              </select>
-            </div>
-
-            {/* Year */}
-            <div>
-              <label className="block mb-1 font-medium text-gray-700">
-                Year
-              </label>
-              <select
-                name="year"
-                value={formData.year}
-                onChange={handleChange}
-                className="w-full px-4 py-2 border border-gray-300 rounded-md"
-                required
-              >
-                <option value="">Select Year</option>
-                <option value="First">First</option>
-                <option value="Second">Second</option>
-                <option value="Third">Third</option>
-                <option value="Fourth">Fourth</option>
-              </select>
-            </div>
-
-            {/* Section */}
-            <div>
-              <label className="block mb-1 font-medium text-gray-700">
-                Section
-              </label>
-              <select
-                name="section"
-                value={formData.section}
-                onChange={handleChange}
-                className="w-full px-4 py-2 border border-gray-300 rounded-md"
-                required
-              >
-                <option value="">Select Section</option>
-                <option value="A">A</option>
-                <option value="B">B</option>
-                <option value="C">C</option>
-              </select>
-            </div>
-
-            {/* Subject */}
-            <div>
-              <label className="block mb-1 font-medium text-gray-700">
-                Subject
-              </label>
-              <select
-                name="subject"
-                value={formData.subject}
-                onChange={handleChange}
-                className="w-full px-4 py-2 border border-gray-300 rounded-md"
-                required
-              >
-                <option value="">Select Subject</option>
-                <option value="DSA">Data Structures</option>
-                <option value="OS">Operating Systems</option>
-                <option value="DBMS">DBMS</option>
-                <option value="CN">Computer Networks</option>
-                <option value="Maths">Mathematics</option>
-              </select>
-            </div>
-          </div>
-
           {/* Category */}
           <div>
             <label className="block font-medium mb-1 text-gray-700">

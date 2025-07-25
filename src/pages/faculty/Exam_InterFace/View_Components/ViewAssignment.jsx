@@ -1,8 +1,8 @@
-import React, { useState } from "react";
+import React from "react";
 import { FaFilePdf, FaFileWord, FaDownload } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 
-// Sample assignment data with postedDate and deadline
+// Sample assignment data
 const assignments = [
   {
     name: "CSE A - OOPS Assignment 1",
@@ -47,25 +47,7 @@ const assignments = [
 ];
 
 const ViewAssignmentQuestions = () => {
-  const [filters, setFilters] = useState({
-    year: "All",
-    department: "All",
-    section: "All",
-  });
-
   const navigate = useNavigate();
-
-  const handleFilterChange = (field, value) => {
-    setFilters({ ...filters, [field]: value });
-  };
-
-  const filteredAssignments = assignments.filter((assignment) => {
-    return (
-      (filters.year === "All" || assignment.year === filters.year) &&
-      (filters.department === "All" || assignment.department === filters.department) &&
-      (filters.section === "All" || assignment.section === filters.section)
-    );
-  });
 
   return (
     <div className="mt-[100px] min-h-screen bg-gray-100 px-6 py-20 font-inter">
@@ -76,55 +58,29 @@ const ViewAssignmentQuestions = () => {
         ← Back
       </button>
 
+      {/* Upload button at top-right */}
+     
+
       <h2 className="text-3xl font-bold text-center text-[#2e3a59] mb-2">
         📝 View Assignment Questions
       </h2>
       <p className="text-center text-gray-500 mb-10">
-        Filter and download uploaded assignment question files.
+        Download uploaded assignment question files.
       </p>
 
-      {/* Filter Section */}
-      <div className="flex flex-wrap justify-center gap-4 mb-10">
-        <select
-          value={filters.year}
-          onChange={(e) => handleFilterChange("year", e.target.value)}
-          className="px-4 py-2 border rounded shadow-sm focus:ring-indigo-500"
+       <div className="flex justify-end items-center mt-4 mb-6 px-4">
+        <button
+          onClick={() => navigate("/faculty/ExamInterFace/upload-assignment")}
+          className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition"
         >
-          <option value="All">All Years</option>
-          <option value="First">First Year</option>
-          <option value="Second">Second Year</option>
-          <option value="Third">Third Year</option>
-          <option value="Final">Final Year</option>
-        </select>
-
-        <select
-          value={filters.department}
-          onChange={(e) => handleFilterChange("department", e.target.value)}
-          className="px-4 py-2 border rounded shadow-sm focus:ring-indigo-500"
-        >
-          <option value="All">All Departments</option>
-          <option value="CSE">CSE</option>
-          <option value="ECE">ECE</option>
-          <option value="MECH">MECH</option>
-          <option value="CIVIL">CIVIL</option>
-        </select>
-
-        <select
-          value={filters.section}
-          onChange={(e) => handleFilterChange("section", e.target.value)}
-          className="px-4 py-2 border rounded shadow-sm focus:ring-indigo-500"
-        >
-          <option value="All">All Sections</option>
-          <option value="A">Section A</option>
-          <option value="B">Section B</option>
-          <option value="C">Section C</option>
-        </select>
+          + Add new
+        </button>
       </div>
 
-      {/* File List */}
+      {/* Assignment List */}
       <div className="max-w-4xl mx-auto bg-white shadow rounded-lg overflow-hidden">
         <ul className="divide-y divide-gray-200">
-          {filteredAssignments.map((assignment, idx) => (
+          {assignments.map((assignment, idx) => (
             <li
               key={idx}
               className="flex items-center justify-between px-6 py-4 hover:bg-gray-50 transition"
@@ -154,13 +110,10 @@ const ViewAssignmentQuestions = () => {
               </a>
             </li>
           ))}
-          {filteredAssignments.length === 0 && (
-            <li className="text-center text-gray-500 px-6 py-6">
-              No assignments found for selected filters.
-            </li>
-          )}
         </ul>
       </div>
+      <br />
+      <br />
     </div>
   );
 };

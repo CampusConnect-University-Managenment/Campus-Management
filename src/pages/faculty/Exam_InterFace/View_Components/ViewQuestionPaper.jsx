@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import { useNavigate } from "react-router-dom";
 import { FaFilePdf, FaFileWord, FaDownload } from "react-icons/fa";
 
@@ -127,25 +127,7 @@ const questionPapers = [
 ];
 
 const ViewQuestionPaper = () => {
-  const navigate = useNavigate(); // ✅ Fix here
-
-  const [filters, setFilters] = useState({
-    year: "All",
-    department: "All",
-    section: "All",
-  });
-
-  const handleFilterChange = (field, value) => {
-    setFilters({ ...filters, [field]: value });
-  };
-
-  const filteredPapers = questionPapers.filter((file) => {
-    return (
-      (filters.year === "All" || file.year === filters.year) &&
-      (filters.department === "All" || file.department === filters.department) &&
-      (filters.section === "All" || file.section === filters.section)
-    );
-  });
+  const navigate = useNavigate();
 
   return (
     <div className="mt-[100px] min-h-screen bg-gray-100 px-6 py-20 font-inter">
@@ -160,54 +142,22 @@ const ViewQuestionPaper = () => {
         📄 View Question Papers
       </h2>
       <p className="text-center text-gray-500 mb-10">
-        Filter and download previous question papers.
+        Download previous question papers.
       </p>
 
-      {/* Filter Section */}
-      <div className="flex flex-wrap justify-center gap-4 mb-10">
-        {/* Year Filter */}
-        <select
-          value={filters.year}
-          onChange={(e) => handleFilterChange("year", e.target.value)}
-          className="px-4 py-2 rounded border shadow-sm focus:ring-indigo-500"
+      <div className="flex justify-end">
+        <button
+          onClick={() => navigate("/faculty/ExamInterFace/upload-question")}
+          className="bg-blue-500 text-white px-4 py-2 rounded"
         >
-          <option value="All">All Years</option>
-          <option value="First">First Year</option>
-          <option value="Second">Second Year</option>
-          <option value="Third">Third Year</option>
-          <option value="Final">Final Year</option>
-        </select>
-
-        {/* Department Filter */}
-        <select
-          value={filters.department}
-          onChange={(e) => handleFilterChange("department", e.target.value)}
-          className="px-4 py-2 rounded border shadow-sm focus:ring-indigo-500"
-        >
-          <option value="All">All Departments</option>
-          <option value="CSE">CSE</option>
-          <option value="ECE">ECE</option>
-          <option value="MECH">MECH</option>
-          <option value="CIVIL">CIVIL</option>
-        </select>
-
-        {/* Section Filter */}
-        <select
-          value={filters.section}
-          onChange={(e) => handleFilterChange("section", e.target.value)}
-          className="px-4 py-2 rounded border shadow-sm focus:ring-indigo-500"
-        >
-          <option value="All">All Sections</option>
-          <option value="A">Section A</option>
-          <option value="B">Section B</option>
-          <option value="C">Section C</option>
-        </select>
-      </div>
+          +Add new 
+        </button>
+      </div><br/>
 
       {/* File List */}
       <div className="max-w-4xl mx-auto bg-white shadow rounded-lg overflow-hidden">
         <ul className="divide-y divide-gray-200">
-          {filteredPapers.map((file, idx) => (
+          {questionPapers.map((file, idx) => (
             <li
               key={idx}
               className="flex items-center justify-between px-6 py-4 hover:bg-gray-50 transition"
@@ -234,13 +184,9 @@ const ViewQuestionPaper = () => {
               </a>
             </li>
           ))}
-          {filteredPapers.length === 0 && (
-            <li className="text-center text-gray-500 px-6 py-6">
-              No question papers found for selected filters.
-            </li>
-          )}
         </ul>
       </div>
+      
     </div>
   );
 };
