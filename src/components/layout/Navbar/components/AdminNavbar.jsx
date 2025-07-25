@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from "react";
 import { Search, User } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
-export default function Navbar() {
+export default function AdminNavbar() {
   const [showSearch, setShowSearch] = useState(false);
   const [visible, setVisible] = useState(true);
   const [showProfileMenu, setShowProfileMenu] = useState(false);
@@ -93,14 +93,12 @@ export default function Navbar() {
               {/* Top Profile Section */}
               <div className="flex items-center gap-3 border-b pb-3">
                 <img
-                  src="https://ui-avatars.com/api/?name=Vishwanathan+S"
+                  src="https://ui-avatars.com/api/?name=V+S"
                   alt="avatar"
                   className="w-10 h-10 rounded-full"
                 />
                 <div>
-                  <h4 className="font-semibold text-sm text-gray-900">
-                    Vishwanathan S
-                  </h4>
+                  <h4 className="font-semibold text-sm text-gray-900">V S</h4>
                   <p className="text-xs text-orange-500 font-medium">
                     Premium Member
                   </p>

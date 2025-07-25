@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from "react";
 import { Search, User } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
-export default function Navbar() {
+export default function StudentNavbar() {
   const [showSearch, setShowSearch] = useState(false);
   const [visible, setVisible] = useState(true);
   const [showProfileMenu, setShowProfileMenu] = useState(false);
@@ -99,7 +99,7 @@ export default function Navbar() {
                 />
                 <div>
                   <h4 className="font-semibold text-sm text-gray-900">
-                    Vishwanathan S
+                    Yeswanth
                   </h4>
                   <p className="text-xs text-orange-500 font-medium">
                     Premium Member
@@ -134,7 +134,7 @@ export default function Navbar() {
                 <span
                   onClick={() => {
                     setShowProfileMenu(false);
-                    navigate("/faculty/profile");
+                    navigate("/student/profile");
                   }}
                   className="cursor-pointer hover:text-blue-600 font-medium"
                 >
