@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from "react";
 import { Search, User } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
-export default function Navbar() {
+export default function FacultyNavbar() {
   const [showSearch, setShowSearch] = useState(false);
   const [visible, setVisible] = useState(true);
   const [showProfileMenu, setShowProfileMenu] = useState(false);

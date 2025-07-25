@@ -2,7 +2,7 @@ import React from "react";
 import { Routes, Route, Navigate, useLocation } from "react-router-dom";
 import routes from "../../routes";
 import FacultySidebar from "../sidebar/FacultySidebar";
-import Navbar from "../Navbar";
+import FacultyNavbar from "./Navbar/components/FacultyNavbar";
 
 export default function Faculty(props) {
   const { ...rest } = props;
@@ -78,7 +78,7 @@ export default function Faculty(props) {
       <div className="h-full w-full bg-lightPrimary dark:!bg-navy-900">
         <main className="mx-[12px] h-full flex-none transition-all md:pr-2 xl:ml-[313px]">
           <div className="h-full">
-            <Navbar
+            <FacultyNavbar
               onOpenSidenav={() => setOpen(true)}
               logoText="Faculty Panel"
               brandText={currentRoute}
