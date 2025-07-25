@@ -1,25 +1,28 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { BookOpen } from "lucide-react";
 
 function FacultyCourses() {
   const [myCourses, setMyCourses] = useState([]);
   const navigate = useNavigate();
 
   useEffect(() => {
-    // Simulated data – replace with actual fetch if needed
     const fetchCourses = async () => {
       const response = [
         {
-          code: "DBMS301",
-          name: "Database Management Systems",
-          faculty: "Dr. Priya Singh",
-          color: "bg-green-200",
+          code: "MLT401",
+          name: "Machine Learning Techniques",
+          color: "bg-purple-100 text-purple-900",
         },
         {
-          code: "CN501",
-          name: "Computer Networks",
-          faculty: "Dr. Priya Singh",
-          color: "bg-yellow-200",
+          code: "AI501",
+          name: "Artificial Intelligence with Prompt Engineering",
+          color: "bg-blue-100 text-blue-900",
+        },
+        {
+          code: "DBMS301",
+          name: "Database Management Systems",
+          color: "bg-green-100 text-green-900",
         },
       ];
       setMyCourses(response);
@@ -28,60 +31,39 @@ function FacultyCourses() {
     fetchCourses();
   }, []);
 
-  const handleUpload = (course) => {
-    navigate("/faculty/examinterface", {
-      state: { showPopup: true, courseName: course.name },
-    });
-  };
-
-  const handleEdit = async (course) => {
-    try {
-      const res = await fetch(
-        `http://localhost:8080/api/faculty/course/${course.code}`
-      );
-
-      if (!res.ok) {
-        throw new Error("Course not found or server error");
-      }
-
-      const data = await res.json();
-      alert(`📝 Edit Course: ${data.name}`);
-      // You can replace this with modal later
-    } catch (error) {
-      alert("❌ Server not yet connected or course not found");
-    }
-  };
-
   return (
-    <div className="mt-[100px] p-6">
-      <h1 className="text-3xl font-bold text-blue-700 mb-6">👩‍🏫 My Courses</h1>
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+    <div className="p-8 mt-20">
+      <h1 className="text-4xl font-bold text-blue-700 flex items-center gap-2 mb-8">
+        <span role="img" aria-label="book">
+          📘
+        </span>{" "}
+        My Courses
+      </h1>
+
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+
         {myCourses.map((course) => (
           <div
             key={course.code}
-            className={`rounded-xl shadow-md p-5 ${course.color} flex flex-col justify-between`}
+            className={`rounded-2xl shadow-md p-6 ${course.color} transition-all duration-200`}
           >
-            <div>
-              <h2 className="text-xl font-semibold">{course.name}</h2>
-              <p className="text-sm mt-1">👨‍🏫 {course.faculty}</p>
-              <p className="text-xs text-gray-600 mt-1">
-                Course Code: {course.code}
-              </p>
+            <div className="flex justify-between items-start">
+              <h2 className="text-xl font-bold">{course.name}</h2>
+              <div className="bg-white p-2 rounded-full shadow">
+                <BookOpen className="w-5 h-5" />
+              </div>
             </div>
-            <div className="mt-4 flex gap-2">
-              <button
-                onClick={() => handleUpload(course)}
-                className="bg-green-600 text-white px-3 py-1 rounded hover:bg-green-700"
-              >
-                Upload
-              </button>
-              <button
-                onClick={() => handleEdit(course)}
-                className="bg-blue-600 text-white px-3 py-1 rounded hover:bg-blue-700"
-              >
-                Edit
-              </button>
-            </div>
+
+            <button
+              onClick={() =>
+                navigate("/faculty/examinterface", {
+                  state: { showPopup: true, courseName: course.name },
+                })
+              }
+              className="mt-4 text-blue-700 text-sm font-medium hover:underline"
+            >
+              Upload or Edit →
+            </button>
           </div>
         ))}
       </div>
