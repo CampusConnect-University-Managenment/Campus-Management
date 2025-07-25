@@ -242,25 +242,11 @@ const routes = [
     icon: <MdCampaign className="h-6 w-6" />,
     component: <Announcements />,
   },
-  {
-    name: "My Profile",
-    layout: "/faculty",
-    path: "profile",
-    icon: <FaUser className="h-6 w-6" />,
-    component: <FacultyProfile />,
-    children: [
-      {
-        layout: "/faculty",
-        path: "edit-profile",
-        component: <EditFacultyProfile />,
-      },
-    ],
-  },
-  {
+   {
     name: "Courses",
     layout: "/faculty",
     path: "Course",
-    icon: <MdCampaign className="h-6 w-6" />,
+    icon: <MdLibraryBooks className="h-6 w-6" />,
     component: <FaCourse />,
     children:[
       {
@@ -307,6 +293,21 @@ const routes = [
       },
     ],
   },
+  {
+    name: "My Profile",
+    layout: "/faculty",
+    path: "profile",
+    icon: <FaUser className="h-6 w-6" />,
+    component: <FacultyProfile />,
+    children: [
+      {
+        layout: "/faculty",
+        path: "edit-profile",
+        component: <EditFacultyProfile />,
+      },
+    ],
+  },
+ 
 ];
 
 export default routes;
