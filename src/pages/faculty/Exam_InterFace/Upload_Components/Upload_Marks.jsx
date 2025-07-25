@@ -4,10 +4,6 @@ import { FaClipboardList } from "react-icons/fa";
 import * as XLSX from "xlsx";
 
 const FacultyMarksUpdate = () => {
-  const [department, setDepartment] = useState("");
-  const [section, setSection] = useState("");
-  const [className, setClassName] = useState("");
-  const [subject, setSubject] = useState("");
   const [students, setStudents] = useState([]);
   const [exam, setExam] = useState("");
   const [subExam, setSubExam] = useState("");
@@ -18,37 +14,10 @@ const FacultyMarksUpdate = () => {
     window.scrollTo(0, 0);
   }, []);
 
-  useEffect(() => {
-    const dummyData = {
-      "1st Year": [
-        { name: "John Doe", marks: "" },
-        { name: "Jane Smith", marks: "" },
-      ],
-      "2nd Year": [
-        { name: "Alice Johnson", marks: "" },
-        { name: "Bob Williams", marks: "" },
-      ],
-      "3rd Year": [
-        { name: "Charlie Brown", marks: "" },
-        { name: "Emily Davis", marks: "" },
-      ],
-      "4th Year": [
-        { name: "David Wilson", marks: "" },
-        { name: "Sophia Taylor", marks: "" },
-      ],
-    };
-
-    if (className) {
-      setStudents(dummyData[className] || []);
-    } else {
-      setStudents([]);
-    }
-  }, [className]);
-
   const subExamOptions = {
     "Unit Test": ["Unit Test 1", "Unit Test 2"],
     "Internals": ["Internal 1", "Internal 2"],
-    "Lab": ["Model Lab", "End Semseter Lab"],
+    "Lab": ["Model Lab", "End Semester Lab"],
   };
 
   const handleInputChange = (index, field, value) => {
@@ -67,7 +36,7 @@ const FacultyMarksUpdate = () => {
 
     if (!isExcel) {
       alert("Only Excel files (.xlsx or .xls) are allowed.");
-      e.target.value = ""; // clear the input
+      e.target.value = "";
       return;
     }
 
@@ -94,8 +63,8 @@ const FacultyMarksUpdate = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    if (!department || !section || !className || !subject || !exam || !subExam) {
-      alert("Please select all fields including sub exam.");
+    if (!exam || !subExam) {
+      alert("Please select exam and sub-exam.");
       return;
     }
 
@@ -104,10 +73,6 @@ const FacultyMarksUpdate = () => {
       return;
     }
 
-    console.log("Department:", department);
-    console.log("Class:", className);
-    console.log("Section:", section);
-    console.log("Subject:", subject);
     console.log("Exam:", exam);
     console.log("Sub Exam:", subExam);
     console.log("Student Marks:", students);
@@ -130,55 +95,7 @@ const FacultyMarksUpdate = () => {
           <h2 className="text-3xl font-semibold text-[#2e3a59]">Marks Upload</h2>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 mb-8">
-          <select
-            value={department}
-            onChange={(e) => setDepartment(e.target.value)}
-            className="w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-400"
-          >
-            <option value="">Select Department</option>
-            <option value="IT">IT</option>
-            <option value="CSE">CSE</option>
-            <option value="ECE">ECE</option>
-            <option value="MECH">MECH</option>
-          </select>
-
-          <select
-            value={className}
-            onChange={(e) => setClassName(e.target.value)}
-            className="w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-400"
-          >
-            <option value="">Select Year</option>
-            <option value="1st Year">1st Year</option>
-            <option value="2nd Year">2nd Year</option>
-            <option value="3rd Year">3rd Year</option>
-            <option value="4th Year">4th Year</option>
-          </select>
-
-          <select
-            value={section}
-            onChange={(e) => setSection(e.target.value)}
-            className="w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-400"
-          >
-            <option value="">Select Section</option>
-            <option value="A">A</option>
-            <option value="B">B</option>
-            <option value="C">C</option>
-          </select>
-
-          <select
-            value={subject}
-            onChange={(e) => setSubject(e.target.value)}
-            className="w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-400"
-          >
-            <option value="">Select Subject</option>
-            <option value="Mathematics">Mathematics</option>
-            <option value="Physics">Physics</option>
-            <option value="Computer Networks">Computer Networks</option>
-            <option value="Operating Systems">Operating Systems</option>
-            <option value="Digital Electronics">Digital Electronics</option>
-          </select>
-
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 mb-8">
           <select
             value={exam}
             onChange={(e) => {

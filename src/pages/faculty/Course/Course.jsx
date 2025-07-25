@@ -53,7 +53,7 @@ function FacultyCourses() {
   };
 
   return (
-    <div className="p-6">
+    <div className="mt-[100px] p-6">
       <h1 className="text-3xl font-bold text-blue-700 mb-6">👩‍🏫 My Courses</h1>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         {myCourses.map((course) => (
