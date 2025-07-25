@@ -114,25 +114,25 @@ const routes = [
     icon: <MdDashboard className="h-6 w-6" />,
     component: <Assign />,
   },
-  {
-    name: "Exam Interface",
-    layout: "/admin",
-    path: "examinterface",
-    icon: <MdLibraryBooks className="h-6 w-6" />,
-    component: <AdminExamInterface />, // <- should include <Outlet />
-    children: [
-      {
-        layout: "/admin",
-        path: "examinterface/exam-schedule",
-        component: <AdminExamSchedule />,
-      },
-      {
-        layout: "/admin",
-        path: "examinterface/marks-upload",
-        component: <AdminMarksUpload />,
-      },
-    ],
-  },
+  // {
+  //   name: "Exam Interface",
+  //   layout: "/admin",
+  //   path: "examinterface",
+  //   icon: <MdLibraryBooks className="h-6 w-6" />,
+  //   component: <AdminExamInterface />, // <- should include <Outlet />
+  //   children: [
+  //     {
+  //       layout: "/admin",
+  //       path: "examinterface/exam-schedule",
+  //       component: <AdminExamSchedule />,
+  //     },
+  //     {
+  //       layout: "/admin",
+  //       path: "examinterface/marks-upload",
+  //       component: <AdminMarksUpload />,
+  //     },
+  //   ],
+  // },
   {
     name: "Courses",
     layout: "/admin",
@@ -140,13 +140,13 @@ const routes = [
     icon: <FaBookOpen className="h-5 w-5" />,
     component: <MockCourse />,
   },
-  {
-    name: "Exams",
-    layout: "/admin",
-    path: "exam",
-    icon: <FaBookOpen className="h-5 w-5" />,
-    component: <ExamSchedule />,
-  },
+  // {
+  //   name: "Exams",
+  //   layout: "/admin",
+  //   path: "exam",
+  //   icon: <FaBookOpen className="h-5 w-5" />,
+  //   component: <ExamSchedule />,
+  // },
 
   // Student Routes
   {
@@ -242,25 +242,11 @@ const routes = [
     icon: <MdCampaign className="h-6 w-6" />,
     component: <Announcements />,
   },
-  {
-    name: "My Profile",
-    layout: "/faculty",
-    path: "profile",
-    icon: <FaUser className="h-6 w-6" />,
-    component: <FacultyProfile />,
-    children: [
-      {
-        layout: "/faculty",
-        path: "edit-profile",
-        component: <EditFacultyProfile />,
-      },
-    ],
-  },
-  {
+   {
     name: "Courses",
     layout: "/faculty",
     path: "Course",
-    icon: <MdCampaign className="h-6 w-6" />,
+    icon: <MdLibraryBooks className="h-6 w-6" />,
     component: <FaCourse />,
     children:[
       {
@@ -307,6 +293,21 @@ const routes = [
       },
     ],
   },
+  {
+    name: "My Profile",
+    layout: "/faculty",
+    path: "profile",
+    icon: <FaUser className="h-6 w-6" />,
+    component: <FacultyProfile />,
+    children: [
+      {
+        layout: "/faculty",
+        path: "edit-profile",
+        component: <EditFacultyProfile />,
+      },
+    ],
+  },
+ 
 ];
 
 export default routes;

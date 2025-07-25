@@ -1,7 +1,7 @@
 import React from "react";
 import { Routes, Route, Navigate, useLocation } from "react-router-dom";
 import AdminSidebar from "../../components/sidebar/AdminSidebar";
-import Navbar from "../Navbar";
+import AdminNavbar from "./Navbar/components/AdminNavbar";
 import routes from "../../routes";
 
 export default function Admin(props) {
@@ -81,7 +81,7 @@ export default function Admin(props) {
       <div className="h-full w-full bg-lightPrimary dark:!bg-navy-900">
         <main className="mx-[12px] h-full flex-none transition-all md:pr-2 xl:ml-[313px]">
           <div className="h-full">
-            <Navbar
+            <AdminNavbar
               onOpenSidenav={() => setOpen(true)}
               logoText="Admin Panel"
               brandText={currentRoute}

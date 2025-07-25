@@ -2,7 +2,7 @@ import React from "react";
 import { Routes, Route, Navigate, useLocation } from "react-router-dom";
 import StudentSidebar from "../../components/sidebar/StudentSidebar";
 import routes from "../../routes";
-import Navbar from "../Navbar";
+import StudentNavbar from "../layout/Navbar/components/StudentNavbar";
 
 export default function Student(props) {
   const { ...rest } = props;
@@ -89,7 +89,7 @@ return (
        
         <div className="h-full">
            <div className="print:hidden">
-          <Navbar
+          <StudentNavbar
             onOpenSidenav={() => setOpen(true)}
             logoText="Student Panel"
             brandText={currentRoute}

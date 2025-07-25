@@ -22,12 +22,13 @@ export default function AdminExamInterface() {
   ];
 
   return (
-    <div className="mt-[10px] pt-24 pb-36 px-6 bg-gray-100 font-inter">
+    <div className="mt-[100px] pt-24 pb-36 px-6 bg-gray-100 font-inter">
       <h2 className="text-3xl font-bold text-center text-[#2e3a59] mb-12">
         📝 Exam Interface
       </h2>
 
-      <div className="grid gap-8 sm:grid-cols-2 md:grid-cols-3 max-w-6xl mx-auto">
+      <div className="grid gap-8 grid-cols-1 sm:grid-cols-2 justify-center max-w-4xl mx-auto">
+
         {cards.map((card, index) => (
           <Link
             to={card.path}
