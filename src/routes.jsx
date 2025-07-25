@@ -7,7 +7,7 @@ import AdminMarksUpload from "./pages/admin/dashboard/component/MarksUpload";
 
 import NotificationMessage from "./pages/admin/Notification_Message";
 import MockCourse from "./pages/admin/course";
-import Assign from "./pages/admin/Assign_class"
+import Assign from "./pages/admin/Assign_class";
 import AllStudents from "./pages/admin/students/components/AllStudents";
 import AttendanceUpload from "./pages/faculty/AttendanceUpload";
 import Notification_Message from "./pages/faculty/Notification_Message";
@@ -107,32 +107,32 @@ const routes = [
       },
     ],
   },
-    {
+  {
     name: "Assign Class",
     layout: "/admin",
     path: "Assign_class",
     icon: <MdDashboard className="h-6 w-6" />,
     component: <Assign />,
   },
-   {
-  name: "Exam Interface",
-  layout: "/admin",
-  path: "examinterface",
-  icon: <MdLibraryBooks className="h-6 w-6" />,
-  component: <AdminExamInterface />, // <- should include <Outlet />
-  children: [
-    {
-      layout: "/admin",
-      path: "examinterface/exam-schedule",
-      component: <AdminExamSchedule />,
-    },
-    {
-      layout: "/admin",
-      path: "examinterface/marks-upload",
-      component: <AdminMarksUpload />,
-    },
-  ],
-},
+  {
+    name: "Exam Interface",
+    layout: "/admin",
+    path: "examinterface",
+    icon: <MdLibraryBooks className="h-6 w-6" />,
+    component: <AdminExamInterface />, // <- should include <Outlet />
+    children: [
+      {
+        layout: "/admin",
+        path: "examinterface/exam-schedule",
+        component: <AdminExamSchedule />,
+      },
+      {
+        layout: "/admin",
+        path: "examinterface/marks-upload",
+        component: <AdminMarksUpload />,
+      },
+    ],
+  },
   {
     name: "Courses",
     layout: "/admin",
@@ -191,7 +191,7 @@ const routes = [
     icon: <FaBell className="h-5 w-5" />,
     component: <Notifications />,
   },
-    {
+  {
     name: "My Profile",
     layout: "/student",
     path: "profile",
