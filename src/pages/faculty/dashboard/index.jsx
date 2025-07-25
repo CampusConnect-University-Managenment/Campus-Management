@@ -1,14 +1,14 @@
 import React, { useState } from "react";
 import {
   CalendarClock,
-  BookOpen,
-  FileText,
-  Users,
   CheckCircle,
   Pencil,
   Megaphone,
   Activity,
-  BarChart2
+  Library,
+  LayoutGrid,
+  GraduationCap,
+  Building2,
 } from "lucide-react";
 
 const Card = ({ title, value, icon }) => (
@@ -37,6 +37,7 @@ const FacultyDashboard = () => {
     { title: "Lab Manuals Updated", date: "19 Jul 2025" },
     { title: "Guest Lecture on AI", date: "18 Jul 2025" },
   ]);
+
   const [activities] = useState([
     "Marked attendance for CSE301",
     "Uploaded internal marks for DBMS",
@@ -92,57 +93,52 @@ const FacultyDashboard = () => {
 
   return (
     <div className="p-6 mt-20 max-w-6xl mx-auto">
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold text-blue-700">Welcome back, Professor! 👋</h1>
+      <h1 className="text-3xl font-bold text-blue-700 mb-6">Welcome back, Professor! 👋</h1>
 
-        {/* Profile Card + Today Timetable Section */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-          {/* Faculty Profile Card */}
-          <div className="bg-white shadow rounded-xl p-6 col-span-1">
-            <div className="flex items-center space-x-4">
-              <img
-                src="https://cdn-icons-png.flaticon.com/512/3135/3135715.png"
-                alt="Faculty"
-                className="w-16 h-16 rounded-full"
-              />
-              <div>
-                <h3 className="text-xl font-bold text-gray-800">Dr.Ashokkumar</h3>
-                <p className="text-gray-500 text-sm">Assistant Professor, CSE</p>
-                <p className="text-gray-400 text-xs mt-1">Faculty ID: FAC1234</p>
-              </div>
+      {/* Profile + Stats Section */}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-10">
+        {/* Profile Card */}
+        <div className="bg-white shadow rounded-xl p-6 col-span-1">
+          <div className="flex items-center space-x-4">
+            <img
+              src="https://cdn-icons-png.flaticon.com/512/3135/3135715.png"
+              alt="Faculty"
+              className="w-16 h-16 rounded-full"
+            />
+            <div>
+              <h3 className="text-xl font-bold text-gray-800">Dr. Ashokkumar</h3>
+              <p className="text-gray-500 text-sm">Assistant Professor, CSE</p>
+              <p className="text-gray-400 text-xs mt-1">Faculty ID: FAC1234</p>
             </div>
           </div>
+        </div>
 
-          {/* Today Timetable */}
-          <div className="bg-white shadow rounded-xl p-6 col-span-2">
-            <h2 className="text-lg font-semibold text-gray-800 mb-4">Today's Timetable</h2>
-            <ul className="divide-y divide-gray-200">
-              <li className="py-2 flex justify-between">
-                <span className="text-gray-700 font-medium">9:00 AM - 10:00 AM</span>
-                <span className="text-gray-600">CSE301 - Operating Systems</span>
-              </li>
-              <li className="py-2 flex justify-between">
-                <span className="text-gray-700 font-medium">11:00 AM - 12:00 PM</span>
-                <span className="text-gray-600">CSE205 - Data Structures</span>
-              </li>
-              <li className="py-2 flex justify-between">
-                <span className="text-gray-700 font-medium">2:00 PM - 3:00 PM</span>
-                <span className="text-gray-600">CSE309 - Software Engineering</span>
-              </li>
-            </ul>
-          </div>
+        {/* Stats Cards */}
+        <div className="grid grid-cols-2 gap-6 col-span-2">
+          <Card
+            title="Courses Handling"
+            value="05"
+            icon={<Library size={24} className="text-blue-600" />}
+          />
+          <Card
+            title="Total Classes"
+            value="12"
+            icon={<LayoutGrid size={24} className="text-purple-600" />}
+          />
+          <Card
+            title="Total Students"
+            value="340"
+            icon={<GraduationCap size={24} className="text-green-600" />}
+          />
+          <Card
+            title="Dept Handling"
+            value="6"
+            icon={<Building2 size={24} className="text-teal-600" />}
+          />
         </div>
       </div>
 
-      {/* Stats Cards */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 mb-8">
-        <Card title="Courses Handled" value="05" icon={<BookOpen size={24} className="text-blue-600" />} />
-        <Card title="Total Classes" value="12" icon={<CalendarClock size={24} className="text-purple-600" />} />
-        <Card title="Total Students" value="340" icon={<Users size={24} className="text-red-600" />} />
-        <Card title="Avg Attendance" value="89%" icon={<BarChart2 size={24} className="text-teal-600" />} />
-      </div>
-
-      {/* To-do + Announcements + Activities in grid */}
+      {/* To-do, Announcements, Activities */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-10">
         {/* To-do List */}
         <div className="bg-white shadow rounded-xl p-6">
@@ -151,7 +147,10 @@ const FacultyDashboard = () => {
           </h2>
           <ul className="space-y-4">
             {tasks.map((task, index) => (
-              <li key={index} className={`p-4 border rounded-lg flex justify-between items-start ${task.done ? "bg-green-50" : "bg-white"}`}>
+              <li
+                key={index}
+                className={`p-4 border rounded-lg flex justify-between items-start ${task.done ? "bg-green-50" : "bg-white"}`}
+              >
                 <div>
                   <p className="text-gray-800 font-semibold">{task.title}</p>
                   <p className="text-sm text-gray-500">{`${task.date} ${task.month}, ${task.time}`}</p>
@@ -163,12 +162,15 @@ const FacultyDashboard = () => {
                   <button onClick={() => handleEdit(index)} title="Edit">
                     <Pencil className="w-5 h-5 text-blue-500" />
                   </button>
-                  <button onClick={() => handleDelete(index)} title="Delete">❌</button>
+                  <button onClick={() => handleDelete(index)} title="Delete">
+                    ❌
+                  </button>
                 </div>
               </li>
             ))}
           </ul>
 
+          {/* Add/Edit Task */}
           <div className="mt-6 border-t pt-4">
             <h3 className="text-lg font-semibold mb-2">{isEditing ? "Edit Task" : "Add New Task"}</h3>
             <div className="grid grid-cols-2 md:grid-cols-4 gap-2 mb-3">
@@ -177,7 +179,10 @@ const FacultyDashboard = () => {
               <input className="border p-2 rounded" placeholder="Title" value={newTask.title} onChange={(e) => setNewTask({ ...newTask, title: e.target.value })} />
               <input className="border p-2 rounded" placeholder="Time" value={newTask.time} onChange={(e) => setNewTask({ ...newTask, time: e.target.value })} />
             </div>
-            <button onClick={handleAddOrUpdate} className="bg-indigo-600 text-white px-4 py-2 rounded hover:bg-indigo-700">
+            <button
+              onClick={handleAddOrUpdate}
+              className="bg-indigo-600 text-white px-4 py-2 rounded hover:bg-indigo-700"
+            >
               {isEditing ? "Update Task" : "Add Task"}
             </button>
           </div>
