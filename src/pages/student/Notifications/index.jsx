@@ -9,7 +9,6 @@ import UserList from "./components/UserList"
 import NotificationPanel from "./components/NotificationPanel"
 import NewChatModal from "./components/new-chat-modal"
 import ChatList from "./components/chat-list"
-import ChatArea from "./components/chat-area"
 import useSocket from "./hooks/useSocket"
 
 // Import UI components
@@ -197,6 +196,9 @@ export default function NotificationMessage() {
   const [isNewChatModalOpen, setIsNewChatModalOpen] = useState(false)
   const [searchQuery, setSearchQuery] = useState("")
   const [activeView, setActiveView] = useState("chat")
+  const [chatType, setChatType] = useState("INDIVIDUAL")
+  const [searchTerm, setSearchTerm] = useState("")
+  const [selectedParticipants, setSelectedParticipants] = useState([])
 
   // Socket connection
   const socket = useSocket("http://localhost:3001")
@@ -207,6 +209,12 @@ export default function NotificationMessage() {
     globalState.notifications = notifications
     globalState.selectedChat = selectedChat
   }, [chats, notifications, selectedChat])
+
+  const filteredUsers = useMemo(() => {
+    return mockUsers.filter(
+      (user) => user.id !== currentUser.id && user.name.toLowerCase().includes(searchTerm.toLowerCase()),
+    )
+  }, [searchTerm])
 
   // Memoized calculations
   const unreadNotifications = useMemo(() => notifications.filter((n) => !n.isRead), [notifications])
@@ -254,6 +262,20 @@ export default function NotificationMessage() {
       }
     }
   }, [socket, currentUser.id])
+
+  const handleUserSelect = (user) => {
+    if (chatType === "INDIVIDUAL") {
+      // Allow only one
+      setSelectedParticipants([user])
+    } else {
+      // Toggle for group chat
+      if (selectedParticipants.some((u) => u.id === user.id)) {
+        setSelectedParticipants((prev) => prev.filter((u) => u.id !== user.id))
+      } else {
+        setSelectedParticipants((prev) => [...prev, user])
+      }
+    }
+  }
 
   // Message sending - simplified to prevent duplicates
   const sendMessage = useCallback(
@@ -311,6 +333,31 @@ export default function NotificationMessage() {
     [chats],
   )
 
+  // Chat update handler for participant management
+  const handleChatUpdate = useCallback(
+    (updatedChat) => {
+      setChats((prevChats) => prevChats.map((chat) => (chat.id === updatedChat.id ? updatedChat : chat)))
+
+      // Update selected chat if it's the same one
+      if (selectedChat && selectedChat.id === updatedChat.id) {
+        setSelectedChat(updatedChat)
+      }
+
+      // Show success notification
+      const successNotification = {
+        id: Date.now(),
+        message: `✅ Successfully updated participants in "${updatedChat.name}"`,
+        time: "Just now",
+        type: "success",
+        priority: "medium",
+        isRead: false,
+        timestamp: new Date(),
+      }
+      setNotifications((prev) => [successNotification, ...prev])
+    },
+    [selectedChat],
+  )
+
   // Helper function to safely check if user is participant
   const isUserParticipant = useCallback((chat, userId) => {
     if (Array.isArray(chat.participantIds)) {
@@ -357,10 +404,48 @@ export default function NotificationMessage() {
     setNotifications((prev) => prev.map((notification) => ({ ...notification, isRead: true })))
   }, [])
 
-  // Enhanced new chat creation with proper participant handling
+  // Function to find existing individual chat
+  const findExistingIndividualChat = useCallback(
+    (participantName) => {
+      return chats.find(
+        (chat) => chat.type === "INDIVIDUAL" && chat.name === participantName && chat.participants === 1, // Individual chats should have 1 other participant
+      )
+    },
+    [chats],
+  )
+
+  // Enhanced new chat creation with duplicate prevention
   const handleNewChat = useCallback(
     (chatData) => {
       console.log("Creating new chat:", chatData)
+
+      // Check for existing individual chat
+      if (chatData.type === "INDIVIDUAL" && chatData.participants && chatData.participants.length > 0) {
+        const participant = chatData.participants[0]
+        const participantName =
+          participant.type === "student" ? `${participant.firstName} ${participant.lastName}` : participant.name
+
+        const existingChat = findExistingIndividualChat(participantName)
+
+        if (existingChat) {
+          // Select the existing chat instead of creating a new one
+          setSelectedChat(existingChat)
+          setIsNewChatModalOpen(false)
+
+          // Show notification about existing chat
+          const existingChatNotification = {
+            id: Date.now(),
+            message: `💬 Opened existing chat with "${participantName}"`,
+            time: "Just now",
+            type: "info",
+            priority: "low",
+            isRead: false,
+            timestamp: new Date(),
+          }
+          setNotifications((prev) => [existingChatNotification, ...prev])
+          return
+        }
+      }
 
       let participantIds = []
       let participantCount = 0
@@ -390,6 +475,7 @@ export default function NotificationMessage() {
       }
 
       setChats([...chats, newChat])
+      setSelectedChat(newChat) // Auto-select the new chat
       setIsNewChatModalOpen(false)
 
       // Show success notification
@@ -404,7 +490,7 @@ export default function NotificationMessage() {
       }
       setNotifications((prev) => [successNotification, ...prev])
     },
-    [chats],
+    [chats, findExistingIndividualChat],
   )
 
   return (
@@ -460,9 +546,14 @@ export default function NotificationMessage() {
               </div>
             </div>
 
-            {/* Chat Area - Full height */}
+            {/* Chat Area - Full height with enhanced ChatWindow */}
             <div className={`flex-1 transition-all duration-300 h-full ${showNotifications ? "mr-80" : ""}`}>
-              <ChatArea selectedChat={selectedChat} onSendMessage={sendMessage} />
+              <ChatWindow
+                chat={selectedChat}
+                currentUser={currentUser}
+                onSendMessage={sendMessage}
+                onUpdateChat={handleChatUpdate}
+              />
             </div>
           </>
         ) : (
@@ -481,18 +572,23 @@ export default function NotificationMessage() {
             </div>
 
             <div className={`flex-1 transition-all duration-300 h-full ${showNotifications ? "mr-80" : ""}`}>
-              <ChatWindow chat={selectedChat} currentUser={currentUser} onSendMessage={sendMessage} />
+              <ChatWindow
+                chat={selectedChat}
+                currentUser={currentUser}
+                onSendMessage={sendMessage}
+                onUpdateChat={handleChatUpdate}
+              />
             </div>
           </>
         )}
 
-        {/* Enhanced Notifications Panel - Dropped down more */}
+        {/* Enhanced Notifications Panel */}
         <div
           className={`fixed right-0 w-80 bg-white border-l border-gray-200 shadow-xl transform transition-transform duration-300 ease-in-out z-40 ${
             showNotifications ? "translate-x-0" : "translate-x-full"
           }`}
           style={{
-            top: "120px", // Increased from 64px to 120px to drop it down more
+            top: "120px",
             height: "calc(100vh - 120px)",
           }}
         >
