@@ -7,10 +7,6 @@ const AdminDashboard = () => {
   return (
     <>
            <Header />
-           
-
-
-
      </>
   )
 }

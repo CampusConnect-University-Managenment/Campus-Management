@@ -1,97 +1,141 @@
 import React, { useState } from 'react';
-import { useInView } from 'react-intersection-observer';
-import {
-  BarChart,
-  Bar,
-  XAxis,
-  YAxis,
-  Tooltip,
-  Legend,
-  ResponsiveContainer,
-} from 'recharts';
-import { motion, AnimatePresence } from 'framer-motion';
-import { ChevronRight } from 'lucide-react'; // single arrow icon
 
-const attendanceDataPrimary = [
-  { day: 'Mon', CS: 95, IT: 90, ECE: 85, EEE: 92 },
-  { day: 'Tue', CS: 91, IT: 92, ECE: 90, EEE: 90 },
-  { day: 'Wed', CS: 96, IT: 85, ECE: 91, EEE: 93 },
-  { day: 'Thu', CS: 89, IT: 90, ECE: 93, EEE: 87 },
-  { day: 'Fri', CS: 91, IT: 94, ECE: 90, EEE: 90 },
-  { day: 'Sat', CS: 86, IT: 88, ECE: 85, EEE: 86 },
-];
-
-const attendanceDataOther = [
-  { day: 'Mon', ETE: 88, CYBER: 83, CT: 87, MECH: 91, CIVIL: 80 },
-  { day: 'Tue', ETE: 85, CYBER: 84, CT: 89, MECH: 86, CIVIL: 82 },
-  { day: 'Wed', ETE: 90, CYBER: 87, CT: 85, MECH: 88, CIVIL: 83 },
-  { day: 'Thu', ETE: 89, CYBER: 85, CT: 84, MECH: 90, CIVIL: 79 },
-  { day: 'Fri', ETE: 92, CYBER: 86, CT: 88, MECH: 87, CIVIL: 81 },
-  { day: 'Sat', ETE: 84, CYBER: 83, CT: 86, MECH: 85, CIVIL: 80 },
-];
+// Events for each month (0 = January, 11 = December)
+const allMonthEvents = {
+  0: [{ start: 1, end: 1, label: 'New Year' }],
+  1: [{ start: 14, end: 14, label: 'Hackathon' }],
+  2: [{ start: 8, end: 10, label: 'Tech Fest' }],
+  3: [{ start: 25, end: 30, label: 'Project Week' }],
+  4: [{ start: 1, end: 3, label: 'Cultural Fest' }],
+  5: [{ start: 18, end: 20, label: 'Mid Exams' }],
+  6: [{ start: 15, end: 15, label: 'Seminar' }],
+  7: [{ start: 12, end: 13, label: 'Workshop' }],
+  8: [{ start: 5, end: 5, label: "Teacher's Day" }],
+  9: [{ start: 2, end: 2, label: 'Orientation' }],
+  10: [{ start: 14, end: 14, label: "Children's Day" }],
+  11: [{ start: 25, end: 25, label: 'Christmas' }],
+};
 
 const Attendance = () => {
-  const { ref, inView } = useInView({ triggerOnce: true });
-  const [showPrimary, setShowPrimary] = useState(true);
+  const currentDate = new Date();
+  const [currentMonth, setCurrentMonth] = useState(currentDate.getMonth());
+  const [currentYear, setCurrentYear] = useState(currentDate.getFullYear());
 
-  const currentData = showPrimary ? attendanceDataPrimary : attendanceDataOther;
-  const colors = ['#3b82f6', '#22c55e', '#f97316', '#06b6d4', '#8b5cf6'];
-  const keys = Object.keys(currentData[0]).filter((key) => key !== 'day');
+  const handlePrev = () => {
+    if (currentMonth === 0) {
+      setCurrentMonth(11);
+      setCurrentYear(currentYear - 1);
+    } else {
+      setCurrentMonth(currentMonth - 1);
+    }
+  };
+
+  const handleNext = () => {
+    if (currentMonth === 11) {
+      setCurrentMonth(0);
+      setCurrentYear(currentYear + 1);
+    } else {
+      setCurrentMonth(currentMonth + 1);
+    }
+  };
 
   return (
-    <motion.div
-      ref={ref}
-      initial={{ opacity: 0, y: 50 }}
-      animate={inView ? { opacity: 1, y: 0 } : {}}
-      transition={{ duration: 0.3 }}
-      className="relative bg-white p-6 rounded-2xl shadow-sm border mb-6 overflow-hidden"
-    >
-      <h3 className="text-lg font-bold text-gray-800 mb-4 tracking-wide">
-        Attendance by Department (Day by Day)
-      </h3>
-
-      {/* Slide Animation Container */}
-      <div className="relative w-full h-[300px]">
-        <AnimatePresence mode="wait">
-          <motion.div
-            key={showPrimary ? 'primary' : 'other'}
-            initial={{ x: 300, opacity: 0 }}
-            animate={{ x: 0, opacity: 1 }}
-            exit={{ x: -300, opacity: 0 }}
-            transition={{ duration: 0.5 }}
-            className="absolute w-full h-full top-0 left-0"
-          >
-            <ResponsiveContainer width="100%" height="100%">
-              <BarChart data={currentData}>
-                <XAxis dataKey="day" />
-                <YAxis />
-                <Tooltip />
-                <Legend />
-                {keys.map((dept, index) => (
-                  <Bar
-                    key={dept}
-                    dataKey={dept}
-                    fill={colors[index % colors.length]}
-                    barSize={20}
-                    isAnimationActive={inView}
-                    animationDuration={1500}
-                  />
-                ))}
-              </BarChart>
-            </ResponsiveContainer>
-          </motion.div>
-        </AnimatePresence>
+    <div className="p-4">
+      <div className="flex justify-between items-center max-w-5xl mx-auto mb-4">
+        <button
+          onClick={handlePrev}
+          className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+        >
+          ← Prev
+        </button>
+        <h2 className="text-2xl font-bold">
+          {new Date(currentYear, currentMonth).toLocaleString('default', { month: 'long' })} {currentYear}
+        </h2>
+        <button
+          onClick={handleNext}
+          className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+        >
+          Next →
+        </button>
       </div>
 
-      {/* Single Arrow Button in Bottom-Right */}
-      <button
-        onClick={() => setShowPrimary(!showPrimary)}
-        className="absolute bottom-2 right-2 p-2 rounded-full bg-gray-200 hover:bg-gray-300 transition"
-        title="Switch View"
-      >
-        <ChevronRight className="w-5 h-5 text-gray-600" />
-      </button>
-    </motion.div>
+      <SingleMonthCalendar
+        year={currentYear}
+        month={currentMonth}
+        events={allMonthEvents[currentMonth] || []}
+      />
+    </div>
+  );
+};
+
+const SingleMonthCalendar = ({ year, month, events }) => {
+  const daysInMonth = new Date(year, month + 1, 0).getDate();
+  const startDayIndex = new Date(year, month, 1).getDay();
+  const today = new Date();
+  const isThisMonth = today.getMonth() === month && today.getFullYear() === year;
+  const todayDay = today.getDate();
+
+  const weeks = [];
+  let day = 1 - startDayIndex;
+  while (day <= daysInMonth) {
+    const week = [];
+    for (let i = 0; i < 7; i++) {
+      if (day > 0 && day <= daysInMonth) {
+        week.push(day);
+      } else {
+        week.push(null);
+      }
+      day++;
+    }
+    weeks.push(week);
+  }
+
+  const getEventForDay = (d) => {
+    const e = events.find(e => d >= e.start && d <= e.end);
+    return e ? e.label : null;
+  };
+
+  return (
+    <div className="bg-white p-4 rounded-xl shadow-md border w-full max-w-5xl mx-auto">
+      <div className="grid grid-cols-7 text-center text-xs text-gray-500 uppercase mb-2 font-bold">
+        {['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].map((d) => (
+          <div key={d}>{d}</div>
+        ))}
+      </div>
+
+      <div className="grid grid-cols-7 gap-[1px] bg-gray-200 text-sm">
+        {weeks.map((week, wIdx) =>
+          week.map((d, idx) => {
+            const isToday = isThisMonth && d === todayDay;
+            const eventLabel = d ? getEventForDay(d) : null;
+            const isEventDay = Boolean(eventLabel);
+
+            return (
+              <div
+                key={`${wIdx}-${idx}`}
+                className={`
+                  relative min-h-[90px] p-2 overflow-hidden 
+                  flex flex-col justify-start items-start
+                  transition-transform duration-200 transform hover:-translate-y-1
+                  ${!d ? 'bg-gray-100 text-gray-400' : ''}
+                  ${d && isEventDay ? 'bg-green-200' : d ? 'bg-white' : ''}
+                  ${d && isToday ? 'border-2 border-black' : 'border border-white'}
+                `}
+              >
+                {d && (
+                  <div className="text-lg font-extrabold text-gray-800">{d}</div>
+                )}
+                {d && eventLabel && (
+                  <div className="mt-2 text-base font-bold text-green-800 leading-snug">
+                    {eventLabel}
+                  </div>
+                )}
+              </div>
+            );
+          })
+        )}
+      </div>
+    </div>
   );
 };
 
