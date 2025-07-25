@@ -5,9 +5,7 @@ const UploadAssignment = () => {
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
     name: "",
-    year: "First",
-    department: "CSE",
-    section: "A",
+    date: "",
     file: null,
   });
 
@@ -32,12 +30,9 @@ const UploadAssignment = () => {
 
     const data = new FormData();
     data.append("name", formData.name);
-    data.append("year", formData.year);
-    data.append("department", formData.department);
-    data.append("section", formData.section);
+    data.append("date", formData.date);
     data.append("file", formData.file);
 
-    // Replace the fetch below with your actual backend endpoint
     fetch("/api/assignments/upload", {
       method: "POST",
       body: data,
@@ -47,9 +42,7 @@ const UploadAssignment = () => {
           setMessage("✅ Assignment uploaded successfully!");
           setFormData({
             name: "",
-            year: "First",
-            department: "CSE",
-            section: "A",
+            date: "",
             file: null,
           });
         } else {
@@ -99,69 +92,16 @@ const UploadAssignment = () => {
           />
         </div>
 
-          <div>
-            <label className="block font-medium mb-1 text-gray-700">Dead Line</label>
-            <input
-              type="date"
-              name="date"
-              value={formData.date}
-              onChange={handleChange}
-              className="w-full px-4 py-2 border border-gray-300 rounded-md"
-              required
-            />
-          </div>
-
-        <div className="flex flex-wrap gap-4">
-          <div className="flex-1 min-w-[120px]">
-            <label className="block font-medium text-gray-700 mb-1">
-              Year
-            </label>
-            <select
-              name="year"
-              value={formData.year}
-              onChange={handleChange}
-              className="w-full px-4 py-2 border rounded shadow-sm"
-            >
-              <option>First</option>
-              <option>Second</option>
-              <option>Third</option>
-              <option>Final</option>
-            </select>
-          </div>
-
-
-          <div className="flex-1 min-w-[120px]">
-            <label className="block font-medium text-gray-700 mb-1">
-              Department
-            </label>
-            <select
-              name="department"
-              value={formData.department}
-              onChange={handleChange}
-              className="w-full px-4 py-2 border rounded shadow-sm"
-            >
-              <option>CSE</option>
-              <option>ECE</option>
-              <option>MECH</option>
-              <option>CIVIL</option>
-            </select>
-          </div>
-          
-          <div className="flex-1 min-w-[120px]">
-            <label className="block font-medium text-gray-700 mb-1">
-              Section
-            </label>
-            <select
-              name="section"
-              value={formData.section}
-              onChange={handleChange}
-              className="w-full px-4 py-2 border rounded shadow-sm"
-            >
-              <option>A</option>
-              <option>B</option>
-              <option>C</option>
-            </select>
-          </div>
+        <div>
+          <label className="block font-medium mb-1 text-gray-700">Dead Line</label>
+          <input
+            type="date"
+            name="date"
+            value={formData.date}
+            onChange={handleChange}
+            className="w-full px-4 py-2 border border-gray-300 rounded-md"
+            required
+          />
         </div>
 
         <div>

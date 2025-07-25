@@ -51,8 +51,9 @@ export default function Navbar() {
 
   return (
     <nav
-      className={`fixed top-3 left-[19rem] w-[calc(100%-19rem-1rem)] z-50 bg-white rounded-2xl shadow-lg px-8 py-4 flex items-center justify-between transition-transform duration-150 ease-in-out ${visible ? "translate-y-0" : "-translate-y-full"
-        }`}
+      className={`fixed top-3 left-[19rem] w-[calc(100%-19rem-1rem)] z-50 bg-white rounded-2xl shadow-lg px-8 py-4 flex items-center justify-between transition-transform duration-150 ease-in-out ${
+        visible ? "translate-y-0" : "-translate-y-full"
+      }`}
     >
       {/* 🔍 Search */}
       <div ref={searchRef} className="relative">
@@ -78,8 +79,6 @@ export default function Navbar() {
 
       {/* 🔔 Bell & 👤 Profile Dropdown */}
       <div className="flex items-center gap-6">
-       
-
         {/* 👤 Profile Dropdown */}
         <div className="relative" ref={profileRef}>
           <button
@@ -119,13 +118,19 @@ export default function Navbar() {
                 >
                   Progress
                 </span>
-                <span className="cursor-pointer hover:text-blue-600">Points</span>
+                <span className="cursor-pointer hover:text-blue-600">
+                  Points
+                </span>
               </div>
 
               {/* Footer Links */}
               <div className="flex flex-col gap-1 text-sm text-gray-600">
-                <span className="cursor-pointer hover:text-blue-600">Settings</span>
-                <span className="cursor-pointer hover:text-blue-600">Orders</span>
+                <span className="cursor-pointer hover:text-blue-600">
+                  Settings
+                </span>
+                <span className="cursor-pointer hover:text-blue-600">
+                  Orders
+                </span>
                 <span
                   onClick={() => {
                     setShowProfileMenu(false);

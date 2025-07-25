@@ -9,13 +9,13 @@ import {
 
 export default function StudentDashboard() {
   const scheduleData = [
-    { date: "Jul 14", time: "10:00 AM", title: "Mock Test - Algorithms" },
-    { date: "Jul 16", time: "5:00 PM", title: "Assignment Submission - DBMS" },
-    { date: "Jul 18", time: "9:00 AM", title: "Mid-Term Exam - OS" },
-    { date: "Jul 20", time: "11:00 AM", title: "Project Review - AI" },
-    { date: "Jul 22", time: "1:00 PM", title: "Quiz - Cyber Security" },
-    { date: "Jul 24", time: "3:00 PM", title: "Lab - Operating Systems" },
-    { date: "Jul 26", time: "10:00 AM", title: "Seminar - Machine Learning" },
+    { date: "Jul 14", time: "10:00 AM", title: "Mock Test - Algorithms", faculty: "Dr. Rao" },
+    { date: "Jul 16", time: "5:00 PM", title: "Assignment Submission - DBMS", faculty: "Prof. Meena" },
+    { date: "Jul 18", time: "9:00 AM", title: "Mid-Term Exam - OS", faculty: "Dr. Arvind" },
+    { date: "Jul 20", time: "11:00 AM", title: "Project Review - AI", faculty: "Prof. Leela" },
+    { date: "Jul 22", time: "1:00 PM", title: "Quiz - Cyber Security", faculty: "Dr. Karthik" },
+    { date: "Jul 24", time: "3:00 PM", title: "Lab - Operating Systems", faculty: "Dr. Nalini" },
+    { date: "Jul 26", time: "10:00 AM", title: "Seminar - Machine Learning", faculty: "Prof. Anwar" },
   ];
 
   const [currentPage, setCurrentPage] = React.useState(0);
@@ -116,6 +116,7 @@ export default function StudentDashboard() {
                 date={item.date}
                 time={item.time}
                 title={item.title}
+                faculty={item.faculty}
               />
             ))}
           </div>
@@ -187,7 +188,7 @@ function DetailRow({ label, value }) {
 }
 
 // Schedule Item
-function ScheduleItem({ date, time, title }) {
+function ScheduleItem({ date, time, title, faculty }) {
   const [month, day] = date.split(" ");
   return (
     <div className="relative flex items-start gap-4">
@@ -204,6 +205,11 @@ function ScheduleItem({ date, time, title }) {
       <div className="flex-1 bg-gray-50 p-4 rounded-xl border border-gray-100 shadow-sm hover:shadow-md transition">
         <h4 className="font-semibold text-gray-800">{title}</h4>
         <p className="text-sm text-gray-500">{time}</p>
+       <p className="text-sm text-indigo-600 italic font-medium" style={{ fontFamily: "Times New Roman" }}>
+  Faculty: {faculty}
+</p>
+
+
       </div>
     </div>
   );
