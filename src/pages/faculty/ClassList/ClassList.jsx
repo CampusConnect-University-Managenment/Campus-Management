@@ -6,14 +6,6 @@ function ClassList() {
   const navigate = useNavigate();
   const facultyName = "Dr. R. Ichshanackiyan";
 
-  // Sample timetable data
-  const timetable = {
-    Monday: ['CSE A - Math', 'CSE B - Physics', null, null, 'CSE A - DSA', null],
-    Tuesday: [null, 'CSE A - English', 'CSE B - Math', null, null, 'CSE A - Chemistry'],
-    Wednesday: ['CSE B - DSA', null, null, 'CSE A - Physics', null, 'CSE B - English'],
-    Thursday: ['CSE A - Math', null, 'CSE B - Chemistry', 'CSE A - DSA', null, null],
-    Friday: [null, 'CSE B - Math', null, null, 'CSE A - English', 'CSE B - Physics'],
-  };
 
   const semesterClasses = [
     { code: '21CS31', subject: 'Data Structures', batch: 'III-CSE A', room: '101' },
@@ -41,38 +33,9 @@ function ClassList() {
         {facultyName}
       </h1>
 
-      {/* Weekly Timetable */}
-      <div className="overflow-x-auto mb-12">
-        <h4 className="text-xl font-semibold mb-4">Weekly Timetable</h4>
-        <table className="min-w-full border border-gray-300 text-sm text-center shadow bg-white">
-          <thead className="bg-gray-200">
-            <tr>
-              <th className="border px-6 py-3">Day / Hour</th>
-              {[...Array(6)].map((_, i) => (
-                <th key={i} className="border px-6 py-3">
-                  Hour {i + 1}
-                </th>
-              ))}
-            </tr>
-          </thead>
-          <tbody>
-            {Object.entries(timetable).map(([day, hours]) => (
-              <tr key={day} className="hover:bg-gray-50">
-                <td className="border px-6 py-3 font-medium text-left">{day}</td>
-                {hours.map((slot, i) => (
-                  <td key={i} className="border px-6 py-3 text-left">
-                    {slot || '-'}
-                  </td>
-                ))}
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
-
+     
       {/* Class List Table */}
       <div className="overflow-x-auto">
-        <h4 className="text-xl font-semibold mb-4">Class List for Current Semester</h4>
         <table className="min-w-full bg-white border border-gray-300 shadow text-left text-sm">
           <thead>
             <tr className="bg-gray-100 text-gray-700">
