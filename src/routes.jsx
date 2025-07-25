@@ -163,13 +163,13 @@ const routes = [
     icon: <FaBookOpen className="h-5 w-5" />,
     component: <CoursesEnrolled />,
   },
-  {
-    name: "Practice Exams",
-    layout: "/student",
-    path: "practice",
-    icon: <FaClipboardCheck className="h-5 w-5" />,
-    component: <PracticeExams />,
-  },
+  // {
+  //   name: "Practice Exams",
+  //   layout: "/student",
+  //   path: "practice",
+  //   icon: <FaClipboardCheck className="h-5 w-5" />,
+  //   component: <PracticeExams />,
+  // },
   {
     name: "Results Portal",
     layout: "/student",
