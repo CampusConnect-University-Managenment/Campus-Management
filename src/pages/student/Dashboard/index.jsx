@@ -1,15 +1,24 @@
 import React, { useState, useRef } from "react";
 import {
+  LineChart,
+  Line,
+  XAxis,
+  YAxis,
+  Tooltip,
+  CartesianGrid,
+} from "recharts";
+
+import {
   CalendarDays,
   NotebookPen,
   Rocket,
   Star,
   GraduationCap,
-  PlusCircle,
-  CheckCircle,
-  RefreshCcw,
   Pencil,
+  CheckCircle,
   Trash2,
+  PlusCircle,
+  RefreshCcw,
 } from "lucide-react";
 
 export default function StudentDashboard() {
@@ -21,38 +30,70 @@ export default function StudentDashboard() {
   const [editId, setEditId] = useState(null);
   const [editText, setEditText] = useState("");
   const [filterStatus, setFilterStatus] = useState("All");
+  const [showCgpaGraph, setShowCgpaGraph] = useState(false);
+  const [enlargedCard, setEnlargedCard] = useState(null);
 
   const timeRef = useRef(null);
-
   const tasksPerPage = 3;
 
+  const cgpaData = [
+    { semester: "Sem 1", cgpa: 8.1 },
+    { semester: "Sem 2", cgpa: 6.5 },
+    { semester: "Sem 3", cgpa: 8.5 },
+    { semester: "Sem 4", cgpa: 9.2 },
+    { semester: "Sem 5", cgpa: 7.8 },
+    { semester: "Sem 6", cgpa: 8.8 },
+  ];
+
+  const filteredTasks =
+    filterStatus === "All"
+      ? tasks
+      : tasks.filter((task) => task.status === filterStatus);
+
+  const totalPages = Math.ceil(filteredTasks.length / tasksPerPage);
+  const currentTasks = filteredTasks.slice(
+    (currentPage - 1) * tasksPerPage,
+    currentPage * tasksPerPage
+  );
+
+  const getCardClass = (cardKey) =>
+    `rounded-xl shadow-md p-4 flex flex-col items-center justify-center transition-all duration-300 cursor-pointer ${
+      enlargedCard === cardKey ? "scale-110 bg-blue-100" : "bg-white hover:bg-blue-50"
+    }`;
+
   const handleAddTask = () => {
-    if (!newTask.trim() || !deadlineDate || !deadlineTime) return;
-
+    if (!newTask || !deadlineDate || !deadlineTime) return;
     const deadline = new Date(`${deadlineDate}T${deadlineTime}`);
-    const now = new Date();
-    if (deadline <= now) return;
-
-    const capitalizedTask = newTask.trim().replace(/\b\w/g, (l) => l.toUpperCase());
-
-    setTasks([
-      ...tasks,
-      {
-        id: Date.now(),
-        title: capitalizedTask,
-        deadline,
-        completed: false,
-        status: "Pending",
-      },
-    ]);
-
+    const newEntry = {
+      id: Date.now(),
+      title: newTask,
+      deadline,
+      completed: false,
+      status: "Pending",
+    };
+    setTasks([newEntry, ...tasks]);
     setNewTask("");
     setDeadlineDate("");
     setDeadlineTime("");
   };
 
-  const handleDelete = (id) => {
-    setTasks(tasks.filter((task) => task.id !== id));
+  const handleReset = () => {
+    setTasks([]);
+  };
+
+  const handleEdit = (id, title) => {
+    setEditId(id);
+    setEditText(title);
+  };
+
+  const handleSaveEdit = (id) => {
+    setTasks(
+      tasks.map((task) =>
+        task.id === id ? { ...task, title: editText } : task
+      )
+    );
+    setEditId(null);
+    setEditText("");
   };
 
   const handleToggleStatus = (id) => {
@@ -69,48 +110,14 @@ export default function StudentDashboard() {
     );
   };
 
-  const handleReset = () => {
-    setTasks([]);
-    setCurrentPage(1);
+  const handleDelete = (id) => {
+    setTasks(tasks.filter((task) => task.id !== id));
   };
 
-  const handleEdit = (id, title) => {
-    setEditId(id);
-    setEditText(title);
-  };
-
-  const handleSaveEdit = (id) => {
-    setTasks(
-      tasks.map((task) =>
-        task.id === id ? { ...task, title: editText.trim().replace(/\b\w/g, (l) => l.toUpperCase()) } : task
-      )
-    );
-    setEditId(null);
-    setEditText("");
-  };
-
-  const isWithin24Hours = (deadline) => {
+  const isWithin24Hours = (date) => {
     const now = new Date();
-    const diff = deadline - now;
-    return diff > 0 && diff <= 24 * 60 * 60 * 1000;
+    return date - now < 24 * 60 * 60 * 1000 && date - now > 0;
   };
-
-  const filteredTasks = tasks.filter((task) =>
-    filterStatus === "All" ? true : task.status === filterStatus
-  );
-
-  const sortedTasks = [...filteredTasks].sort((a, b) => {
-    const aUrgent = isWithin24Hours(a.deadline);
-    const bUrgent = isWithin24Hours(b.deadline);
-    if (aUrgent && !bUrgent) return -1;
-    if (!aUrgent && bUrgent) return 1;
-    return new Date(a.deadline) - new Date(b.deadline);
-  });
-
-  const indexOfLastTask = currentPage * tasksPerPage;
-  const indexOfFirstTask = indexOfLastTask - tasksPerPage;
-  const currentTasks = sortedTasks.slice(indexOfFirstTask, indexOfLastTask);
-  const totalPages = Math.ceil(sortedTasks.length / tasksPerPage);
 
   return (
     <div className="w-full min-h-screen bg-gradient-to-tr from-[#eef2ff] to-[#fdfbff] px-10 pt-28 pb-16">
@@ -119,15 +126,71 @@ export default function StudentDashboard() {
         <p className="text-gray-600 text-md mt-2">Stay focused and keep learning 🚀</p>
       </div>
 
-      {/* Stats */}
+     {/* Stats */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-6 mb-12">
-        <StatCard title="Active Courses" value="05" icon={<NotebookPen />} color="indigo" />
-        <StatCard title="CGPA" value="8.92" icon={<Star />} color="amber" />
-        <StatCard title="Credits Earned" value="120" icon={<CalendarDays />} color="purple" />
-        <StatCard title="Attendance %" value="92%" icon={<Rocket />} color="rose" />
-        <StatCard title="No. of Backlogs" value="02" icon={<GraduationCap />} color="red" />
+        <div
+          className={getCardClass("active")}
+          onClick={() => setEnlargedCard(enlargedCard === "active" ? null : "active")}
+        >
+          <p className="text-gray-500 font-medium">Active Courses</p>
+          <h2 className="text-2xl font-bold text-gray-800">05</h2>
+          <NotebookPen className="text-indigo-500 text-lg mt-2" />
+        </div>
+
+        <div
+          className={getCardClass("cgpa")}
+          onClick={() => {
+            setShowCgpaGraph(!showCgpaGraph);
+            setEnlargedCard(enlargedCard === "cgpa" ? null : "cgpa");
+          }}
+        >
+          <p className="text-gray-500 font-medium">CGPA</p>
+          <h2 className="text-2xl font-bold text-gray-800">8.8</h2>
+          <Star className="text-yellow-400 text-lg mt-2" />
+        </div>
+
+        <div
+          className={getCardClass("credits")}
+          onClick={() => setEnlargedCard(enlargedCard === "credits" ? null : "credits")}
+        >
+          <p className="text-gray-500 font-medium">Credits Earned</p>
+          <h2 className="text-2xl font-bold text-gray-800">120</h2>
+          <CalendarDays className="text-purple-500 text-lg mt-2" />
+        </div>
+
+        <div
+          className={getCardClass("attendance")}
+          onClick={() => setEnlargedCard(enlargedCard === "attendance" ? null : "attendance")}
+        >
+          <p className="text-gray-500 font-medium">Attendance %</p>
+          <h2 className="text-2xl font-bold text-gray-800">92%</h2>
+          <Rocket className="text-rose-500 text-lg mt-2" />
+        </div>
+
+        <div
+          className={getCardClass("backlogs")}
+          onClick={() => setEnlargedCard(enlargedCard === "backlogs" ? null : "backlogs")}
+        >
+          <p className="text-gray-500 font-medium">No. of Backlogs</p>
+          <h2 className="text-2xl font-bold text-gray-800">02</h2>
+          <GraduationCap className="text-red-500 text-lg mt-2" />
+        </div>
       </div>
 
+      {showCgpaGraph && (
+        <div className="mb-12 bg-white p-6 rounded-2xl shadow-md">
+          <h3 className="text-lg font-semibold text-gray-800 mb-4">📈 CGPA Trend</h3>
+          <LineChart width={600} height={300} data={cgpaData}>
+            <CartesianGrid strokeDasharray="3 3" />
+            <XAxis dataKey="semester" />
+            <YAxis domain={[0, 10]} />
+            <Tooltip />
+            <Line type="monotone" dataKey="cgpa" stroke="#f50ba7ff" strokeWidth={2} />
+          </LineChart>
+        </div>
+      )}
+  
+  
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         {/* Profile */}
         <div className="bg-white rounded-2xl shadow-md overflow-hidden hover:shadow-xl transition duration-300 lg:col-span-1">
