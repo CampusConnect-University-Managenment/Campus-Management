@@ -153,6 +153,7 @@ const ViewStudyMaterial = () => {
       >
         ← Back
       </button>
+      
       <h2 className="text-3xl font-bold text-center text-[#2e3a59] mb-2">
         📘 View Study Materials
       </h2>
@@ -232,9 +233,26 @@ const ViewStudyMaterial = () => {
             <li className="text-center text-gray-500 px-6 py-6">
               No study materials found for selected filters.
             </li>
+            
           )}
         </ul>
+      </div><br/>
+      <br/><button
+        onClick={() => navigate("/faculty/ExamInterFace/upload-material")}
+        className="bg-blue-500 text-white px-4 py-2 rounded"
+      >
+        ← Upload new studyMaterial
+      </button>
+      
+      <div className="flex justify-end p-4">
+      <button
+        onClick={() => navigate("/faculty/ExamInterFace/upload-marks")}
+        className="bg-blue-500 text-white px-4 py-2 rounded"
+      >
+        ← Upload marks
+      </button>
       </div>
+
     </div>
   );
 };
