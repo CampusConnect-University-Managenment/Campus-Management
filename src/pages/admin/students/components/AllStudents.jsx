@@ -12,7 +12,6 @@ const AllStudents = () => {
 
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedDept, setSelectedDept] = useState("All");
-  const [selectedStatus, setSelectedStatus] = useState("All");
   const [selectedYear, setSelectedYear] = useState("All");
   const [showAddModal, setShowAddModal] = useState(false);
   const [showBulkModal, setShowBulkModal] = useState(false);
@@ -22,169 +21,368 @@ const AllStudents = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const studentsPerPage = 5;
 
-  const [students, setStudents] = useState([
-        {
-  id: "STU001",
-  regNo: "717822F129",
-  batch: "2021-2025",
-  section: "A",
-  department: "Computer Science",
-  dob: "2003-05-18",
-  gender: "Female",
-  contact: "+1 555 123 4567",
-  mail: "alice.johnson@example.com",
-  address: "123 Main St, NY",
-  adhar: "1234-5678-9012",
-  tenthMark: "94%",
-  twelfthMark: "92%",
-  quota: "General",
-  bloodGroup: "A+",
-  parentName: "John Johnson",
-  parentPhoneNo: "+1 555 789 1234",
-  totalCredits: "140",
-  photo: "https://randomuser.me/api/portraits/women/65.jpg",
-  name: "Alice Johnson",
-  year: "3rd Year",
-  semester: "Spring 2025",
-  status: "Active",
-  cgpa: 9.1,
-  attendance: 92,
-  bio: "Alice is a dedicated computer science student passionate about AI and machine learning.",
-  placement: {
-    company: "Google",
-    location: "California",
-    package: 18,
-    position: "Software Engineer",
-    date: "July 5, 2025",
-    proof: "https://example.com/offer.pdf"
+  const [students, setStudents] = useState( [
+  {
+    id: "STU001",
+    regNo: "717822F129",
+    batch: "2021-2025",
+    section: "A",
+    department: "Computer Science",
+    dob: "2003-05-18",
+    gender: "Female",
+    contact: "+1 555 123 4567",
+    mail: "alice.johnson@example.com",
+    address: "123 Main St, NY",
+    adhar: "1234-5678-9012",
+    tenthMark: "94%",
+    twelfthMark: "92%",
+    quota: "General",
+    bloodGroup: "A+",
+    parentName: "John Johnson",
+    parentPhoneNo: "+1 555 789 1234",
+    totalCredits: "140",
+    photo: "https://randomuser.me/api/portraits/women/65.jpg",
+    name: "Alice Johnson",
+    year: "3rd Year",
+    semester: "Spring 2025",
+    status: "Active",
+    cgpa: 9.1,
+    attendance: 92,
+    bio: "Alice is a dedicated computer science student passionate about AI and machine learning.",
+    placement: {
+      company: "Google",
+      location: "California",
+      package: 18,
+      position: "Software Engineer",
+      date: "July 5, 2025",
+      proof: "https://example.com/offer.pdf"
+    }
+  },
+  {
+    id: "STU002",
+    regNo: "717822C101",
+    batch: "2020-2024",
+    section: "B",
+    department: "CSE",
+    dob: "2002-09-12",
+    gender: "Male",
+    contact: "+91 98765 43210",
+    mail: "ravi.kumar@example.com",
+    address: "4th Street, Chennai",
+    adhar: "5678-1234-8765",
+    tenthMark: "89%",
+    twelfthMark: "",
+    quota: "Management",
+    bloodGroup: "B+",
+    parentName: "Sundar Kumar",
+    parentPhoneNo: "+91 99999 11111",
+    totalCredits: "135",
+    photo: "https://randomuser.me/api/portraits/men/31.jpg",
+    name: "Ravi Kumar",
+    year: "Final Year",
+    semester: "Fall 2024",
+    status: "Active",
+    cgpa: 8.4,
+    attendance: 88,
+    bio: "Ravi is skilled in backend development and cloud computing.",
+    placement: {
+      company: "Infosys",
+      location: "Bangalore",
+      package: 7.5,
+      position: "Backend Developer",
+      date: "June 15, 2024",
+      proof: "https://example.com/infosys_offer.pdf"
+    }
+  },
+  {
+    id: "STU003",
+    regNo: "717822E203",
+    batch: "2022-2026",
+    section: "A",
+    department: "ECE",
+    dob: "2004-04-10",
+    gender: "Female",
+    contact: "+91 99888 11223",
+    mail: "meena.raj@example.com",
+    address: "Green Lane, Bangalore",
+    adhar: "3456-7890-1234",
+    tenthMark: "95%",
+    twelfthMark: "91%",
+    quota: "General",
+    bloodGroup: "O+",
+    parentName: "Latha Raj",
+    parentPhoneNo: "+91 99876 54321",
+    totalCredits: "60",
+    photo: "https://randomuser.me/api/portraits/women/33.jpg",
+    name: "Meena Raj",
+    year: "2nd Year",
+    semester: "2nd Sem",
+    status: "Active",
+    cgpa: 9.3,
+    attendance: 96,
+    bio: "Meena has a strong interest in electronics and robotics.",
+    placement: {
+      company: "",
+      location: "",
+      package: null,
+      position: "",
+      date: "",
+      proof: ""
+    }
+  },
+  {
+    id: "STU004",
+    regNo: "717822A198",
+    batch: "2019-2023",
+    section: "C",
+    department: "AIDS",
+    dob: "2001-07-22",
+    gender: "Male",
+    contact: "+91 90000 12345",
+    mail: "arun.v@example.com",
+    address: "5th Cross, Coimbatore",
+    adhar: "9876-5432-1010",
+    tenthMark: "88%",
+    twelfthMark: "86%",
+    quota: "Management",
+    bloodGroup: "AB+",
+    parentName: "Venkatesh",
+    parentPhoneNo: "+91 90009 87654",
+    totalCredits: "150",
+    photo: "https://randomuser.me/api/portraits/men/75.jpg",
+    name: "Arun V",
+    year: "4th Year",
+    semester: "Final Sem",
+    status: "Active",
+    cgpa: 8.9,
+    attendance: 90,
+    bio: "Arun is passionate about data science and machine learning.",
+    placement: {
+      company: "TCS",
+      location: "Chennai",
+      package: 6,
+      position: "Data Analyst",
+      date: "July 10, 2023",
+      proof: "https://example.com/tcs_offer.pdf"
+    }
+  },
+  {
+    id: "STU005",
+    regNo: "717822E401",
+    batch: "2023-2027",
+    section: "A",
+    department: "EEE",
+    dob: "2005-01-12",
+    gender: "Female",
+    contact: "+91 90909 12121",
+    mail: "divya.r@example.com",
+    address: "Main Road, Madurai",
+    adhar: "2233-4455-6677",
+    tenthMark: "93%",
+    twelfthMark: "",
+    quota: "General",
+    bloodGroup: "B-",
+    parentName: "Revathi Ramesh",
+    parentPhoneNo: "+91 91234 56789",
+    totalCredits: "20",
+    photo: "https://randomuser.me/api/portraits/women/72.jpg",
+    name: "Divya Ramesh",
+    year: "1st Year",
+    semester: "1st Sem",
+    status: "Active",
+    cgpa: 8.7,
+    attendance: 85,
+    bio: "Divya is exploring embedded systems and renewable energy projects.",
+    placement: {
+      company: "",
+      location: "",
+      package: null,
+      position: "",
+      date: "",
+      proof: ""
+    }
+  },
+  {
+    id: "STU001",
+    regNo: "717822F129",
+    batch: "2021-2025",
+    section: "A",
+    department: "Computer Science",
+    dob: "2003-05-18",
+    gender: "Female",
+    contact: "+1 555 123 4567",
+    mail: "alice.johnson@example.com",
+    address: "123 Main St, NY",
+    adhar: "1234-5678-9012",
+    tenthMark: "94%",
+    twelfthMark: "92%",
+    quota: "General",
+    bloodGroup: "A+",
+    parentName: "John Johnson",
+    parentPhoneNo: "+1 555 789 1234",
+    totalCredits: "140",
+    photo: "https://randomuser.me/api/portraits/women/65.jpg",
+    name: "Alice Johnson",
+    year: "3rd Year",
+    semester: "Spring 2025",
+    status: "Active",
+    cgpa: 9.1,
+    attendance: 92,
+    bio: "Alice is a dedicated computer science student passionate about AI and machine learning.",
+    placement: {
+      company: "Google",
+      location: "California",
+      package: 18,
+      position: "Software Engineer",
+      date: "July 5, 2025",
+      proof: "https://example.com/offer.pdf"
+    }
+  },
+  {
+    id: "STU002",
+    regNo: "717822C101",
+    batch: "2020-2024",
+    section: "B",
+    department: "CSE",
+    dob: "2002-09-12",
+    gender: "Male",
+    contact: "+91 98765 43210",
+    mail: "ravi.kumar@example.com",
+    address: "4th Street, Chennai",
+    adhar: "5678-1234-8765",
+    tenthMark: "89%",
+    twelfthMark: "",
+    quota: "Management",
+    bloodGroup: "B+",
+    parentName: "Sundar Kumar",
+    parentPhoneNo: "+91 99999 11111",
+    totalCredits: "135",
+    photo: "https://randomuser.me/api/portraits/men/31.jpg",
+    name: "Ravi Kumar",
+    year: "Final Year",
+    semester: "Fall 2024",
+    status: "Active",
+    cgpa: 8.4,
+    attendance: 88,
+    bio: "Ravi is skilled in backend development and cloud computing.",
+    placement: {
+      company: "Infosys",
+      location: "Bangalore",
+      package: 7.5,
+      position: "Backend Developer",
+      date: "June 15, 2024",
+      proof: "https://example.com/infosys_offer.pdf"
+    }
+  },
+  {
+    id: "STU003",
+    regNo: "717822E203",
+    batch: "2022-2026",
+    section: "A",
+    department: "ECE",
+    dob: "2004-04-10",
+    gender: "Female",
+    contact: "+91 99888 11223",
+    mail: "meena.raj@example.com",
+    address: "Green Lane, Bangalore",
+    adhar: "3456-7890-1234",
+    tenthMark: "95%",
+    twelfthMark: "91%",
+    quota: "General",
+    bloodGroup: "O+",
+    parentName: "Latha Raj",
+    parentPhoneNo: "+91 99876 54321",
+    totalCredits: "60",
+    photo: "https://randomuser.me/api/portraits/women/33.jpg",
+    name: "Meena Raj",
+    year: "2nd Year",
+    semester: "2nd Sem",
+    status: "Active",
+    cgpa: 9.3,
+    attendance: 96,
+    bio: "Meena has a strong interest in electronics and robotics.",
+    placement: {
+      company: "",
+      location: "",
+      package: null,
+      position: "",
+      date: "",
+      proof: ""
+    }
+  },
+  {
+    id: "STU004",
+    regNo: "717822A198",
+    batch: "2019-2023",
+    section: "C",
+    department: "AIDS",
+    dob: "2001-07-22",
+    gender: "Male",
+    contact: "+91 90000 12345",
+    mail: "arun.v@example.com",
+    address: "5th Cross, Coimbatore",
+    adhar: "9876-5432-1010",
+    tenthMark: "88%",
+    twelfthMark: "86%",
+    quota: "Management",
+    bloodGroup: "AB+",
+    parentName: "Venkatesh",
+    parentPhoneNo: "+91 90009 87654",
+    totalCredits: "150",
+    photo: "https://randomuser.me/api/portraits/men/75.jpg",
+    name: "Arun V",
+    year: "4th Year",
+    semester: "Final Sem",
+    status: "Active",
+    cgpa: 8.9,
+    attendance: 90,
+    bio: "Arun is passionate about data science and machine learning.",
+    placement: {
+      company: "TCS",
+      location: "Chennai",
+      package: 6,
+      position: "Data Analyst",
+      date: "July 10, 2023",
+      proof: "https://example.com/tcs_offer.pdf"
+    }
+  },
+  {
+    id: "STU005",
+    regNo: "717822E401",
+    batch: "2023-2027",
+    section: "A",
+    department: "EEE",
+    dob: "2005-01-12",
+    gender: "Female",
+    contact: "+91 90909 12121",
+    mail: "divya.r@example.com",
+    address: "Main Road, Madurai",
+    adhar: "2233-4455-6677",
+    tenthMark: "93%",
+    twelfthMark: "",
+    quota: "General",
+    bloodGroup: "B-",
+    parentName: "Revathi Ramesh",
+    parentPhoneNo: "+91 91234 56789",
+    totalCredits: "20",
+    photo: "https://randomuser.me/api/portraits/women/72.jpg",
+    name: "Divya Ramesh",
+    year: "1st Year",
+    semester: "1st Sem",
+    status: "Active",
+    cgpa: 8.7,
+    attendance: 85,
+    bio: "Divya is exploring embedded systems and renewable energy projects.",
+    placement: {
+      company: "",
+      location: "",
+      package: null,
+      position: "",
+      date: "",
+      proof: ""
+    }
   }
-},{
-  id: "STU001",
-  regNo: "717822F129",
-  batch: "2021-2025",
-  section: "A",
-  department: "Computer Science",
-  dob: "2003-05-18",
-  gender: "Female",
-  contact: "+1 555 123 4567",
-  mail: "alice.johnson@example.com",
-  address: "123 Main St, NY",
-  adhar: "1234-5678-9012",
-  tenthMark: "94%",
-  twelfthMark: "92%",
-  quota: "General",
-  bloodGroup: "A+",
-  parentName: "John Johnson",
-  parentPhoneNo: "+1 555 789 1234",
-  totalCredits: "140",
-  photo: "https://randomuser.me/api/portraits/women/65.jpg",
-  name: "Alice Johnson",
-  year: "3rd Year",
-  semester: "Spring 2025",
-  status: "Active",
-  cgpa: 9.1,
-  attendance: 92,
-  bio: "Alice is a dedicated computer science student passionate about AI and machine learning.",
-  placement: {
-    company: "Google",
-    location: "California",
-    package: 18,
-    position: "Software Engineer",
-    date: "July 5, 2025",
-    proof: "https://example.com/offer.pdf"
-  }
-},
-    // {
-    //   id: "STU002",
-    //   name: "Michael Brown",
-    //   email: "michael.brown@example.com",
-    //   phone: "+1 555 987 6543",
-    //   avatar: "https://randomuser.me/api/portraits/men/12.jpg",
-    //   department: "Mechanical Engineering",
-    //   degree: "BEng Mechanical Engineering",
-    //   year: "2nd Year",
-    //   semester: "Fall 2024",
-    //   status: "Active",
-    //   cgpa: 7.8,
-    //   attendance: 76,
-    //   bio: "Michael enjoys robotics and has participated in several engineering competitions.",
-    // },
-    // {
-    //   id: "STU003",
-    //   name: "Sofia Martinez",
-    //   email: "sofia.martinez@example.com",
-    //   phone: "+1 555 765 4321",
-    //   avatar: "https://randomuser.me/api/portraits/women/45.jpg",
-    //   department: "Business Administration",
-    //   degree: "BBA",
-    //   year: "4th Year",
-    //   semester: "Spring 2025",
-    //   status: "Graduated",
-    //   cgpa: 8.5,
-    //   attendance: 81,
-    //   bio: "Sofia graduated with honors and is interested in entrepreneurship and marketing.",
-    // },
-    // {
-    //   id: "STU004",
-    //   name: "David Kim",
-    //   email: "david.kim@example.com",
-    //   phone: "+1 555 321 9876",
-    //   avatar: "https://randomuser.me/api/portraits/men/34.jpg",
-    //   department: "Computer Science",
-    //   degree: "BSc Computer Science",
-    //   year: "1st Year",
-    //   semester: "Fall 2025",
-    //   status: "Active",
-    //   cgpa: 6.4,
-    //   attendance: 68,
-    //   bio: "David is passionate about cybersecurity and networks.",
-    // },
-    // {
-    //   id: "STU005",
-    //   name: "Emily Clark",
-    //   email: "emily.clark@example.com",
-    //   phone: "+1 555 654 3210",
-    //   avatar: "https://randomuser.me/api/portraits/women/30.jpg",
-    //   department: "Psychology",
-    //   degree: "BA Psychology",
-    //   year: "3rd Year",
-    //   semester: "Spring 2025",
-    //   status: "Active",
-    //   cgpa: 9.3,
-    //   attendance: 95,
-    //   bio: "Emily is interested in cognitive psychology and human behavior research.",
-    // },
-    // {
-    //   id: "STU006",
-    //   name: "Rahul Nair",
-    //   email: "rahul.nair@example.com",
-    //   phone: "+91 98765 43210",
-    //   avatar: "https://randomuser.me/api/portraits/men/77.jpg",
-    //   department: "Information Technology",
-    //   degree: "B.Tech IT",
-    //   year: "2nd Year",
-    //   semester: "Fall 2024",
-    //   status: "Active",
-    //   cgpa: 8.2,
-    //   attendance: 73,
-    //   bio: "Rahul loves programming and building full-stack applications.",
-    // },
-    // {
-    //   id: "STU007",
-    //   name: "Priya Ramesh",
-    //   email: "priya.ramesh@example.com",
-    //   phone: "+91 90123 45678",
-    //   avatar: "https://randomuser.me/api/portraits/women/44.jpg",
-    //   department: "Electronics",
-    //   degree: "B.E ECE",
-    //   year: "3rd Year",
-    //   semester: "Spring 2025",
-    //   status: "Active",
-    //   cgpa: 8.9,
-    //   attendance: 78,
-    //   bio: "Priya is working on IoT-based academic research and automation projects.",
-    // },
-  ]);
+]);
 
   const addStudent = (newStudent) => {
     const nextId = `STU${String(students.length + 1).padStart(3, "0")}`;
@@ -202,24 +400,22 @@ const AllStudents = () => {
     }
   };
 
-  const filteredStudents = students.filter((s) => {
-    const matchesSearch =
-      s.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      s.email.toLowerCase().includes(searchTerm.toLowerCase());
-    const matchesDept = selectedDept === "All" || s.department === selectedDept;
-    const matchesStatus =
-      selectedStatus === "All" ||
-      (selectedStatus === "Active" && s.status === "Active") ||
-      (selectedStatus === "Placed" && s.placement);
-    const matchesYear = selectedYear === "All" || s.year === selectedYear;
-    return matchesSearch && matchesDept && matchesStatus && matchesYear;
-  });
+  
 
-  const departmentOptions = [...new Set(students.map((s) => s.department))];
-  const yearOptions = [...new Set(students.map((s) => s.year))];
+  const departmentOptions = ["IT", "CSE", "ECE", "EEE", "AIDS"];
+const yearOptions = ["1st Year", "2nd Year", "3rd Year", "4th Year", "Final Year"];
+
+
+
 
   const indexOfLastStudent = currentPage * studentsPerPage;
   const indexOfFirstStudent = indexOfLastStudent - studentsPerPage;
+const filteredStudents = students.filter((s) => {
+  const matchesYear = selectedYear === "All" || String(s.year) === String(selectedYear);
+  const matchesDept = selectedDept === "All" || s.department === selectedDept;
+  return matchesYear && matchesDept;
+});
+
   const currentStudents = showAll
     ? filteredStudents.slice(indexOfFirstStudent, indexOfLastStudent)
     : filteredStudents.slice(-RECENT_STUDENTS_COUNT);
@@ -251,22 +447,21 @@ const AllStudents = () => {
               <option key={idx} value={dept}>{dept}</option>
             ))}
           </select>
-          <select
+         
+         <select
   className="border px-3 py-2 rounded-md"
-  value={selectedStatus}
-  onChange={(e) => setSelectedStatus(e.target.value)}
+  value={selectedYear}
+  onChange={(e) => setSelectedYear(e.target.value)}
 >
-  <option value="All">All Status</option>
-  <option value="Active">Active</option>
-  <option value="Placed">Placed</option>
+  <option value="All">All Years</option>
+  <option value="1st Year">1st Year</option>
+  <option value="2nd Year">2nd Year</option>
+  <option value="3rd Year">3rd Year</option>
+  <option value="4th Year">4th Year</option>
+  <option value="Final Year">Final Year</option>
 </select>
 
-          <select className="border px-3 py-2 rounded-md" value={selectedYear} onChange={(e) => setSelectedYear(e.target.value)}>
-            <option value="All">All Years</option>
-            {yearOptions.map((year, idx) => (
-              <option key={idx} value={year}>{year}</option>
-            ))}
-          </select>
+
           <div className="flex gap-2">
   <button
     className="bg-gray-900 text-white px-4 py-2 rounded-md flex items-center gap-2 hover:bg-black"
@@ -298,58 +493,63 @@ const AllStudents = () => {
             <tr>
               <th className="p-4 border-b border-gray-200">Student ID</th>
               <th className="p-4 border-b border-gray-200">Name</th>
-              <th className="p-4 border-b border-gray-200">Email</th>
               <th className="p-4 border-b border-gray-200">Department</th>
               <th className="p-4 border-b border-gray-200">Year</th>
-              <th className="p-4 border-b border-gray-200">Status</th>
+              <th className="p-4 border-b border-gray-200">Email</th>
+               <th className="p-4 border-b border-gray-200">Phone</th>
+              
             </tr>
           </thead>
           <tbody>
-            {currentStudents.map((s, idx) => (
-              <tr
-                key={idx}
-                className="bg-white hover:bg-gray-50 transition border-b border-gray-100 cursor-pointer"
-                onClick={() => setSelectedStudent(s)}
-              >
-                <td className="p-4 font-medium text-gray-800 whitespace-nowrap">{s.id}</td>
-                <td className="p-4 whitespace-nowrap">
-                  <div className="flex items-center gap-3">
-                    <img
-  src={s.photo || s.avatar || "https://via.placeholder.com/40"}
-  alt={s.name}
-  className="w-8 h-8 rounded-full object-cover"
-/>
-   <div>
-                      <div className="flex items-center gap-2">
-                        <span className="font-semibold text-blue-700 hover:underline">{s.name}</span>
-                        {s.placement && <FaBriefcase className="text-green-600" title="Placed" />}
-                      </div>
-                      <div className="text-xs text-gray-500">{s.phone}</div>
-                    </div>
-                  </div>
-                </td>
-               
-  <td className="px-4 py-3 text-sm">{s.mail}</td>
-                <td className="p-4 whitespace-nowrap">
-                  <div className="text-sm font-medium text-gray-800">{s.department}</div>
-                  <div className="text-xs text-gray-500">{s.degree}</div>
-                </td>
-                <td className="p-4 whitespace-nowrap">
-                  <div className="text-sm font-medium text-gray-800">{s.year}</div>
-                  <div className="text-xs text-gray-500">{s.semester}</div>
-                </td>
-                <td className="p-4 whitespace-nowrap">
-                  <span className={`px-2 py-1 text-xs font-semibold rounded-full ${
-                    s.status === "Active"
-                      ? "bg-green-100 text-green-700"
-                      : "bg-purple-100 text-purple-700"
-                  }`}>
-                    {s.status}
-                  </span>
-                </td>
-              </tr>
-            ))}
-          </tbody>
+  {currentStudents.map((s, idx) => (
+    <tr
+      key={idx}
+      className="bg-white hover:bg-gray-50 transition border-b border-gray-100 cursor-pointer"
+      onClick={() => setSelectedStudent(s)}
+    >
+      {/* Student ID */}
+      <td className="p-4 font-medium text-gray-800 whitespace-nowrap">
+        {s.id}
+      </td>
+
+      {/* Name + Profile Picture */}
+      <td className="p-4 whitespace-nowrap">
+        <div className="flex items-center gap-3">
+          <img
+            src={s.photo || s.avatar || "https://via.placeholder.com/40"}
+            alt={s.name}
+            className="w-8 h-8 rounded-full object-cover"
+          />
+          <div>
+            <div className="flex items-center gap-2">
+              <span className="font-semibold text-blue-700 hover:underline">{s.name}</span>
+              {s.placement && <FaBriefcase className="text-green-600" title="Placed" />}
+            </div>
+          </div>
+        </div>
+      </td>
+
+      {/* Department */}
+      <td className="p-4 whitespace-nowrap">
+        <div className="text-sm font-medium text-gray-800">{s.department}</div>
+      </td>
+
+      {/* Year */}
+      <td className="p-4 whitespace-nowrap">
+        <div className="text-sm font-medium text-gray-800">{s.year}</div>
+      </td>
+
+      {/* Email */}
+      <td className="p-4 whitespace-nowrap text-sm text-gray-800">
+        {s.email || s.mail}
+      </td>
+
+      {/* Phone */}
+    <td className="p-4 whitespace-nowrap text-sm text-gray-800">{s.contact}</td>
+    </tr>
+  ))}
+</tbody>
+
         </table>
       </div>
 
@@ -424,30 +624,7 @@ const AllStudents = () => {
     </div>
   </div>
 
-  {/* Placed Students */}
-  <div>
-    <h3 className="text-xl font-bold text-green-800 mb-4">🎓 Placed Students</h3>
-    <div className="space-y-4">
-      {placedStudents.map((s, idx) => (
-        <div
-          key={idx}
-          className="bg-green-50 border border-green-200 p-4 rounded-lg shadow cursor-pointer hover:bg-green-100"
-          onClick={() => setSelectedStudent(s)}
-        >
-          <div className="flex items-center gap-4">
-            <img src={s.avatar} alt={s.name} className="w-12 h-12 rounded-full object-cover" />
-            <div>
-              <div className="font-semibold text-green-800 hover:underline">{s.name}</div>
-              <div className="text-sm text-gray-600">{s.placement.position} @ {s.placement.company}</div>
-              <div className="text-sm text-green-700">Package: ₹{s.placement.package} LPA</div>
-              <div className="text-xs text-gray-400">Placed on: {s.placement.date}</div>
-            </div>
-          </div>
-        </div>
-      ))}
-    </div>
-  </div>
-</div>
+ </div>
 
       <PerformanceChart students={students} />
 
