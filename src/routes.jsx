@@ -49,6 +49,7 @@ import {
   FaClipboardCheck,
   FaGraduationCap,
   FaQuestionCircle,
+  FaComments,
 } from "react-icons/fa";
 
 import {
@@ -84,7 +85,7 @@ const routes = [
     component: <AllStudents />,
   },
   {
-    name: "Notification and Message",
+    name: "Notifications",
     layout: "/admin",
     path: "Notification_Message",
     icon: <MdDashboard className="h-6 w-6" />,
@@ -154,10 +155,10 @@ const routes = [
     component: <PerformanceAnalytics />,
   },
   {
-    name: "Notifications",
+    name: "Chats",
     layout: "/student",
     path: "notifications",
-    icon: <FaBell className="h-5 w-5" />,
+    icon: <FaComments className="h-5 w-5" />,
     component: <Notifications />,
   },
   {
@@ -205,10 +206,10 @@ const routes = [
     component: <AttendanceUpload />,
   },
   {
-    name: "Notification and Message",
+    name: "Chats",
     layout: "/faculty",
     path: "Notification&Message",
-    icon: <MdNotifications className="h-6 w-6" />,
+    icon: <FaComments className="h-6 w-6"  />,
     component: <Notification_Message />,
   },
   {
