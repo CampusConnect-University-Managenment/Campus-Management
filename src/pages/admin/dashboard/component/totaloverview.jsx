@@ -49,7 +49,7 @@ const TotalOverview = () => {
         <div
           onMouseEnter={() => setHovering(true)}
           onMouseLeave={() => setHovering(false)}
-          className="bg-gradient-to-r from-green-500 to-green-700 text-white rounded-2xl shadow-sm p-6 border hover:shadow-md transition-all duration-300 transform hover:-translate-y-1"
+          className="bg-gradient-to-r from-orange-500 to-green-700 text-white rounded-2xl shadow-sm p-6 border hover:shadow-md transition-all duration-300 transform hover:-translate-y-1"
         >
           <div className="flex justify-between items-center">
             <div>
