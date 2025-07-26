@@ -1,9 +1,6 @@
 "use client"
 
 import { useEffect, useRef } from "react"
-import Button from "./ui/Button"
-import Badge from "./ui/Badge"
-import { ScrollArea } from "./ui/ScrollArea"
 import {
   Bell,
   BellOff,
@@ -99,29 +96,31 @@ const NotificationPanel = ({
   const unreadCount = notificationList.filter((n) => !n.isRead).length
 
   return (
-    <div className="h-full flex flex-col bg-white">
-      {/* Header - Simplified without filter/sort options */}
-      <div className="px-4 py-4 border-b border-gray-200 bg-gradient-to-r from-purple-50 to-blue-50 flex-shrink-0">
-        <div className="flex items-center justify-between mb-3">
+    <div className="h-full flex flex-col bg-white rounded-lg">
+      {/* Header */}
+      <div className="px-4 py-3 border-b border-gray-200 bg-gradient-to-r from-purple-50 to-blue-50 rounded-t-lg flex-shrink-0">
+        <div className="flex items-center justify-between mb-2">
           <div className="flex items-center gap-2">
             <Bell className="w-5 h-5 text-purple-600" />
             <h3 className="text-lg text-gray-800 font-semibold">Notifications</h3>
-            {unreadCount > 0 && <Badge className="bg-red-500 text-white text-xs">{unreadCount}</Badge>}
+            {unreadCount > 0 && (
+              <span className="bg-red-500 text-white text-xs px-2 py-1 rounded-full font-medium">{unreadCount}</span>
+            )}
           </div>
         </div>
 
         <div className="flex items-center justify-between text-sm text-gray-600">
           <span>{notificationList.length} notifications</span>
           {unreadCount > 0 && (
-            <Button variant="ghost" size="sm" onClick={onMarkAllAsRead} className="text-blue-600 hover:text-blue-800">
+            <button onClick={onMarkAllAsRead} className="text-blue-600 hover:text-blue-800 font-medium">
               Mark all as read
-            </Button>
+            </button>
           )}
         </div>
       </div>
 
       {/* Scrollable Notifications List */}
-      <ScrollArea className="flex-1">
+      <div className="flex-1 overflow-y-auto max-h-80">
         {notificationList.length === 0 ? (
           <div className="flex flex-col items-center justify-center h-full text-gray-500 p-8">
             <BellOff className="w-12 h-12 text-gray-300 mb-4" />
@@ -131,11 +130,11 @@ const NotificationPanel = ({
             </div>
           </div>
         ) : (
-          <div className="p-4 space-y-3">
+          <div className="p-3 space-y-2">
             {notificationList.map((notification) => (
               <div
                 key={notification.id}
-                className={`rounded-lg p-4 transition-all duration-200 cursor-pointer border shadow-sm relative group hover:shadow-md ${getNotificationColor(notification.type, notification.isRead)}`}
+                className={`rounded-lg p-3 transition-all duration-200 cursor-pointer border shadow-sm relative group hover:shadow-md ${getNotificationColor(notification.type, notification.isRead)}`}
                 onClick={() => onMarkAsRead && onMarkAsRead(notification.id)}
               >
                 <button
@@ -143,17 +142,17 @@ const NotificationPanel = ({
                     e.stopPropagation()
                     onRemoveNotification && onRemoveNotification(notification.id)
                   }}
-                  className="absolute top-3 right-3 opacity-0 group-hover:opacity-100 transition-opacity bg-red-500 hover:bg-red-600 text-white rounded-full w-6 h-6 flex items-center justify-center text-sm"
+                  className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity bg-red-500 hover:bg-red-600 text-white rounded-full w-5 h-5 flex items-center justify-center text-xs"
                   title="Remove notification"
                 >
                   <X className="w-3 h-3" />
                 </button>
 
-                <div className="flex items-start gap-3 pr-8">
+                <div className="flex items-start gap-3 pr-6">
                   <div className="flex-shrink-0 mt-0.5">{getNotificationIcon(notification.type)}</div>
                   <div className="flex-1 min-w-0">
                     <div
-                      className={`text-sm leading-relaxed mb-2 ${notification.isRead ? "text-gray-600" : "text-gray-800 font-medium"}`}
+                      className={`text-sm leading-relaxed mb-1 ${notification.isRead ? "text-gray-600" : "text-gray-800 font-medium"}`}
                     >
                       {notification.message}
                     </div>
@@ -163,9 +162,9 @@ const NotificationPanel = ({
                       </div>
                       <div className="flex items-center gap-2">
                         {notification.type && (
-                          <Badge variant="outline" className="text-xs capitalize">
+                          <span className="text-xs capitalize bg-white bg-opacity-50 px-2 py-1 rounded">
                             {notification.type}
-                          </Badge>
+                          </span>
                         )}
                         {!notification.isRead && <div className="w-2 h-2 bg-blue-500 rounded-full" title="Unread" />}
                       </div>
@@ -177,31 +176,27 @@ const NotificationPanel = ({
             <div ref={bottomRef} />
           </div>
         )}
-      </ScrollArea>
+      </div>
 
       {/* Action Buttons */}
       {notificationList.length > 0 && (
-        <div className="px-4 py-3 border-t border-gray-200 bg-gray-50 flex-shrink-0">
+        <div className="px-4 py-3 border-t border-gray-200 bg-gray-50 rounded-b-lg flex-shrink-0">
           <div className="flex gap-2">
-            <Button
+            <button
               onClick={onClearNotifications}
-              variant="outline"
-              size="sm"
-              className="flex-1 text-red-600 border-red-200 hover:bg-red-50 hover:border-red-300 bg-transparent"
+              className="flex-1 flex items-center justify-center gap-2 px-3 py-2 text-sm text-red-600 border border-red-200 rounded-md hover:bg-red-50 hover:border-red-300 bg-transparent transition-colors"
             >
-              <Trash2 className="w-4 h-4 mr-2" />
+              <Trash2 className="w-4 h-4" />
               Clear All
-            </Button>
+            </button>
             {unreadCount > 0 && (
-              <Button
+              <button
                 onClick={onMarkAllAsRead}
-                variant="outline"
-                size="sm"
-                className="flex-1 text-blue-600 border-blue-200 hover:bg-blue-50 hover:border-blue-300 bg-transparent"
+                className="flex-1 flex items-center justify-center gap-2 px-3 py-2 text-sm text-blue-600 border border-blue-200 rounded-md hover:bg-blue-50 hover:border-blue-300 bg-transparent transition-colors"
               >
-                <CheckCircle className="w-4 h-4 mr-2" />
+                <CheckCircle className="w-4 h-4" />
                 Mark All Read
-              </Button>
+              </button>
             )}
           </div>
         </div>
