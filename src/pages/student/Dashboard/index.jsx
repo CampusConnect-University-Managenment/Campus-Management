@@ -1,14 +1,5 @@
 import React, { useState } from "react";
 import {
-  LineChart,
-  Line,
-  XAxis,
-  YAxis,
-  Tooltip,
-  CartesianGrid,
-} from "recharts";
-
-import {
   CalendarDays,
   NotebookPen,
   Rocket,
@@ -19,7 +10,6 @@ import {
 } from "lucide-react";
 
 export default function StudentDashboard() {
-  const [showCgpaGraph, setShowCgpaGraph] = useState(false);
   const [enlargedCard, setEnlargedCard] = useState(null);
 
   // Calendar State
@@ -46,16 +36,6 @@ export default function StudentDashboard() {
     { date: "2025-08-19", title: "Hostel Day", type: "Event" },
     { date: "2025-08-21", title: "Technical Event", type: "Event" },
     { date: "2025-08-28", title: "Intercollege Fest (Dhruva)", type: "Event" },
-  ];
-
-  // CGPA Trend Data
-  const cgpaData = [
-    { semester: "Sem 1", cgpa: 8.1 },
-    { semester: "Sem 2", cgpa: 6.5 },
-    { semester: "Sem 3", cgpa: 8.5 },
-    { semester: "Sem 4", cgpa: 9.2 },
-    { semester: "Sem 5", cgpa: 7.8 },
-    { semester: "Sem 6", cgpa: 8.8 },
   ];
 
   const getCardClass = (cardKey) =>
@@ -120,67 +100,36 @@ export default function StudentDashboard() {
 
       {/* Stats */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-6 mb-12">
-        <div
-          className={getCardClass("active")}
-          onClick={() => setEnlargedCard(enlargedCard === "active" ? null : "active")}
-        >
+        <div className={getCardClass("active")}>
           <p className="text-gray-500 font-medium">Active Courses</p>
           <h2 className="text-2xl font-bold text-gray-800">05</h2>
           <NotebookPen className="text-indigo-500 text-lg mt-2" />
         </div>
 
-        <div
-          className={getCardClass("cgpa")}
-          onClick={() => {
-            setShowCgpaGraph(!showCgpaGraph);
-            setEnlargedCard(enlargedCard === "cgpa" ? null : "cgpa");
-          }}
-        >
+        <div className={getCardClass("cgpa")}>
           <p className="text-gray-500 font-medium">CGPA</p>
           <h2 className="text-2xl font-bold text-gray-800">8.8</h2>
           <Star className="text-yellow-400 text-lg mt-2" />
         </div>
 
-        <div
-          className={getCardClass("credits")}
-          onClick={() => setEnlargedCard(enlargedCard === "credits" ? null : "credits")}
-        >
+        <div className={getCardClass("credits")}>
           <p className="text-gray-500 font-medium">Credits Earned</p>
           <h2 className="text-2xl font-bold text-gray-800">120</h2>
           <CalendarDays className="text-purple-500 text-lg mt-2" />
         </div>
 
-        <div
-          className={getCardClass("attendance")}
-          onClick={() => setEnlargedCard(enlargedCard === "attendance" ? null : "attendance")}
-        >
+        <div className={getCardClass("attendance")}>
           <p className="text-gray-500 font-medium">Attendance %</p>
           <h2 className="text-2xl font-bold text-gray-800">92%</h2>
           <Rocket className="text-rose-500 text-lg mt-2" />
         </div>
 
-        <div
-          className={getCardClass("backlogs")}
-          onClick={() => setEnlargedCard(enlargedCard === "backlogs" ? null : "backlogs")}
-        >
+        <div className={getCardClass("backlogs")}>
           <p className="text-gray-500 font-medium">No. of Backlogs</p>
           <h2 className="text-2xl font-bold text-gray-800">02</h2>
           <GraduationCap className="text-red-500 text-lg mt-2" />
         </div>
       </div>
-
-      {showCgpaGraph && (
-        <div className="mb-12 bg-white p-6 rounded-2xl shadow-md">
-          <h3 className="text-lg font-semibold text-gray-800 mb-4">📈 CGPA Trend</h3>
-          <LineChart width={600} height={300} data={cgpaData}>
-            <CartesianGrid strokeDasharray="3 3" />
-            <XAxis dataKey="semester" />
-            <YAxis domain={[0, 10]} />
-            <Tooltip />
-            <Line type="monotone" dataKey="cgpa" stroke="#f50ba7ff" strokeWidth={2} />
-          </LineChart>
-        </div>
-      )}
 
       {/* Profile + Academic Calendar */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
