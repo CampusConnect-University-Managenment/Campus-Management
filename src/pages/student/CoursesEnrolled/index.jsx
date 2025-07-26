@@ -551,47 +551,42 @@ export default function CoursesOverview() {
             </ul>
           )}
 
-          {activeTab === "assignments" && (
-            <div className="space-y-4">
-              {data.assignments.length === 0 ? (
-                <p className="text-gray-500 text-sm">No assignments available.</p>
-              ) : (
-                data.assignments.map((a, idx) => (
-                  <div
-                    key={idx}
-                    className="border p-4 rounded-md shadow-sm flex flex-col md:flex-row md:items-center justify-between gap-4"
-                  >
-                    <div>
-                      <h4 className="text-md font-semibold">{a.title}</h4>
-                      <p className="text-sm text-gray-600">Posted On: {a.postedOn}</p>
-                      <p className="text-sm text-red-600">Deadline: {a.deadline}</p>
-                      <a
-                        href={a.url}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="text-blue-500 underline text-sm"
-                      >
-                        View Assignment
-                      </a>
-                    </div>
+          
+            {activeTab === "assignments" && (
+  <ul className="space-y-4">
+    {data.assignments.length === 0 ? (
+      <p className="text-gray-500 text-sm">No assignments available.</p>
+    ) : (
+      data.assignments.map((item, index) => (
+        <li
+          key={index}
+          className="flex justify-between items-center border rounded-lg p-3 hover:bg-gray-50"
+        >
+          <div className="flex items-center gap-3">
+            <span className="text-gray-500">📄</span>
+            <a
+              href={item.url}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="font-medium text-blue-700 hover:underline"
+            >
+              {index + 1}. {item.title}
+            </a>
+          </div>
+          <a
+            href={item.url}
+            download
+            className="text-sm text-blue-600 hover:underline flex items-center gap-1"
+          >
+            ⬇️ Download
+          </a>
+        </li>
+      ))
+    )}
+  </ul>
+)}
 
-                    <div className="flex flex-col md:flex-row items-start md:items-center gap-2">
-                      <input type="file" className="text-sm" />
-                      <button
-                        className="px-3 py-1 bg-green-600 text-white rounded hover:bg-green-700 text-sm"
-                      >
-                        Mark as Done
-                      </button>
-                    </div>
-                  
-
-              {/* Mark as Done / Submitted */}
-            
-                  </div>
-                ))
-              )}
-            </div>
-          )}
+          
         </div>
       </div>
     );
