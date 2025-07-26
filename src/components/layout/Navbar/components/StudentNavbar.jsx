@@ -254,7 +254,7 @@ const NotificationPanel = ({
   )
 }
 
-export default function FacultyNavbar() {
+export default function StudentNavbar() {
   const [visible, setVisible] = useState(true)
   const [showProfileMenu, setShowProfileMenu] = useState(false)
   const [showNotifications, setShowNotifications] = useState(false)
@@ -401,7 +401,7 @@ export default function FacultyNavbar() {
                 <span
                   onClick={() => {
                     setShowProfileMenu(false)
-                    navigate("/faculty/profile")
+                    navigate("/student/profile")
                   }}
                   className="cursor-pointer hover:text-blue-600 font-medium"
                 >
