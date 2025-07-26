@@ -46,22 +46,23 @@ const TotalOverview = () => {
             <Users2 className="w-10 h-10 text-white" />
           </div>
         </div>
-
-        {/* Admin */}
         <div
           onMouseEnter={() => setHovering(true)}
           onMouseLeave={() => setHovering(false)}
-          className="bg-gradient-to-r from-orange-500 to-orange-700 text-white rounded-2xl shadow-sm p-6 border hover:shadow-md transition-all duration-300 transform hover:-translate-y-1"
+          className="bg-gradient-to-r from-orange-500 to-green-700 text-white rounded-2xl shadow-sm p-6 border hover:shadow-md transition-all duration-300 transform hover:-translate-y-1"
         >
           <div className="flex justify-between items-center">
             <div>
-              <p className="font-semibold">Admin Staff</p>
-              <h3 className="text-3xl font-bold mt-2">4</h3>
-              
+              <p className="font-semibold">Total Department</p>
+              <h3 className="text-3xl font-bold mt-2">12</h3>
+             
             </div>
-            <ShieldCheck className="w-10 h-10 text-white" />
+            <Users2 className="w-10 h-10 text-white" />
           </div>
         </div>
+
+        {/* Admin */}
+       
       </div>
     </div>
   );

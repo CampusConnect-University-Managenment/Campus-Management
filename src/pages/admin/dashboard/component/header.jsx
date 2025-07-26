@@ -1,9 +1,6 @@
 import React from 'react';
 
-import Notification from './notification.jsx';
-import NoticeBoard from './noticeboard.jsx';
-import DepartmentOverview from './departmentoverview.jsx';
-import FacultyOnLeave from './facultyOnLeave.jsx';
+
 import TotalOverview from './totaloverview.jsx';
 import Attendance from './attendance.jsx';
 
@@ -38,7 +35,7 @@ const Header = () => {
      */}
 
       {/* Notifications */}
-      <Notification />
+      
     </div>
   );
 };

@@ -1,4 +1,6 @@
 import React from "react";
+import AdminProfile from "./pages/admin/Profile";
+
 import AdminDashboard from "./pages/admin/dashboard";
 import AdminExam from "./pages/admin/exam";
 import AdminExamInterface from "./pages/admin/dashboard/component/ExamInterface";
@@ -15,7 +17,6 @@ import Announcements from "./pages/faculty/Announcements/components/Announcement
 import StudentDashboard from "./pages/student/StudentDashBoard/components/StudentDashboard";
 import FacultyProfile from "./pages/faculty/Profile";
 import EditFacultyProfile from "./pages/faculty/EditProfile";
-import Interface from "./pages/faculty/Exam_InterFace/Components/ExamInterface";
 import ViewStudyMaterial from "./pages/faculty/Exam_InterFace/View_Components/ViewStudyMaterials";
 import ViewQuestionPaper from "./pages/faculty/Exam_InterFace/View_Components/ViewQuestionPaper";
 import ViewAssignmentQuestions from "./pages/faculty/Exam_InterFace/View_Components/ViewAssignment";
@@ -49,6 +50,7 @@ import {
   FaClipboardCheck,
   FaGraduationCap,
   FaQuestionCircle,
+  FaComments,
 } from "react-icons/fa";
 
 import {
@@ -69,6 +71,8 @@ const routes = [
     icon: <MdDashboard className="h-5 w-5" />,
     component: <AdminDashboard />,
   },
+
+
   {
     name: "FacultyManagement",
     layout: "/admin",
@@ -77,14 +81,14 @@ const routes = [
     component: <FacultyManagement />,
   },
   {
-    name: "All Students",
+    name: "Student Management",
     layout: "/admin",
     path: "students/all",
     icon: <MdGroups className="h-6 w-6" />,
     component: <AllStudents />,
   },
   {
-    name: "Notification and Message",
+    name: "Notifications",
     layout: "/admin",
     path: "Notification_Message",
     icon: <MdDashboard className="h-6 w-6" />,
@@ -123,6 +127,13 @@ const routes = [
     icon: <FaBookOpen className="h-5 w-5" />,
     component: <MockCourse />,
   },
+    {
+  name: "My Profile",
+  layout: "/admin",
+  path: "profile",
+  icon: <FaUser className="h-6 w-6" />,
+  component: <AdminProfile />,
+},
 
   // Student Routes
   {
@@ -154,10 +165,10 @@ const routes = [
     component: <PerformanceAnalytics />,
   },
   {
-    name: "Notifications",
+    name: "Chats",
     layout: "/student",
     path: "notifications",
-    icon: <FaBell className="h-5 w-5" />,
+    icon: <FaComments className="h-5 w-5" />,
     component: <Notifications />,
   },
   {
@@ -205,10 +216,10 @@ const routes = [
     component: <AttendanceUpload />,
   },
   {
-    name: "Notification and Message",
+    name: "Chats",
     layout: "/faculty",
     path: "Notification&Message",
-    icon: <MdNotifications className="h-6 w-6" />,
+    icon: <FaComments className="h-6 w-6"  />,
     component: <Notification_Message />,
   },
   {
@@ -225,13 +236,6 @@ const routes = [
     icon: <MdLibraryBooks className="h-6 w-6" />,
     component: <FaCourse />,
     children:[
-      {
-    name: "Exam Interface",
-    layout: "/faculty",
-    path: "examinterface",
-    icon: <MdLibraryBooks className="h-6 w-6" />,
-    component: <Interface />,
-  },
         {
         layout: "/faculty",
         path: "ExamInterFace/upload-marks",
