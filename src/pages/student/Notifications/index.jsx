@@ -1,12 +1,11 @@
 "use client"
 
 import { useState, useEffect, useCallback, useMemo } from "react"
-import { Search, Plus, Bell, BellOff } from "lucide-react"
+import { Search, Plus } from "lucide-react"
 
 // Import components
 import ChatWindow from "./components/ChatWindow"
 import UserList from "./components/UserList"
-import NotificationPanel from "./components/NotificationPanel"
 import NewChatModal from "./components/new-chat-modal"
 import ChatList from "./components/chat-list"
 import useSocket from "./hooks/useSocket"
@@ -17,55 +16,6 @@ import Input from "./components/ui/Input"
 
 // Mock data
 import { mockUsers } from "./utils/mockData"
-
-// Enhanced notifications data
-const DUMMY_NOTIFICATIONS = [
-  {
-    id: 1,
-    message: "📢 New assignment uploaded for Computer Science",
-    time: "2 mins ago",
-    type: "assignment",
-    priority: "high",
-    isRead: false,
-    timestamp: new Date(Date.now() - 2 * 60 * 1000),
-  },
-  {
-    id: 2,
-    message: "✅ Attendance submitted successfully",
-    time: "10 mins ago",
-    type: "success",
-    priority: "low",
-    isRead: false,
-    timestamp: new Date(Date.now() - 10 * 60 * 1000),
-  },
-  {
-    id: 3,
-    message: "📝 Exam interface updated - Check new features",
-    time: "1 hour ago",
-    type: "update",
-    priority: "medium",
-    isRead: false,
-    timestamp: new Date(Date.now() - 60 * 60 * 1000),
-  },
-  {
-    id: 4,
-    message: "📌 Reminder: Staff meeting at 3 PM today",
-    time: "2 hours ago",
-    type: "reminder",
-    priority: "high",
-    isRead: true,
-    timestamp: new Date(Date.now() - 2 * 60 * 60 * 1000),
-  },
-  {
-    id: 5,
-    message: "📚 New course materials uploaded to Database Systems",
-    time: "4 hours ago",
-    type: "course",
-    priority: "medium",
-    isRead: false,
-    timestamp: new Date(Date.now() - 4 * 60 * 60 * 1000),
-  },
-]
 
 // Enhanced mock chats data
 const mockChatsNew = [
@@ -181,18 +131,15 @@ const mockChatsNew = [
 // Global state to persist data across navigation
 const globalState = {
   chats: mockChatsNew,
-  notifications: DUMMY_NOTIFICATIONS,
   selectedChat: mockChatsNew[0],
 }
 
 export default function NotificationMessage() {
-  // State management with persistence
+  // State management with persistence (notifications now handled in navbar)
   const [currentUser, setCurrentUser] = useState(mockUsers?.[0] || { id: 1, name: "Default User", role: "faculty" })
   const [selectedChat, setSelectedChat] = useState(globalState.selectedChat)
   const [chats, setChats] = useState(globalState.chats)
-  const [notifications, setNotifications] = useState(globalState.notifications)
   const [onlineUsers, setOnlineUsers] = useState(mockUsers || [])
-  const [showNotifications, setShowNotifications] = useState(false)
   const [isNewChatModalOpen, setIsNewChatModalOpen] = useState(false)
   const [searchQuery, setSearchQuery] = useState("")
   const [activeView, setActiveView] = useState("chat")
@@ -206,9 +153,8 @@ export default function NotificationMessage() {
   // Update global state whenever local state changes
   useEffect(() => {
     globalState.chats = chats
-    globalState.notifications = notifications
     globalState.selectedChat = selectedChat
-  }, [chats, notifications, selectedChat])
+  }, [chats, selectedChat])
 
   const filteredUsers = useMemo(() => {
     return mockUsers.filter(
@@ -217,7 +163,6 @@ export default function NotificationMessage() {
   }, [searchTerm])
 
   // Memoized calculations
-  const unreadNotifications = useMemo(() => notifications.filter((n) => !n.isRead), [notifications])
   const filteredChats = useMemo(
     () => chats.filter((chat) => chat.name.toLowerCase().includes(searchQuery.toLowerCase())),
     [chats, searchQuery],
@@ -244,17 +189,6 @@ export default function NotificationMessage() {
           }
           return prevSelected
         })
-
-        const newNotification = {
-          id: Date.now(),
-          message: `💬 New message from ${message.senderName}: "${message.content.substring(0, 30)}${message.content.length > 30 ? "..." : ""}"`,
-          time: "Just now",
-          type: "message",
-          priority: "medium",
-          isRead: false,
-          timestamp: new Date(),
-        }
-        setNotifications((prev) => [newNotification, ...prev])
       })
 
       return () => {
@@ -265,10 +199,8 @@ export default function NotificationMessage() {
 
   const handleUserSelect = (user) => {
     if (chatType === "INDIVIDUAL") {
-      // Allow only one
       setSelectedParticipants([user])
     } else {
-      // Toggle for group chat
       if (selectedParticipants.some((u) => u.id === user.id)) {
         setSelectedParticipants((prev) => prev.filter((u) => u.id !== user.id))
       } else {
@@ -277,7 +209,7 @@ export default function NotificationMessage() {
     }
   }
 
-  // Message sending - simplified to prevent duplicates
+  // Message sending
   const sendMessage = useCallback(
     (content) => {
       if (!selectedChat || !content.trim()) return
@@ -316,7 +248,7 @@ export default function NotificationMessage() {
         lastMessageTime: message.time,
       }))
 
-      // Emit to socket (but don't listen for our own message back)
+      // Emit to socket
       if (socket) {
         socket.emit("sendMessage", message)
       }
@@ -333,32 +265,19 @@ export default function NotificationMessage() {
     [chats],
   )
 
-  // Chat update handler for participant management
+  // Chat update handler
   const handleChatUpdate = useCallback(
     (updatedChat) => {
       setChats((prevChats) => prevChats.map((chat) => (chat.id === updatedChat.id ? updatedChat : chat)))
 
-      // Update selected chat if it's the same one
       if (selectedChat && selectedChat.id === updatedChat.id) {
         setSelectedChat(updatedChat)
       }
-
-      // Show success notification
-      const successNotification = {
-        id: Date.now(),
-        message: `✅ Successfully updated participants in "${updatedChat.name}"`,
-        time: "Just now",
-        type: "success",
-        priority: "medium",
-        isRead: false,
-        timestamp: new Date(),
-      }
-      setNotifications((prev) => [successNotification, ...prev])
     },
     [selectedChat],
   )
 
-  // Helper function to safely check if user is participant
+  // Helper function to check if user is participant
   const isUserParticipant = useCallback((chat, userId) => {
     if (Array.isArray(chat.participantIds)) {
       return chat.participantIds.includes(userId)
@@ -383,38 +302,17 @@ export default function NotificationMessage() {
     })
   }, [chats, currentUser, isUserParticipant])
 
-  // Notification handlers
-  const clearAllNotifications = useCallback(() => {
-    setNotifications([])
-  }, [])
-
-  const removeNotification = useCallback((notificationId) => {
-    setNotifications((prev) => prev.filter((notification) => notification.id !== notificationId))
-  }, [])
-
-  const markAsRead = useCallback((notificationId) => {
-    setNotifications((prev) =>
-      prev.map((notification) =>
-        notification.id === notificationId ? { ...notification, isRead: true } : notification,
-      ),
-    )
-  }, [])
-
-  const markAllAsRead = useCallback(() => {
-    setNotifications((prev) => prev.map((notification) => ({ ...notification, isRead: true })))
-  }, [])
-
   // Function to find existing individual chat
   const findExistingIndividualChat = useCallback(
     (participantName) => {
       return chats.find(
-        (chat) => chat.type === "INDIVIDUAL" && chat.name === participantName && chat.participants === 1, // Individual chats should have 1 other participant
+        (chat) => chat.type === "INDIVIDUAL" && chat.name === participantName && chat.participants === 1,
       )
     },
     [chats],
   )
 
-  // Enhanced new chat creation with duplicate prevention
+  // New chat creation
   const handleNewChat = useCallback(
     (chatData) => {
       console.log("Creating new chat:", chatData)
@@ -428,21 +326,8 @@ export default function NotificationMessage() {
         const existingChat = findExistingIndividualChat(participantName)
 
         if (existingChat) {
-          // Select the existing chat instead of creating a new one
           setSelectedChat(existingChat)
           setIsNewChatModalOpen(false)
-
-          // Show notification about existing chat
-          const existingChatNotification = {
-            id: Date.now(),
-            message: `💬 Opened existing chat with "${participantName}"`,
-            time: "Just now",
-            type: "info",
-            priority: "low",
-            isRead: false,
-            timestamp: new Date(),
-          }
-          setNotifications((prev) => [existingChatNotification, ...prev])
           return
         }
       }
@@ -475,43 +360,15 @@ export default function NotificationMessage() {
       }
 
       setChats([...chats, newChat])
-      setSelectedChat(newChat) // Auto-select the new chat
+      setSelectedChat(newChat)
       setIsNewChatModalOpen(false)
-
-      // Show success notification
-      const successNotification = {
-        id: Date.now(),
-        message: `✅ Successfully created ${chatData.type.toLowerCase()} chat: "${chatData.name}"`,
-        time: "Just now",
-        type: "success",
-        priority: "medium",
-        isRead: false,
-        timestamp: new Date(),
-      }
-      setNotifications((prev) => [successNotification, ...prev])
     },
     [chats, findExistingIndividualChat],
   )
 
   return (
-    <div className="h-screen flex bg-gray-50 relative" style={{ marginTop: "64px" }}>
-      {/* Side Notification Bell - Centered with golden color */}
-      <div className="fixed top-1/2 right-4 transform -translate-y-1/2 z-50">
-        <button
-          onClick={() => setShowNotifications(!showNotifications)}
-          className="relative p-4 bg-gradient-to-r from-yellow-400 to-yellow-600 text-white hover:from-yellow-500 hover:to-yellow-700 rounded-full shadow-lg border-2 border-yellow-300 transition-all duration-200 hover:shadow-xl hover:scale-105"
-          title={showNotifications ? "Hide Notifications" : "Show Notifications"}
-        >
-          {showNotifications ? <BellOff className="w-6 h-6" /> : <Bell className="w-6 h-6" />}
-          {unreadNotifications.length > 0 && (
-            <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full h-6 w-6 flex items-center justify-center animate-pulse font-bold shadow-md">
-              {unreadNotifications.length > 99 ? "99+" : unreadNotifications.length}
-            </span>
-          )}
-        </button>
-      </div>
-
-      {/* Main Content */}
+    <div className="h-screen flex bg-gray-50 relative" style={{ marginTop: "80px" }}>
+      {/* Main Content - Full width now, no side notification bell */}
       <div className="flex flex-1 overflow-hidden h-full">
         {activeView === "chat" ? (
           <>
@@ -546,8 +403,8 @@ export default function NotificationMessage() {
               </div>
             </div>
 
-            {/* Chat Area - Full height with enhanced ChatWindow */}
-            <div className={`flex-1 transition-all duration-300 h-full ${showNotifications ? "mr-80" : ""}`}>
+            {/* Chat Area - Full width */}
+            <div className="flex-1 transition-all duration-300 h-full">
               <ChatWindow
                 chat={selectedChat}
                 currentUser={currentUser}
@@ -571,7 +428,7 @@ export default function NotificationMessage() {
               </div>
             </div>
 
-            <div className={`flex-1 transition-all duration-300 h-full ${showNotifications ? "mr-80" : ""}`}>
+            <div className="flex-1 transition-all duration-300 h-full">
               <ChatWindow
                 chat={selectedChat}
                 currentUser={currentUser}
@@ -581,29 +438,9 @@ export default function NotificationMessage() {
             </div>
           </>
         )}
-
-        {/* Enhanced Notifications Panel */}
-        <div
-          className={`fixed right-0 w-80 bg-white border-l border-gray-200 shadow-xl transform transition-transform duration-300 ease-in-out z-40 ${
-            showNotifications ? "translate-x-0" : "translate-x-full"
-          }`}
-          style={{
-            top: "120px",
-            height: "calc(100vh - 120px)",
-          }}
-        >
-          <NotificationPanel
-            notifications={notifications}
-            onClearNotifications={clearAllNotifications}
-            onRemoveNotification={removeNotification}
-            onMarkAsRead={markAsRead}
-            onMarkAllAsRead={markAllAsRead}
-            showDebug={false}
-          />
-        </div>
       </div>
 
-      {/* Enhanced New Chat Modal */}
+      {/* New Chat Modal */}
       <NewChatModal
         isOpen={isNewChatModalOpen}
         onClose={() => setIsNewChatModalOpen(false)}
