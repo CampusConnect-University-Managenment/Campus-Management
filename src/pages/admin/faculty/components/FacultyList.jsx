@@ -15,6 +15,9 @@ const FacultyList = ({
   const [attendanceStatus, setAttendanceStatus] = useState('Present');
   const [attendanceDate, setAttendanceDate] = useState(new Date().toISOString().split('T')[0]);
 
+  const [sortDepartment, setSortDepartment] = useState('');
+  const [sortRole, setSortRole] = useState('');
+
   const handleRowClick = (fac) => {
     setSelectedFaculty(fac);
     setAttendanceStatus('Present');
@@ -36,17 +39,25 @@ const FacultyList = ({
     setSelectedFaculty(null);
   };
 
-  const filteredData = data.filter((fac) =>
+  let filteredData = data.filter((fac) =>
     `${fac.firstName} ${fac.lastName}`.toLowerCase().includes(searchQuery.toLowerCase()) ||
     fac.email.toLowerCase().includes(searchQuery.toLowerCase()) ||
     fac.department.toLowerCase().includes(searchQuery.toLowerCase()) ||
     fac.role.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
+  if (sortDepartment) {
+    filteredData = filteredData.filter((fac) => fac.department === sortDepartment);
+  }
+
+  if (sortRole) {
+    filteredData = filteredData.filter((fac) => fac.role === sortRole);
+  }
+
   return (
     <div className="overflow-x-auto mt-6 max-w-5xl mx-auto">
-      {/* Search */}
-      <div className="mb-4 flex justify-end">
+      {/* Search and Sort Controls */}
+      <div className="mb-4 flex flex-col md:flex-row md:justify-between md:items-center gap-3">
         <input
           type="text"
           value={searchQuery}
@@ -54,6 +65,30 @@ const FacultyList = ({
           placeholder="Search faculty..."
           className="border border-gray-300 rounded-md px-3 py-2 text-sm w-full max-w-xs shadow-sm focus:outline-none focus:ring focus:border-blue-300"
         />
+
+        <div className="flex gap-2">
+          <select
+            value={sortDepartment}
+            onChange={(e) => setSortDepartment(e.target.value)}
+            className="border border-gray-300 rounded-md px-2 py-2 text-sm shadow-sm focus:outline-none focus:ring focus:border-blue-300"
+          >
+            <option value="">All Departments</option>
+            {[...new Set(data.map((fac) => fac.department))].sort().map((dept) => (
+              <option key={dept} value={dept}>{dept}</option>
+            ))}
+          </select>
+
+          <select
+            value={sortRole}
+            onChange={(e) => setSortRole(e.target.value)}
+            className="border border-gray-300 rounded-md px-2 py-2 text-sm shadow-sm focus:outline-none focus:ring focus:border-blue-300"
+          >
+            <option value="">All Roles</option>
+            {[...new Set(data.map((fac) => fac.role))].sort().map((role) => (
+              <option key={role} value={role}>{role}</option>
+            ))}
+          </select>
+        </div>
       </div>
 
       {/* Table */}
@@ -158,31 +193,6 @@ const FacultyList = ({
                 ></div>
               </div>
               <p className="text-right text-sm mt-1">{calculateAttendancePercentage(selectedFaculty.id)}%</p>
-            </div>
-
-            {/* Mark Attendance */}
-            <div className="mt-6 flex flex-col gap-2">
-              <label className="font-medium">Mark Today's Attendance:</label>
-              <input
-                type="date"
-                value={attendanceDate}
-                onChange={(e) => setAttendanceDate(e.target.value)}
-                className="border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring focus:border-blue-300"
-              />
-              <select
-                value={attendanceStatus}
-                onChange={(e) => setAttendanceStatus(e.target.value)}
-                className="border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring focus:border-blue-300"
-              >
-                <option value="Present">Present</option>
-                <option value="Absent">Absent</option>
-              </select>
-              <button
-                onClick={handleMarkAttendance}
-                className="mt-2 px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700"
-              >
-                Mark Attendance
-              </button>
             </div>
 
             {/* Edit/Delete */}

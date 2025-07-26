@@ -459,7 +459,7 @@ const filteredStudents = students.filter((s) => {
   <option value="2nd Year">2nd Year</option>
   <option value="3rd Year">3rd Year</option>
   <option value="4th Year">4th Year</option>
-  <option value="Final Year">Final Year</option>
+  
 </select>
 
 
@@ -517,7 +517,7 @@ const filteredStudents = students.filter((s) => {
       <td className="p-4 whitespace-nowrap">
         <div className="flex items-center gap-3">
           <img
-            src={s.photo || s.avatar || "https://via.placeholder.com/40"}
+            src={s.photo || "https://via.placeholder.com/40"} // Fallback to placeholder if no photo exists
             alt={s.name}
             className="w-8 h-8 rounded-full object-cover"
           />
@@ -546,7 +546,7 @@ const filteredStudents = students.filter((s) => {
       </td>
 
       {/* Phone */}
-    <td className="p-4 whitespace-nowrap text-sm text-gray-800">{s.contact}</td>
+      <td className="p-4 whitespace-nowrap text-sm text-gray-800">{s.contact}</td>
     </tr>
   ))}
 </tbody>
@@ -613,7 +613,11 @@ const filteredStudents = students.filter((s) => {
             onClick={() => setSelectedStudent(s)}
           >
             <div className="text-3xl w-10 text-center">{medals[idx] || "🎓"}</div>
-            <img src={s.avatar} alt={s.name} className="w-12 h-12 rounded-full object-cover" />
+            <img 
+              src={s.photo || "https://via.placeholder.com/150"} // Use s.photo and fallback to placeholder if missing
+              alt={s.name} 
+              className="w-12 h-12 rounded-full object-cover" 
+            />
             <div>
               <div className="font-semibold text-blue-800 hover:underline">{s.name}</div>
               <div className="text-sm text-gray-600">{s.department}</div>
@@ -624,8 +628,7 @@ const filteredStudents = students.filter((s) => {
       })}
     </div>
   </div>
-
- </div>
+</div>
 
       <PerformanceChart students={students} />
       <Notification/>
