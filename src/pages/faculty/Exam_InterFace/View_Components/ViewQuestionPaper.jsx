@@ -36,7 +36,7 @@ const ViewQuestionPaper = () => {
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-3xl font-bold text-blue-700">{courseName}</h1>
         <button
-          onClick={() => navigate(-1)}
+          onClick={() => navigate("/faculty/Course")}
           className="bg-blue-600 text-white px-5 py-2 rounded-lg hover:bg-blue-700"
         >
           ← Back
