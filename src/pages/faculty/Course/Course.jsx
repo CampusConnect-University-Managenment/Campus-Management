@@ -34,14 +34,10 @@ function FacultyCourses() {
   return (
     <div className="p-8 mt-20">
       <h1 className="text-4xl font-bold text-blue-700 flex items-center gap-2 mb-8">
-        <span role="img" aria-label="book">
-          📘
-        </span>{" "}
-        My Courses
+        📘 My Courses
       </h1>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-
         {myCourses.map((course) => (
           <div
             key={course.code}
@@ -56,8 +52,11 @@ function FacultyCourses() {
 
             <button
               onClick={() =>
-                navigate("/faculty/examinterface", {
-                  state: { showPopup: true, courseName: course.name },
+                navigate("/faculty/ExamInterFace/view-material", {
+                  state: {
+                    showPopup: true,
+                    courseName: course.name,
+                  },
                 })
               }
               className="mt-4 text-blue-700 text-sm font-medium hover:underline"
