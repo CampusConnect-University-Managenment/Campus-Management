@@ -1,4 +1,6 @@
 import React from "react";
+import AdminProfile from "./pages/admin/Profile";
+
 import AdminDashboard from "./pages/admin/dashboard";
 import AdminExam from "./pages/admin/exam";
 import AdminExamInterface from "./pages/admin/dashboard/component/ExamInterface";
@@ -69,6 +71,8 @@ const routes = [
     icon: <MdDashboard className="h-5 w-5" />,
     component: <AdminDashboard />,
   },
+
+
   {
     name: "FacultyManagement",
     layout: "/admin",
@@ -77,7 +81,7 @@ const routes = [
     component: <FacultyManagement />,
   },
   {
-    name: "All Students",
+    name: "Student Management",
     layout: "/admin",
     path: "students/all",
     icon: <MdGroups className="h-6 w-6" />,
@@ -123,6 +127,13 @@ const routes = [
     icon: <FaBookOpen className="h-5 w-5" />,
     component: <MockCourse />,
   },
+    {
+  name: "My Profile",
+  layout: "/admin",
+  path: "profile",
+  icon: <FaUser className="h-6 w-6" />,
+  component: <AdminProfile />,
+},
 
   // Student Routes
   {
