@@ -414,8 +414,16 @@ const yearOptions = ["1st Year", "2nd Year", "3rd Year", "4th Year", "Final Year
 const filteredStudents = students.filter((s) => {
   const matchesYear = selectedYear === "All" || String(s.year) === String(selectedYear);
   const matchesDept = selectedDept === "All" || s.department === selectedDept;
-  return matchesYear && matchesDept;
+
+  const matchesSearch =
+    s.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    s.id.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    s.regNo.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    s.department.toLowerCase().includes(searchTerm.toLowerCase());
+
+  return matchesYear && matchesDept && matchesSearch;
 });
+
 
   const currentStudents = showAll
     ? filteredStudents.slice(indexOfFirstStudent, indexOfLastStudent)
@@ -492,7 +500,7 @@ const filteredStudents = students.filter((s) => {
         <table className="w-full text-sm text-left text-gray-700">
           <thead className="text-xs uppercase bg-gray-100 text-gray-600">
             <tr>
-              <th className="p-4 border-b border-gray-200">Student ID</th>
+              <th className="p-4 border-b border-gray-200">REG NO</th>
               <th className="p-4 border-b border-gray-200">Name</th>
               <th className="p-4 border-b border-gray-200">Department</th>
               <th className="p-4 border-b border-gray-200">Year</th>
@@ -508,10 +516,10 @@ const filteredStudents = students.filter((s) => {
       className="bg-white hover:bg-gray-50 transition border-b border-gray-100 cursor-pointer"
       onClick={() => setSelectedStudent(s)}
     >
-      {/* Student ID */}
-      <td className="p-4 font-medium text-gray-800 whitespace-nowrap">
-        {s.id}
-      </td>
+  {/* Registration Number */}
+<td className="p-4 font-medium text-gray-800 whitespace-nowrap">
+  {s.regNo}
+</td>
 
       {/* Name + Profile Picture */}
       <td className="p-4 whitespace-nowrap">
@@ -633,25 +641,27 @@ const filteredStudents = students.filter((s) => {
       <PerformanceChart students={students} />
       <Notification/>
 
-      {/* Add Modal */}
-    {showAddModal && (
-        <div className="fixed inset-0 z-50 bg-black bg-opacity-40 flex items-center justify-center">
-          <div className="bg-white rounded-lg p-6 w-full max-w-2xl relative shadow-lg">
-            <button
-              onClick={() => setShowAddModal(false)}
-              className="absolute top-2 right-4 text-gray-500 hover:text-red-600 text-xl"
-            >
-              &times;
-            </button>
-            <AddStudent
-              onClose={() => setShowAddModal(false)}
-              onAddStudent={addStudent}
-              onEditStudent={updateStudent}
-              editingStudent={editingStudent}
-            />
-          </div>
-        </div>
-      )}
+   {/* Add Modal */}
+{showAddModal && (
+  <div className="fixed inset-0 z-50 bg-black bg-opacity-40 flex items-center justify-center">
+    <div className="bg-white rounded-lg p-6 w-full max-w-2xl relative shadow-lg">
+      <button
+        onClick={() => setShowAddModal(false)}
+        className="absolute top-2 right-4 text-gray-500 hover:text-red-600 text-xl"
+      >
+        &times;
+      </button>
+      <AddStudent
+        onClose={() => setShowAddModal(false)}
+        onAddStudent={addStudent}
+        onEditStudent={updateStudent}
+        editingStudent={editingStudent}
+        setSelectedStudent={setSelectedStudent} 
+      />
+    </div>
+  </div>
+)}
+
       {showBulkModal && (
   <div className="fixed inset-0 z-50 bg-black bg-opacity-40 flex items-center justify-center">
     <div className="bg-white rounded-lg p-6 w-full max-w-2xl relative shadow-lg">
