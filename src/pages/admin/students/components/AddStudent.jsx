@@ -1,45 +1,52 @@
 import React, { useState, useEffect } from "react";
 
-const AddStudent = ({ editingStudent, onAddStudent, onEditStudent, onClose }) => {
+const AddStudent = ({ editingStudent, onAddStudent, onEditStudent, onClose ,setSelectedStudent}) => {
   const [formData, setFormData] = useState({
-    firstName: "",
-    lastName: "",
-    regNo: "",
-    batch: "",
-    section: "",
-    department: "",  // Department
-    dob: "",
-    contact: "",
-    email: "",  // Email
-    address: "",
-    adhar: "",
-    tenthMark: "",
-    twelfthMark: "",
-    diplomaMark: "",
-    qualification: "",
-    quota: "",
-    gender: "",
-    bloodGroup: "",
-    photo: "",
-     sem: "", 
-    parentRole: "",
-    parentName: "",
-    parentPhoneNo: "",
-    tc: null,
-    sem: "",
-    year: "",  // Year (for dropdown)
-    totalCredits: "",
-    cgpa: "",
-    attendance: "",
-    bio: "",
-    password: ""
-  });
+  firstName: "",
+  lastName: "",
+  regNo: "",
+  batch: "",
+  section: "",
+  department: "",
+  dob: "",
+  contact: "",
+  email: "",
+  address: "",
+  adhar: "",
+  tenthMark: "",
+  twelfthMark: "",
+  diplomaMark: "",
+  qualification: "",
+  quota: "",
+  gender: "",
+  bloodGroup: "",
+  photo: "",
+  sem: "", // keep only one
+  parentRole: "",
+  parentName: "",
+  parentPhoneNo: "",
+  tc: null,
+  year: "",
+  totalCredits: "",
+  cgpa: "",
+  attendance: "",
+  bio: "",
+  password: "",
+});
 
-  useEffect(() => {
-    if (editingStudent) {
-      setFormData(editingStudent);
-    }
-  }, [editingStudent]);
+
+useEffect(() => {
+  if (editingStudent) {
+    // Split full name into first and last for the form
+    const [firstName = "", lastName = ""] = (editingStudent.name || "").split(" ");
+    setFormData({
+      ...editingStudent,
+      firstName,
+      lastName,
+    });
+  }
+}, [editingStudent]);
+
 
   const handleChange = (e) => {
     const { name, value, type, files } = e.target;
@@ -92,11 +99,14 @@ const AddStudent = ({ editingStudent, onAddStudent, onEditStudent, onClose }) =>
     };
 
     if (editingStudent) {
-      onEditStudent(newStudent); // Edit existing student
-    } else {
-      onAddStudent(newStudent); // Add new student
-    }
-    onClose(); // Close the modal after submit
+  onEditStudent(newStudent); // Update the student list
+  if (setSelectedStudent) {
+    setSelectedStudent(newStudent); // <-- Make sure StudentProfile updates
+  }
+} else {
+  onAddStudent(newStudent); // Add new student
+}
+onClose(); // Close the modal after submit
   };
 
   // Year options for dropdown
