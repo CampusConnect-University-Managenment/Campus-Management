@@ -252,12 +252,12 @@ export default function AdminExamInterface() {
     <div className="mt-[100px] min-h-screen bg-[#f8faff] px-6 py-10 font-inter">
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-3xl font-bold text-blue-700">Admin - Exam Management</h1>
-        <button
+        {/* <button
           onClick={() => window.history.back()}
           className="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700"
         >
           ← Back
-        </button>
+        </button> */}
       </div>
 
       {/* Tabs */}
