@@ -1,108 +1,156 @@
 import React, { useState } from "react";
 import * as XLSX from "xlsx";
 
+// Exam Schedule Component
 function ExamSchedule() {
-  const [exams, setExams] = useState([]);
-  const [newExam, setNewExam] = useState({
-    exam: "",
-    date: "",
-    time: "",
-    venue: "",
-    students: "",
-  });
-
-  const handleChange = (e) => {
-    setNewExam({ ...newExam, [e.target.name]: e.target.value });
+  const semesterCoursesMap = {
+    "1": ["Mathematics I", "Physics", "Chemistry"],
+    "2": ["Mathematics II", "Programming in C", "Engineering Graphics"],
+    "3": ["Data Structures", "Digital Electronics", "Computer Networks"],
+    "4": ["OOPs with Java", "DBMS", "Operating Systems"],
+    "5": ["Web Development", "Software Engineering", "AI Basics"],
+    "6": ["Machine Learning", "Compiler Design", "Cloud Computing"],
   };
 
-  const handleAdd = () => {
-    if (
-      newExam.exam &&
-      newExam.date &&
-      newExam.time &&
-      newExam.venue &&
-      newExam.students
-    ) {
-      setExams([...exams, newExam]);
-      setNewExam({ exam: "", date: "", time: "", venue: "", students: "" });
+  const departments = ["CSE", "ECE", "EEE", "MECH", "CIVIL", "IT"];
+
+  const [department, setDepartment] = useState("");
+  const [semester, setSemester] = useState("");
+  const [courseSchedules, setCourseSchedules] = useState([]);
+
+  const handleDepartmentChange = (e) => {
+    setDepartment(e.target.value);
+    setSemester("");
+    setCourseSchedules([]);
+  };
+
+  const handleSemesterChange = (e) => {
+    const selectedSem = e.target.value;
+    setSemester(selectedSem);
+    const courses = semesterCoursesMap[selectedSem] || [];
+    setCourseSchedules(
+      courses.map((course) => ({
+        course,
+        date: "",
+        time: "",
+        semester: selectedSem,
+        department,
+      }))
+    );
+  };
+
+  const handleCourseChange = (index, field, value) => {
+    const updated = [...courseSchedules];
+    updated[index][field] = value;
+    setCourseSchedules(updated);
+  };
+
+  const handleSubmit = () => {
+    if (!department || !semester) {
+      alert("Please select both department and semester.");
+      return;
     }
+
+    if (courseSchedules.some((c) => !c.date || !c.time)) {
+      alert("Please fill date and time for all courses.");
+      return;
+    }
+
+    console.log("Submitted Schedule:", courseSchedules);
+    alert("Exam Schedule Submitted!");
+    setDepartment("");
+    setSemester("");
+    setCourseSchedules([]);
   };
 
   return (
-    <div className="mt-6 max-w-6xl mx-auto bg-white p-6 rounded-lg shadow">
+    <div className="mt-6 w-full max-w-4xl mx-auto bg-white p-6 rounded-lg shadow">
       <h2 className="text-xl font-semibold mb-4 text-blue-700">📅 Exam Schedule</h2>
-      <div className="grid grid-cols-1 md:grid-cols-5 gap-4 mb-4">
-        <input
-          name="exam"
-          value={newExam.exam}
-          onChange={handleChange}
-          placeholder="Exam"
-          className="border px-3 py-2 rounded shadow-sm"
-        />
-        <input
-          name="date"
-          value={newExam.date}
-          onChange={handleChange}
-          type="date"
-          className="border px-3 py-2 rounded shadow-sm"
-        />
-        <input
-          name="time"
-          value={newExam.time}
-          onChange={handleChange}
-          type="time"
-          className="border px-3 py-2 rounded shadow-sm"
-        />
-        <input
-          name="venue"
-          value={newExam.venue}
-          onChange={handleChange}
-          placeholder="Venue"
-          className="border px-3 py-2 rounded shadow-sm"
-        />
-        <input
-          name="students"
-          value={newExam.students}
-          onChange={handleChange}
-          placeholder="Students"
-          className="border px-3 py-2 rounded shadow-sm"
-        />
-      </div>
-      <button
-        onClick={handleAdd}
-        className="bg-green-600 hover:bg-green-700 text-white px-6 py-2 rounded"
-      >
-        Add Exam
-      </button>
 
-      <div className="overflow-x-auto mt-6">
-        <table className="min-w-full border text-sm text-left">
-          <thead className="bg-gray-100">
-            <tr>
-              <th className="p-3 border font-medium">Exam</th>
-              <th className="p-3 border font-medium">Date</th>
-              <th className="p-3 border font-medium">Time</th>
-              <th className="p-3 border font-medium">Venue</th>
-              <th className="p-3 border font-medium">Students</th>
-            </tr>
-          </thead>
-          <tbody>
-            {exams.map((item, index) => (
-              <tr key={index} className="hover:bg-gray-50">
-                <td className="p-3 border">{item.exam}</td>
-                <td className="p-3 border">{item.date}</td>
-                <td className="p-3 border">{item.time}</td>
-                <td className="p-3 border">{item.venue}</td>
-                <td className="p-3 border">{item.students}</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+      <div className="flex flex-col md:flex-row gap-4 mb-6">
+        <select
+          value={department}
+          onChange={handleDepartmentChange}
+          className="border px-3 py-2 rounded shadow-sm"
+        >
+          <option value="">Select Department</option>
+          {departments.map((dept) => (
+            <option key={dept} value={dept}>
+              {dept}
+            </option>
+          ))}
+        </select>
+
+        <select
+          value={semester}
+          onChange={handleSemesterChange}
+          disabled={!department}
+          className="border px-3 py-2 rounded shadow-sm"
+        >
+          <option value="">Select Semester</option>
+          {Object.keys(semesterCoursesMap).map((sem) => (
+            <option key={sem} value={sem}>
+              Semester {sem}
+            </option>
+          ))}
+        </select>
       </div>
+
+      {courseSchedules.length > 0 && (
+        <div className="overflow-x-auto">
+          <table className="min-w-full border text-sm text-left mb-4">
+            <thead className="bg-gray-100">
+              <tr>
+                <th className="p-3 border font-medium">Course</th>
+                <th className="p-3 border font-medium">Date</th>
+                <th className="p-3 border font-medium">Time</th>
+              </tr>
+            </thead>
+            <tbody>
+              {courseSchedules.map((item, index) => (
+                <tr key={index} className="hover:bg-gray-50">
+                  <td className="p-3 border">{item.course}</td>
+                  <td className="p-3 border">
+                    <input
+                      type="date"
+                      value={item.date}
+                      onChange={(e) =>
+                        handleCourseChange(index, "date", e.target.value)
+                      }
+                      className="border rounded px-2 py-1"
+                    />
+                  </td>
+                  <td className="p-3 border">
+                    <input
+                      type="time"
+                      value={item.time}
+                      onChange={(e) =>
+                        handleCourseChange(index, "time", e.target.value)
+                      }
+                      className="border rounded px-2 py-1"
+                    />
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+
+          <div className="text-center">
+            <button
+              onClick={handleSubmit}
+              className="bg-green-600 hover:bg-green-700 text-white px-6 py-2 rounded shadow-md"
+            >
+              Submit Schedule
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
 
+
+// Marks Upload Component (same as before)
 function MarksUpload() {
   const [students, setStudents] = useState([]);
   const [filters, setFilters] = useState({
@@ -168,7 +216,7 @@ function MarksUpload() {
   const getUnique = (key) => [...new Set(students.map((s) => s[key]))];
 
   return (
-    <div className="mt-6 bg-white p-6 rounded-lg shadow-lg">
+    <div className="mt-6 w-full max-w-5xl mx-auto bg-white p-6 rounded-lg shadow-lg">
       <h2 className="text-2xl font-semibold text-blue-700 text-center mb-4">📝 Upload Marks</h2>
 
       <div className="flex flex-col md:flex-row items-center justify-center gap-4 mb-6">
@@ -193,7 +241,9 @@ function MarksUpload() {
             >
               <option value="">All {key.charAt(0).toUpperCase() + key.slice(1)}s</option>
               {getUnique(key).map((val, i) => (
-                <option key={i} value={val}>{val}</option>
+                <option key={i} value={val}>
+                  {val}
+                </option>
               ))}
             </select>
           ))}
@@ -245,6 +295,7 @@ function MarksUpload() {
   );
 }
 
+// Admin Exam Interface
 export default function AdminExamInterface() {
   const [activeTab, setActiveTab] = useState("schedule");
 
@@ -252,15 +303,8 @@ export default function AdminExamInterface() {
     <div className="mt-[100px] min-h-screen bg-[#f8faff] px-6 py-10 font-inter">
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-3xl font-bold text-blue-700">Admin - Exam Management</h1>
-        {/* <button
-          onClick={() => window.history.back()}
-          className="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700"
-        >
-          ← Back
-        </button> */}
       </div>
 
-      {/* Tabs */}
       <div className="flex space-x-10 border-b border-gray-300 mb-6 text-lg">
         <button
           onClick={() => setActiveTab("schedule")}
@@ -284,7 +328,6 @@ export default function AdminExamInterface() {
         </button>
       </div>
 
-      {/* Content */}
       {activeTab === "schedule" && <ExamSchedule />}
       {activeTab === "marks" && <MarksUpload />}
     </div>
