@@ -54,7 +54,7 @@ const ViewAssignmentQuestions = () => {
           {courseName}
         </h1>
         <button
-          onClick={() => navigate(-1)}
+          onClick={() => navigate("/faculty/Course")}
           className="bg-blue-600 text-white px-5 py-2 rounded-lg hover:bg-blue-700"
         >
           ← Back
