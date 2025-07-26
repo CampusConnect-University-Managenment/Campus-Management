@@ -6,6 +6,7 @@ import AddStudent from "./AddStudent";
 import StudentProfile from "./StudentProfile";
 import PerformanceChart from "./PerformanceChart";
 import BulkAddStudents from "./BulkAddStudents";
+import Notification from "./notification";
 
 const AllStudents = () => {
   const RECENT_STUDENTS_COUNT = 3;
@@ -627,6 +628,7 @@ const filteredStudents = students.filter((s) => {
  </div>
 
       <PerformanceChart students={students} />
+      <Notification/>
 
       {/* Add Modal */}
     {showAddModal && (
@@ -685,8 +687,10 @@ const filteredStudents = students.filter((s) => {
           onDelete={() => deleteStudent(selectedStudent.id)}
         />
       )}
+      
     </div>
-  );
+   );
+
 };
 
 export default AllStudents;
