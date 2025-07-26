@@ -1,16 +1,14 @@
 import React, { useState } from "react";
+import FacultyCalendar from "./FacultyCalendar";
 import {
-  CalendarClock,
-  CheckCircle,
-  Pencil,
   Megaphone,
-  Activity,
   Library,
   LayoutGrid,
   GraduationCap,
   Building2,
 } from "lucide-react";
 
+// Reusable Card Component
 const Card = ({ title, value, icon }) => (
   <div className="bg-white rounded-xl shadow p-4 flex flex-col items-center text-center">
     <div className="mb-2">{icon}</div>
@@ -20,16 +18,6 @@ const Card = ({ title, value, icon }) => (
 );
 
 const FacultyDashboard = () => {
-  const [tasks, setTasks] = useState([
-    { date: "24", month: "Jul", title: "Upload Assignment Marks - DBMS", time: "4:00 PM", done: false },
-    { date: "26", month: "Jul", title: "Internal Test - CN", time: "10:00 AM", done: false },
-    { date: "28", month: "Jul", title: "Department Meeting", time: "2:00 PM", done: false },
-  ]);
-
-  const [newTask, setNewTask] = useState({ date: "", month: "", title: "", time: "" });
-  const [isEditing, setIsEditing] = useState(false);
-  const [editIndex, setEditIndex] = useState(null);
-
   const [announcements] = useState([
     { title: "Exam Schedule Released", date: "22 Jul 2025" },
     { title: "New Course Material Uploaded", date: "21 Jul 2025" },
@@ -38,62 +26,19 @@ const FacultyDashboard = () => {
     { title: "Guest Lecture on AI", date: "18 Jul 2025" },
   ]);
 
-  const [activities] = useState([
-    "Marked attendance for CSE301",
-    "Uploaded internal marks for DBMS",
-    "Posted assignment for CN",
-    "Created announcement: Project Submission Deadline",
-    "Reviewed lab reports",
-    "Published quiz results",
-  ]);
-
   const [announcementPage, setAnnouncementPage] = useState(1);
-  const [activityPage, setActivityPage] = useState(1);
   const itemsPerPage = 3;
-
-  const handleDone = (index) => {
-    const updated = [...tasks];
-    updated[index].done = !updated[index].done;
-    setTasks(updated);
-  };
-
-  const handleEdit = (index) => {
-    setNewTask(tasks[index]);
-    setEditIndex(index);
-    setIsEditing(true);
-  };
-
-  const handleAddOrUpdate = () => {
-    if (isEditing) {
-      const updated = [...tasks];
-      updated[editIndex] = { ...newTask, done: false };
-      setTasks(updated);
-      setIsEditing(false);
-      setEditIndex(null);
-    } else {
-      setTasks([...tasks, { ...newTask, done: false }]);
-    }
-    setNewTask({ date: "", month: "", title: "", time: "" });
-  };
-
-  const handleDelete = (index) => {
-    const updated = tasks.filter((_, i) => i !== index);
-    setTasks(updated);
-  };
 
   const paginatedAnnouncements = announcements.slice(
     (announcementPage - 1) * itemsPerPage,
     announcementPage * itemsPerPage
   );
 
-  const paginatedActivities = activities.slice(
-    (activityPage - 1) * itemsPerPage,
-    activityPage * itemsPerPage
-  );
-
   return (
     <div className="p-6 mt-20 max-w-6xl mx-auto">
-      <h1 className="text-3xl font-bold text-blue-700 mb-6">Welcome back, Professor! 👋</h1>
+      <h1 className="text-3xl font-bold text-blue-700 mb-6">
+        Welcome back, Professor! 👋
+      </h1>
 
       {/* Profile + Stats Section */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-10">
@@ -138,58 +83,16 @@ const FacultyDashboard = () => {
         </div>
       </div>
 
-      {/* To-do, Announcements, Activities */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-10">
-        {/* To-do List */}
-        <div className="bg-white shadow rounded-xl p-6">
-          <h2 className="text-xl font-semibold text-gray-800 mb-4 flex items-center gap-2">
-            <CalendarClock className="text-indigo-600" /> To-do List
-          </h2>
-          <ul className="space-y-4">
-            {tasks.map((task, index) => (
-              <li
-                key={index}
-                className={`p-4 border rounded-lg flex justify-between items-start ${task.done ? "bg-green-50" : "bg-white"}`}
-              >
-                <div>
-                  <p className="text-gray-800 font-semibold">{task.title}</p>
-                  <p className="text-sm text-gray-500">{`${task.date} ${task.month}, ${task.time}`}</p>
-                </div>
-                <div className="flex gap-2">
-                  <button onClick={() => handleDone(index)} title="Mark as Done">
-                    <CheckCircle className={`w-5 h-5 ${task.done ? "text-green-600" : "text-gray-400"}`} />
-                  </button>
-                  <button onClick={() => handleEdit(index)} title="Edit">
-                    <Pencil className="w-5 h-5 text-blue-500" />
-                  </button>
-                  <button onClick={() => handleDelete(index)} title="Delete">
-                    ❌
-                  </button>
-                </div>
-              </li>
-            ))}
-          </ul>
-
-          {/* Add/Edit Task */}
-          <div className="mt-6 border-t pt-4">
-            <h3 className="text-lg font-semibold mb-2">{isEditing ? "Edit Task" : "Add New Task"}</h3>
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-2 mb-3">
-              <input className="border p-2 rounded" placeholder="Date" value={newTask.date} onChange={(e) => setNewTask({ ...newTask, date: e.target.value })} />
-              <input className="border p-2 rounded" placeholder="Month" value={newTask.month} onChange={(e) => setNewTask({ ...newTask, month: e.target.value })} />
-              <input className="border p-2 rounded" placeholder="Title" value={newTask.title} onChange={(e) => setNewTask({ ...newTask, title: e.target.value })} />
-              <input className="border p-2 rounded" placeholder="Time" value={newTask.time} onChange={(e) => setNewTask({ ...newTask, time: e.target.value })} />
-            </div>
-            <button
-              onClick={handleAddOrUpdate}
-              className="bg-indigo-600 text-white px-4 py-2 rounded hover:bg-indigo-700"
-            >
-              {isEditing ? "Update Task" : "Add Task"}
-            </button>
-          </div>
+      {/* Calendar + Announcements Section */}
+      <div className="flex flex-col lg:flex-row gap-6 mb-10">
+        {/* Calendar Section (larger) */}
+        <div className="flex-[2] bg-white shadow rounded-xl p-6">
+          <h2 className="text-xl font-semibold text-gray-800 mb-4">Faculty Calendar</h2>
+          <FacultyCalendar />
         </div>
 
-        {/* Announcements */}
-        <div className="bg-white shadow rounded-xl p-6">
+        {/* Announcements Section (smaller) */}
+        <div className="flex-[1] bg-white shadow rounded-xl p-6">
           <h2 className="text-xl font-semibold text-gray-800 mb-4 flex items-center gap-2">
             <Megaphone className="text-orange-500" /> Announcements
           </h2>
@@ -202,24 +105,20 @@ const FacultyDashboard = () => {
             ))}
           </ul>
           <div className="flex justify-between mt-4">
-            <button onClick={() => setAnnouncementPage((prev) => Math.max(prev - 1, 1))} disabled={announcementPage === 1} className="px-3 py-1 bg-gray-200 rounded">Prev</button>
-            <button onClick={() => setAnnouncementPage((prev) => prev + 1)} disabled={announcementPage * itemsPerPage >= announcements.length} className="px-3 py-1 bg-gray-200 rounded">Next</button>
-          </div>
-        </div>
-
-        {/* Recent Activities */}
-        <div className="bg-white shadow rounded-xl p-6">
-          <h2 className="text-xl font-semibold text-gray-800 mb-4 flex items-center gap-2">
-            <Activity className="text-green-500" /> Recent Activities
-          </h2>
-          <ul className="list-disc pl-5 space-y-2 text-gray-700">
-            {paginatedActivities.map((item, index) => (
-              <li key={index}>{item}</li>
-            ))}
-          </ul>
-          <div className="flex justify-between mt-4">
-            <button onClick={() => setActivityPage((prev) => Math.max(prev - 1, 1))} disabled={activityPage === 1} className="px-3 py-1 bg-gray-200 rounded">Prev</button>
-            <button onClick={() => setActivityPage((prev) => prev + 1)} disabled={activityPage * itemsPerPage >= activities.length} className="px-3 py-1 bg-gray-200 rounded">Next</button>
+            <button
+              onClick={() => setAnnouncementPage((prev) => Math.max(prev - 1, 1))}
+              disabled={announcementPage === 1}
+              className="px-3 py-1 bg-gray-200 rounded"
+            >
+              Prev
+            </button>
+            <button
+              onClick={() => setAnnouncementPage((prev) => prev + 1)}
+              disabled={announcementPage * itemsPerPage >= announcements.length}
+              className="px-3 py-1 bg-gray-200 rounded"
+            >
+              Next
+            </button>
           </div>
         </div>
       </div>

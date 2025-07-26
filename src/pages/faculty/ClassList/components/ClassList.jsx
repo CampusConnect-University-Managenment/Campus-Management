@@ -1,11 +1,9 @@
 import React from 'react';
-
 import { useNavigate } from 'react-router-dom';
 
 function ClassList() {
   const navigate = useNavigate();
   const facultyName = "Dr. R. Ichshanackiyan";
-
 
   const semesterClasses = [
     { code: '21CS31', subject: 'Data Structures', batch: 'III-CSE A', room: '101' },
@@ -23,8 +21,9 @@ function ClassList() {
     )
   );
 
-  const handleNavigate = (path, cls) => {
-    navigate(path, { state: cls });
+  const handleNavigate = (cls) => {
+    // UPDATED path to match your routes.jsx structure
+    navigate('/faculty/students', { state: cls });
   };
 
   return (
@@ -33,7 +32,6 @@ function ClassList() {
         {facultyName}
       </h1>
 
-     
       {/* Class List Table */}
       <div className="overflow-x-auto">
         <table className="min-w-full bg-white border border-gray-300 shadow text-left text-sm">
@@ -43,7 +41,6 @@ function ClassList() {
               <th className="border px-6 py-3">Course Code & Name</th>
               <th className="border px-6 py-3">Batch (Year - Dept - Section)</th>
               <th className="border px-6 py-3">View Students</th>
-
             </tr>
           </thead>
           <tbody>
@@ -52,10 +49,9 @@ function ClassList() {
                 <td className="border px-6 py-4">{index + 1}</td>
                 <td className="border px-6 py-4">{cls.code} / {cls.subject}</td>
                 <td className="border px-6 py-4">{cls.batch}</td>
-
                 <td className="border px-6 py-4">
                   <button
-                    onClick={() => handleNavigate('/students', cls)}
+                    onClick={() => handleNavigate(cls)}
                     className="bg-green-500 hover:bg-green-600 text-white px-3 py-1 rounded"
                   >
                     View
