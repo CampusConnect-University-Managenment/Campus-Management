@@ -1,82 +1,140 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   CalendarDays,
   NotebookPen,
   Rocket,
   Star,
   GraduationCap,
+  ChevronLeft,
+  ChevronRight,
 } from "lucide-react";
 
 export default function StudentDashboard() {
-  const scheduleData = [
-    { date: "Jul 14", time: "10:00 AM", title: "Mock Test - Algorithms", faculty: "Dr. Rao" },
-    { date: "Jul 16", time: "5:00 PM", title: "Assignment Submission - DBMS", faculty: "Prof. Meena" },
-    { date: "Jul 18", time: "9:00 AM", title: "Mid-Term Exam - OS", faculty: "Dr. Arvind" },
-    { date: "Jul 20", time: "11:00 AM", title: "Project Review - AI", faculty: "Prof. Leela" },
-    { date: "Jul 22", time: "1:00 PM", title: "Quiz - Cyber Security", faculty: "Dr. Karthik" },
-    { date: "Jul 24", time: "3:00 PM", title: "Lab - Operating Systems", faculty: "Dr. Nalini" },
-    { date: "Jul 26", time: "10:00 AM", title: "Seminar - Machine Learning", faculty: "Prof. Anwar" },
+  const [enlargedCard, setEnlargedCard] = useState(null);
+
+  // Calendar State
+  const today = new Date();
+  const [currentMonth, setCurrentMonth] = useState(today.getMonth());
+  const [currentYear, setCurrentYear] = useState(today.getFullYear());
+  const [selectedDate, setSelectedDate] = useState(null);
+
+  // Dummy Academic Events (Admin will add in real case)
+  const academicEvents = [
+    // Exams (Blue)
+    { date: "2025-07-30", title: "Internal 1", type: "Exam" },
+    { date: "2025-08-10", title: "Internal 2", type: "Exam" },
+    { date: "2025-08-15", title: "Model Lab 1", type: "Exam" },
+    { date: "2025-08-18", title: "Model Lab 2", type: "Exam" },
+    { date: "2025-08-25", title: "End Semester Exam", type: "Exam" },
+
+    // Government Holidays (Red)
+    { date: "2025-08-05", title: "Independence Day Holiday", type: "Holiday" },
+
+    // Events (Green)
+    { date: "2025-08-12", title: "Musical Evening", type: "Event" },
+    { date: "2025-08-14", title: "Flash Mob", type: "Event" },
+    { date: "2025-08-19", title: "Hostel Day", type: "Event" },
+    { date: "2025-08-21", title: "Technical Event", type: "Event" },
+    { date: "2025-08-28", title: "Intercollege Fest (Dhruva)", type: "Event" },
   ];
 
-  const [currentPage, setCurrentPage] = React.useState(0);
-  const itemsPerPage = 3;
-  const totalPages = Math.ceil(scheduleData.length / itemsPerPage);
-  const paginatedSchedule = scheduleData.slice(
-    currentPage * itemsPerPage,
-    currentPage * itemsPerPage + itemsPerPage
-  );
+  const getCardClass = (cardKey) =>
+    `rounded-xl shadow-md p-4 flex flex-col items-center justify-center transition-all duration-300 cursor-pointer ${
+      enlargedCard === cardKey ? "scale-110 bg-blue-100" : "bg-white hover:bg-blue-50"
+    }`;
+
+  // Calendar Helpers
+  const monthNames = [
+    "January", "February", "March", "April", "May", "June",
+    "July", "August", "September", "October", "November", "December"
+  ];
+
+  const daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
+  const firstDayOfMonth = new Date(currentYear, currentMonth, 1).getDay();
+
+  const prevMonth = () => {
+    if (currentMonth === 0) {
+      setCurrentMonth(11);
+      setCurrentYear(currentYear - 1);
+    } else {
+      setCurrentMonth(currentMonth - 1);
+    }
+  };
+
+  const nextMonth = () => {
+    if (currentMonth === 11) {
+      setCurrentMonth(0);
+      setCurrentYear(currentYear + 1);
+    } else {
+      setCurrentMonth(currentMonth + 1);
+    }
+  };
+
+  const formatDate = (date) => {
+    return `${currentYear}-${String(currentMonth + 1).padStart(2, "0")}-${String(date).padStart(2, "0")}`;
+  };
+
+  const getEventsForDate = (date) => {
+    const formatted = formatDate(date);
+    const sundayEvent = new Date(currentYear, currentMonth, date).getDay() === 0
+      ? [{ title: "Weekend Holiday", type: "Holiday" }]
+      : [];
+    const events = academicEvents.filter((event) => event.date === formatted);
+    return [...sundayEvent, ...events];
+  };
+
+  const getDotColor = (events) => {
+    if (events.some(e => e.type === "Holiday")) return "bg-red-500";
+    if (events.some(e => e.type === "Exam")) return "bg-blue-500";
+    if (events.some(e => e.type === "Event")) return "bg-green-500";
+    return "";
+  };
 
   return (
     <div className="w-full min-h-screen bg-gradient-to-tr from-[#eef2ff] to-[#fdfbff] px-10 pt-28 pb-16">
       {/* Header */}
       <div className="mb-10">
-        <h1 className="text-4xl font-bold text-blue-700">
-          Welcome back, Riya! 👋
-        </h1>
-        <p className="text-gray-600 text-md mt-2">
-          Stay focused and keep learning 🚀
-        </p>
+        <h1 className="text-4xl font-bold text-blue-700">Welcome back, Riya! 👋</h1>
+        <p className="text-gray-600 text-md mt-2">Stay focused and keep learning 🚀</p>
       </div>
 
-      {/* Stats Overview */}
+      {/* Stats */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-6 mb-12">
-        <StatCard
-          title="Active Courses"
-          value="05"
-          icon={<NotebookPen />}
-          color="indigo"
-        />
-        <StatCard
-          title="Upcoming Exams"
-          value="03"
-          icon={<CalendarDays />}
-          color="purple"
-        />
-        <StatCard
-          title="Credits Earned"
-          value="120"
-          icon={<Star />}
-          color="amber"
-        />
-        <StatCard
-          title="Attendance %"
-          value="92%"
-          icon={<Rocket />}
-          color="rose"
-        />
-        <StatCard
-          title="No. of Backlogs"
-          value="02"
-          icon={<GraduationCap />}
-          color="red"
-        />
+        <div className={getCardClass("active")}>
+          <p className="text-gray-500 font-medium">Active Courses</p>
+          <h2 className="text-2xl font-bold text-gray-800">05</h2>
+          <NotebookPen className="text-indigo-500 text-lg mt-2" />
+        </div>
+
+        <div className={getCardClass("cgpa")}>
+          <p className="text-gray-500 font-medium">CGPA</p>
+          <h2 className="text-2xl font-bold text-gray-800">8.8</h2>
+          <Star className="text-yellow-400 text-lg mt-2" />
+        </div>
+
+        <div className={getCardClass("credits")}>
+          <p className="text-gray-500 font-medium">Credits Earned</p>
+          <h2 className="text-2xl font-bold text-gray-800">120</h2>
+          <CalendarDays className="text-purple-500 text-lg mt-2" />
+        </div>
+
+        <div className={getCardClass("attendance")}>
+          <p className="text-gray-500 font-medium">Attendance %</p>
+          <h2 className="text-2xl font-bold text-gray-800">92%</h2>
+          <Rocket className="text-rose-500 text-lg mt-2" />
+        </div>
+
+        <div className={getCardClass("backlogs")}>
+          <p className="text-gray-500 font-medium">No. of Backlogs</p>
+          <h2 className="text-2xl font-bold text-gray-800">02</h2>
+          <GraduationCap className="text-red-500 text-lg mt-2" />
+        </div>
       </div>
 
-      {/* Profile + Schedule */}
+      {/* Profile + Academic Calendar */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-        {/* Profile Card */}
+        {/* Profile */}
         <div className="bg-white rounded-2xl shadow-md overflow-hidden hover:shadow-xl transition duration-300 lg:col-span-1">
-          {/* Banner with Avatar */}
           <div className="relative h-28 bg-gradient-to-r from-blue-100 to-blue-300">
             <img
               src="https://cdn-icons-png.flaticon.com/512/4140/4140051.png"
@@ -84,15 +142,9 @@ export default function StudentDashboard() {
               className="w-20 h-20 rounded-full border-4 border-white absolute left-1/2 transform -translate-x-1/2 translate-y-8 shadow-md"
             />
           </div>
-
-          {/* Name Section */}
           <div className="pt-8 pb-2 px-4 text-center">
-            <h2 className="text-lg font-semibold text-gray-800">
-              Riya Sharma
-            </h2>
+            <h2 className="text-lg font-semibold text-gray-800">Riya Sharma</h2>
           </div>
-
-          {/* Boxed Details Section */}
           <div className="px-6 pb-6">
             <div className="bg-gray-50 rounded-xl p-4 shadow-sm space-y-3">
               <DetailRow label="Register No:" value="21CSE019" />
@@ -104,51 +156,79 @@ export default function StudentDashboard() {
           </div>
         </div>
 
-        {/* Upcoming Schedule */}
+        {/* Academic Calendar */}
         <div className="bg-white p-6 rounded-2xl shadow-md lg:col-span-2">
-          <h3 className="text-lg font-semibold text-gray-800 mb-6">
-            🗓️ Upcoming Schedule
-          </h3>
-          <div className="relative border-l-2 border-indigo-200 pl-4 space-y-6 max-h-[400px] overflow-y-auto">
-            {paginatedSchedule.map((item, index) => (
-              <ScheduleItem
-                key={index}
-                date={item.date}
-                time={item.time}
-                title={item.title}
-                faculty={item.faculty}
-              />
-            ))}
+          <h3 className="text-lg font-semibold text-gray-800 mb-4">📅 Academic Calendar</h3>
+
+          {/* Month Navigation */}
+          <div className="flex justify-between items-center mb-4">
+            <button
+              onClick={prevMonth}
+              className="p-2 bg-gray-200 rounded-full hover:bg-gray-300"
+            >
+              <ChevronLeft size={20} />
+            </button>
+            <h2 className="text-lg font-semibold text-gray-700">
+              {monthNames[currentMonth]} {currentYear}
+            </h2>
+            <button
+              onClick={nextMonth}
+              className="p-2 bg-gray-200 rounded-full hover:bg-gray-300"
+            >
+              <ChevronRight size={20} />
+            </button>
           </div>
 
-          {/* Pagination Controls */}
-          {scheduleData.length > itemsPerPage && (
-            <div className="flex justify-end gap-4 mt-6">
-              <button
-                onClick={() => setCurrentPage((p) => Math.max(0, p - 1))}
-                disabled={currentPage === 0}
-                className={`px-4 py-2 text-sm rounded-lg border ${
-                  currentPage === 0
-                    ? "bg-gray-100 text-gray-400 cursor-not-allowed"
-                    : "bg-indigo-100 text-indigo-700 hover:bg-indigo-200"
-                }`}
-              >
-                Previous
-              </button>
-              <button
-                onClick={() =>
-                  setCurrentPage((p) => Math.min(totalPages - 1, p + 1))
-                }
-                disabled={currentPage >= totalPages - 1}
-                className={`px-4 py-2 text-sm rounded-lg border ${
-                  currentPage >= totalPages - 1
-                    ? "bg-gray-100 text-gray-400 cursor-not-allowed"
-                    : "bg-indigo-100 text-indigo-700 hover:bg-indigo-200"
-                }`}
-              >
-                Next
-              </button>
+          {/* Calendar Grid */}
+          <div className="grid grid-cols-7 gap-2 text-center mb-6">
+            {["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"].map((d) => (
+              <div key={d} className="font-semibold text-gray-400">{d}</div>
+            ))}
+
+            {/* Empty slots for starting day */}
+            {Array(firstDayOfMonth).fill("").map((_, i) => (
+              <div key={`empty-${i}`}></div>
+            ))}
+
+            {/* Dates */}
+            {Array.from({ length: daysInMonth }, (_, i) => i + 1).map((date) => {
+              const events = getEventsForDate(date);
+              const dotColor = getDotColor(events);
+              return (
+                <div
+                  key={date}
+                  onClick={() => setSelectedDate({ day: date, events })}
+                  className={`p-2 rounded-lg cursor-pointer hover:bg-blue-100 ${
+                    selectedDate?.day === date ? "bg-blue-200" : ""
+                  }`}
+                >
+                  <p className="font-medium">{date}</p>
+                  {dotColor && (
+                    <span className={`block w-2 h-2 ${dotColor} rounded-full mx-auto mt-1`}></span>
+                  )}
+                </div>
+              );
+            })}
+          </div>
+
+          {/* Selected Date Events */}
+          {selectedDate && selectedDate.events.length > 0 ? (
+            <div className="bg-gray-50 p-4 rounded-lg shadow">
+              <h4 className="font-semibold text-gray-700 mb-2">
+                Events on {selectedDate.day} {monthNames[currentMonth]}:
+              </h4>
+              <ul className="list-disc list-inside text-gray-600">
+                {selectedDate.events.map((event, idx) => (
+                  <li key={idx}>
+                    <span className="font-medium">{event.title}</span> ({event.type})
+                  </li>
+                ))}
+              </ul>
             </div>
+          ) : selectedDate ? (
+            <p className="text-gray-500 italic">No events on this date.</p>
+          ) : (
+            <p className="text-gray-500 italic">Select a date to see details.</p>
           )}
         </div>
       </div>
@@ -156,61 +236,11 @@ export default function StudentDashboard() {
   );
 }
 
-// Stat Card
-function StatCard({ title, value, icon, color }) {
-  const bgColor = {
-    indigo: "bg-indigo-100 text-indigo-600",
-    purple: "bg-purple-100 text-purple-600",
-    amber: "bg-amber-100 text-amber-600",
-    rose: "bg-rose-100 text-rose-600",
-    red: "bg-red-100 text-red-600",
-  }[color];
-
-  return (
-    <div className="bg-white p-6 rounded-2xl shadow-md hover:shadow-lg transition-all flex items-center justify-between">
-      <div>
-        <p className="text-sm text-gray-500">{title}</p>
-        <h3 className="text-3xl font-bold text-gray-900">{value}</h3>
-      </div>
-      <div className={`p-3 rounded-full ${bgColor}`}>{icon}</div>
-    </div>
-  );
-}
-
-// Detail Row
 function DetailRow({ label, value }) {
   return (
     <div className="flex justify-between text-sm">
       <span className="font-medium text-gray-600">{label}</span>
       <span className="text-gray-800">{value}</span>
-    </div>
-  );
-}
-
-// Schedule Item
-function ScheduleItem({ date, time, title, faculty }) {
-  const [month, day] = date.split(" ");
-  return (
-    <div className="relative flex items-start gap-4">
-      {/* Dot */}
-      <div className="absolute -left-[10px] top-1 w-3 h-3 rounded-full bg-indigo-500"></div>
-
-      {/* Date Card */}
-      <div className="flex flex-col items-center justify-center w-16 h-16 bg-indigo-100 text-indigo-700 font-semibold rounded-lg shadow-sm text-sm">
-        <span>{day}</span>
-        <span className="text-xs">{month}</span>
-      </div>
-
-      {/* Content Box */}
-      <div className="flex-1 bg-gray-50 p-4 rounded-xl border border-gray-100 shadow-sm hover:shadow-md transition">
-        <h4 className="font-semibold text-gray-800">{title}</h4>
-        <p className="text-sm text-gray-500">{time}</p>
-       <p className="text-sm text-indigo-600 italic font-medium" style={{ fontFamily: "Times New Roman" }}>
-  Faculty: {faculty}
-</p>
-
-
-      </div>
     </div>
   );
 }

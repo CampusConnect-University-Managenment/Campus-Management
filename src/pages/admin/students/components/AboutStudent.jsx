@@ -1,11 +1,9 @@
 import React from "react";
-import { FaBriefcase, FaUsers, FaBuilding, FaCheckCircle } from "react-icons/fa";
+import { FaBuilding } from "react-icons/fa";
 import { MdGroups } from "react-icons/md";
 
 const AboutStudent = ({ students }) => {
   const total = students.length;
-  const active = students.filter((s) => s.status === "Active").length;
-  const placed = students.filter((s) => s.placement).length;
   const departments = new Set(students.map((s) => s.department)).size;
 
   return (
@@ -17,24 +15,12 @@ const AboutStudent = ({ students }) => {
         Manage student records, enrollment, and academic information
       </p>
 
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <StatCard
           icon={<MdGroups className="text-3xl text-white" />}
           title="Total Students"
           value={total}
           gradient="bg-gradient-to-r from-purple-500 to-indigo-500"
-        />
-        <StatCard
-          icon={<FaCheckCircle className="text-3xl text-white" />}
-          title="Active Students"
-          value={active}
-          gradient="bg-gradient-to-r from-green-400 to-green-600"
-        />
-        <StatCard
-          icon={<FaBriefcase className="text-3xl text-white" />}
-          title="Placed Students"
-          value={placed}
-          gradient="bg-gradient-to-r from-violet-500 to-purple-700"
         />
         <StatCard
           icon={<FaBuilding className="text-3xl text-white" />}
