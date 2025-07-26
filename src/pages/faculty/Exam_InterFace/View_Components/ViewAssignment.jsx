@@ -1,7 +1,6 @@
 import React from "react";
 import { FaFilePdf, FaFileWord } from "react-icons/fa";
-import { useNavigate } from "react-router-dom";
-import { useLocation } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 
 const assignments = [
   {
@@ -44,14 +43,15 @@ const assignments = [
 
 const ViewAssignmentQuestions = () => {
   const navigate = useNavigate();
-  const location= useLocation();
+  const location = useLocation();
   const courseName = location.state?.courseName || "Unknown Course";
+
   return (
     <div className="mt-[100px] min-h-screen bg-[#f8faff] px-6 py-8 font-sans">
       {/* Header + Back Button */}
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-3xl font-bold text-blue-700">
-          {location.state.courseName}
+          {courseName}
         </h1>
         <button
           onClick={() => navigate(-1)}
@@ -64,26 +64,50 @@ const ViewAssignmentQuestions = () => {
       {/* Tab Navigation */}
       <div className="border-b border-gray-300 flex space-x-8 mb-8 text-lg">
         <button
-          onClick={() => navigate("/faculty/ExamInterFace/view-material",{state:{courseName}})}
+          onClick={() =>
+            navigate("/faculty/ExamInterFace/view-material", {
+              state: { courseName },
+            })
+          }
           className="pb-2 text-gray-700 hover:text-blue-600"
         >
-          Student Materials
+          Study Materials
         </button>
         <button
-          onClick={() => navigate("/faculty/ExamInterFace/view-question",{state:{courseName}})}
+          onClick={() =>
+            navigate("/faculty/ExamInterFace/view-question", {
+              state: { courseName },
+            })
+          }
           className="pb-2 text-gray-700 hover:text-blue-600"
         >
           Question Papers
         </button>
-        <button className="pb-2 text-blue-600 font-semibold border-b-2 border-blue-600">
+        <button
+          className="pb-2 text-blue-600 font-semibold border-b-2 border-blue-600"
+        >
           Assignments
+        </button>
+        <button
+          onClick={() =>
+            navigate("/faculty/ExamInterFace/upload-marks", {
+              state: { courseName },
+            })
+          }
+          className="pb-2 text-gray-700 hover:text-blue-600"
+        >
+          Upload Marks
         </button>
       </div>
 
       {/* +Add New Button */}
       <div className="flex justify-end mb-4">
         <button
-          onClick={() => navigate("/faculty/ExamInterFace/upload-assignment")}
+          onClick={() =>
+            navigate("/faculty/ExamInterFace/upload-assignment", {
+              state: { courseName },
+            })
+          }
           className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
         >
           + Add New
