@@ -15,7 +15,6 @@ import Announcements from "./pages/faculty/Announcements/components/Announcement
 import StudentDashboard from "./pages/student/StudentDashBoard/components/StudentDashboard";
 import FacultyProfile from "./pages/faculty/Profile";
 import EditFacultyProfile from "./pages/faculty/EditProfile";
-import Interface from "./pages/faculty/Exam_InterFace/Components/ExamInterface";
 import ViewStudyMaterial from "./pages/faculty/Exam_InterFace/View_Components/ViewStudyMaterials";
 import ViewQuestionPaper from "./pages/faculty/Exam_InterFace/View_Components/ViewQuestionPaper";
 import ViewAssignmentQuestions from "./pages/faculty/Exam_InterFace/View_Components/ViewAssignment";
@@ -225,13 +224,6 @@ const routes = [
     icon: <MdLibraryBooks className="h-6 w-6" />,
     component: <FaCourse />,
     children:[
-      {
-    name: "Exam Interface",
-    layout: "/faculty",
-    path: "examinterface",
-    icon: <MdLibraryBooks className="h-6 w-6" />,
-    component: <Interface />,
-  },
         {
         layout: "/faculty",
         path: "ExamInterFace/upload-marks",

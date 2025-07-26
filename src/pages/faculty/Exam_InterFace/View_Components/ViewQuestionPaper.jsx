@@ -1,8 +1,8 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
-import { FaFilePdf, FaFileWord, FaDownload } from "react-icons/fa";
+import { useLocation } from "react-router-dom";
+import { FaFilePdf, FaFileWord } from "react-icons/fa";
 
-// Sample data
 const questionPapers = [
   {
     name: "Unit Test - 1",
@@ -11,6 +11,8 @@ const questionPapers = [
     department: "CSE",
     section: "A",
     url: "/files/unit-test-1.pdf",
+    posted: "Feb 10, 2025",
+    tag: "Question Paper",
   },
   {
     name: "Mid Term - 2023",
@@ -19,174 +21,104 @@ const questionPapers = [
     department: "ECE",
     section: "B",
     url: "/files/mid-term-2023.pdf",
+    posted: "Feb 12, 2025",
+    tag: "Question Paper",
   },
-  {
-    name: "Model Exam",
-    type: "docx",
-    year: "Third",
-    department: "CSE",
-    section: "A",
-    url: "/files/model-exam.docx",
-  },
-  {
-    name: "End Semester - 2022",
-    type: "pdf",
-    year: "Final",
-    department: "MECH",
-    section: "C",
-    url: "/files/endsem-2022.pdf",
-  },
-  {
-    name: "Unit Test - II",
-    type: "docx",
-    year: "First",
-    department: "CIVIL",
-    section: "B",
-    url: "/files/unit-test-2.docx",
-  },
-  {
-    name: "Lab Exam Questions",
-    type: "pdf",
-    year: "Second",
-    department: "CSE",
-    section: "B",
-    url: "/files/lab-exam.pdf",
-  },
-  {
-    name: "CAT - 1",
-    type: "pdf",
-    year: "Third",
-    department: "ECE",
-    section: "C",
-    url: "/files/cat1-ece.pdf",
-  },
-  {
-    name: "CAT - 2",
-    type: "docx",
-    year: "Final",
-    department: "MECH",
-    section: "A",
-    url: "/files/cat2-mech.docx",
-  },
-  {
-    name: "Internal Assessment 1",
-    type: "pdf",
-    year: "First",
-    department: "CSE",
-    section: "C",
-    url: "/files/internal1-cse.pdf",
-  },
-  {
-    name: "Internal Assessment 2",
-    type: "pdf",
-    year: "Second",
-    department: "ECE",
-    section: "A",
-    url: "/files/internal2-ece.pdf",
-  },
-  {
-    name: "Semester Exam - Mathematics",
-    type: "docx",
-    year: "Third",
-    department: "CIVIL",
-    section: "A",
-    url: "/files/sem-math-civil.docx",
-  },
-  {
-    name: "Database Systems Midterm",
-    type: "pdf",
-    year: "Second",
-    department: "CSE",
-    section: "B",
-    url: "/files/dbms-midterm.pdf",
-  },
-  {
-    name: "Thermodynamics Final",
-    type: "pdf",
-    year: "Final",
-    department: "MECH",
-    section: "B",
-    url: "/files/thermo-final.pdf",
-  },
-  {
-    name: "Surveying Model Exam",
-    type: "docx",
-    year: "Third",
-    department: "CIVIL",
-    section: "C",
-    url: "/files/surveying-model.docx",
-  },
-  {
-    name: "Compiler Design Test",
-    type: "pdf",
-    year: "Final",
-    department: "CSE",
-    section: "A",
-    url: "/files/compiler-test.pdf",
-  },
+  // ... Add remaining items if needed
 ];
 
 const ViewQuestionPaper = () => {
   const navigate = useNavigate();
+  const location = useLocation();
+  const courseName = location.state?.courseName || "Unknown Course";
 
   return (
-    <div className="mt-[100px] min-h-screen bg-gray-100 px-6 py-20 font-inter">
-      <button
-        onClick={() => navigate(-1)}
-        className="bg-blue-500 text-white px-4 py-2 rounded"
-      >
-        ← Back
-      </button>
-      <br />
-      <h2 className="text-3xl font-bold text-center text-[#2e3a59] mb-2">
-        📄 View Question Papers
-      </h2>
-      <p className="text-center text-gray-500 mb-10">
-        Download previous question papers.
-      </p>
+    <div className="mt-[100px] min-h-screen bg-[#f8faff] px-6 py-8 font-sans">
+      {/* Header + Back Button */}
+      <div className="flex justify-between items-center mb-6">
+        <h1 className="text-3xl font-bold text-blue-700">
+          {courseName}
+        </h1>
+        <button
+          onClick={() => navigate(-1)}
+          className="bg-blue-600 text-white px-5 py-2 rounded-lg hover:bg-blue-700"
+        >
+          ← Back
+        </button>
+      </div>
 
-      <div className="flex justify-end">
+      {/* Tab Navigation */}
+      <div className="border-b border-gray-300 flex space-x-8 mb-8 text-lg">
+        <button
+          onClick={() => navigate("/faculty/ExamInterFace/view-material",{state:{courseName}})}
+          className="pb-2 text-gray-700 hover:text-blue-600"
+        >
+          Student Materials
+        </button>
+        <button className="pb-2 text-blue-600 font-semibold border-b-2 border-blue-600">
+          Question Papers
+        </button>
+        <button
+          onClick={() => navigate("/faculty/ExamInterFace/view-assignment",{state:{courseName}})}
+          className="pb-2 text-gray-700 hover:text-blue-600"
+        >
+          Assignments
+        </button>
+      </div>
+
+      {/* +Add New Button */}
+      <div className="flex justify-end mb-4">
         <button
           onClick={() => navigate("/faculty/ExamInterFace/upload-question")}
-          className="bg-blue-500 text-white px-4 py-2 rounded"
+          className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
         >
-          +Add new 
+          + Add New
         </button>
-      </div><br/>
+      </div>
 
-      {/* File List */}
-      <div className="max-w-4xl mx-auto bg-white shadow rounded-lg overflow-hidden">
-        <ul className="divide-y divide-gray-200">
-          {questionPapers.map((file, idx) => (
-            <li
-              key={idx}
-              className="flex items-center justify-between px-6 py-4 hover:bg-gray-50 transition"
-            >
-              <div className="flex items-center gap-3">
+      {/* Question Paper Cards */}
+      <div className="max-w-4xl mx-auto space-y-4">
+        {questionPapers.map((file, idx) => (
+          <div
+            key={idx}
+            className="bg-white rounded-xl shadow-md p-5 flex justify-between items-center border"
+          >
+            {/* Left: Icon + Name */}
+            <div className="flex items-center space-x-4">
+              <div
+                className={`p-2 rounded-lg ${
+                  file.type === "pdf"
+                    ? "bg-red-100 text-red-600"
+                    : "bg-blue-100 text-blue-600"
+                }`}
+              >
                 {file.type === "pdf" ? (
-                  <FaFilePdf className="text-red-600 text-xl" />
+                  <FaFilePdf className="text-xl" />
                 ) : (
-                  <FaFileWord className="text-blue-600 text-xl" />
+                  <FaFileWord className="text-xl" />
                 )}
-                <div>
-                  <p className="text-gray-800 font-medium">{file.name}</p>
-                  <p className="text-sm text-gray-500">
-                    {file.year} Year • {file.department} • Section {file.section}
-                  </p>
-                </div>
               </div>
               <a
                 href={file.url}
                 download
-                className="text-indigo-600 hover:text-indigo-800 flex items-center gap-2 text-sm"
+                className="text-blue-700 font-semibold hover:underline"
               >
-                <FaDownload /> Download
+                {idx + 1}. {file.name}
               </a>
-            </li>
-          ))}
-        </ul>
+            </div>
+
+            {/* Right: Date + Tag */}
+            <div className="flex items-center space-x-4">
+              <span className="text-gray-500 text-sm">
+                Posted {file.posted}
+              </span>
+              <span className="bg-blue-100 text-blue-700 px-3 py-1 text-sm rounded-full">
+                {file.tag}
+              </span>
+            </div>
+          </div>
+        ))}
       </div>
-      
     </div>
   );
 };
