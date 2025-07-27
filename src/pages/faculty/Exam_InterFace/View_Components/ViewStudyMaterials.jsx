@@ -52,15 +52,15 @@ const ViewStudyMaterial = () => {
           })}
           className="pb-2 text-gray-700 hover:text-blue-600"
         >
-          Assignments
+          Assignments Questions
         </button>
         <button
-          onClick={() => navigate("/faculty/ExamInterFace/upload-marks", {
+          onClick={() => navigate("/faculty/ExamInterFace/view-assignment-and-grade", {
             state: { courseName },
           })}
           className="pb-2 text-gray-700 hover:text-blue-600"
         >
-          Upload Marks
+          Grade Assignment
         </button>
       </div>
 
