@@ -23,12 +23,13 @@ export default function StudentDashboard() {
     // Exams (Blue)
     { date: "2025-07-30", title: "Internal 1", type: "Exam" },
     { date: "2025-08-10", title: "Internal 2", type: "Exam" },
-    { date: "2025-08-15", title: "Model Lab 1", type: "Exam" },
+    { date: "2025-08-5", title: "Model Lab 1", type: "Exam" },
     { date: "2025-08-18", title: "Model Lab 2", type: "Exam" },
     { date: "2025-08-25", title: "End Semester Exam", type: "Exam" },
 
     // Government Holidays (Red)
-    { date: "2025-08-05", title: "Independence Day Holiday", type: "Holiday" },
+    { date: "2025-08-15", title: "Independence Day Holiday", type: "Holiday" },
+    {date: "2025-01-26", title: "Republic Day Holiday", type: "Holiday" },
 
     // Events (Green)
     { date: "2025-08-12", title: "Musical Evening", type: "Event" },
