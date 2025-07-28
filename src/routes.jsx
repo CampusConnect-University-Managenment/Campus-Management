@@ -19,8 +19,9 @@ import FacultyProfile from "./pages/faculty/Profile";
 import EditFacultyProfile from "./pages/faculty/EditProfile";
 import ViewStudyMaterial from "./pages/faculty/Exam_InterFace/View_Components/ViewStudyMaterials";
 import ViewQuestionPaper from "./pages/faculty/Exam_InterFace/View_Components/ViewQuestionPaper";
-import ViewAssignmentQuestions from "./pages/faculty/Exam_InterFace/View_Components/ViewAssignment";
+import ViewAssignmentQuestions from "./pages/faculty/Exam_InterFace/View_Components/ViewAssignmentQuestions";
 import UploadAssignment from "./pages/faculty/Exam_InterFace/Upload_Components/Upload_Assignment";
+import FacultyAssignmentGrading from "./pages/faculty/Exam_InterFace/View_Components/ViewAssignmentAndGrade"
 import FacultyMarksUpdate from "./pages/faculty/Exam_InterFace/Upload_Components/Upload_Marks";
 import UploadQuestionPaper from "./pages/faculty/Exam_InterFace/Upload_Components/Upload_QuestionPaper";
 import UploadStudyMaterial from "./pages/faculty/Exam_InterFace/Upload_Components/Upload_StudyMaterials";
@@ -240,6 +241,11 @@ const routes = [
         layout: "/faculty",
         path: "ExamInterFace/upload-marks",
         component: <FacultyMarksUpdate />,
+      },
+      {
+        layout: "/faculty",
+        path: "ExamInterFace/view-assignment-and-grade",
+        component: <FacultyAssignmentGrading />,
       },
       {
         layout: "/faculty",
