@@ -166,7 +166,7 @@ const routes = [
     component: <PerformanceAnalytics />,
   },
   {
-    name: "Chats",
+    name: "Discussion Forum",
     layout: "/student",
     path: "notifications",
     icon: <FaComments className="h-5 w-5" />,
@@ -217,7 +217,7 @@ const routes = [
     component: <AttendanceUpload />,
   },
   {
-    name: "Chats",
+    name: "Discussion Forum",
     layout: "/faculty",
     path: "Notification&Message",
     icon: <FaComments className="h-6 w-6"  />,
