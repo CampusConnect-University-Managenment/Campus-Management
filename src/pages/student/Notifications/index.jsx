@@ -1,17 +1,15 @@
 "use client"
 
 import { useState, useEffect, useCallback, useMemo } from "react"
-import { Search, Plus } from "lucide-react"
+import { Search } from "lucide-react"
 
 // Import components
 import ChatWindow from "./components/ChatWindow"
 import UserList from "./components/UserList"
-import NewChatModal from "./components/new-chat-modal"
 import ChatList from "./components/chat-list"
 import useSocket from "./hooks/useSocket"
 
 // Import UI components
-import Button from "./components/ui/Button"
 import Input from "./components/ui/Input"
 
 // Mock data
@@ -140,7 +138,6 @@ export default function NotificationMessage() {
   const [selectedChat, setSelectedChat] = useState(globalState.selectedChat)
   const [chats, setChats] = useState(globalState.chats)
   const [onlineUsers, setOnlineUsers] = useState(mockUsers || [])
-  const [isNewChatModalOpen, setIsNewChatModalOpen] = useState(false)
   const [searchQuery, setSearchQuery] = useState("")
   const [activeView, setActiveView] = useState("chat")
   const [chatType, setChatType] = useState("INDIVIDUAL")
@@ -327,7 +324,6 @@ export default function NotificationMessage() {
 
         if (existingChat) {
           setSelectedChat(existingChat)
-          setIsNewChatModalOpen(false)
           return
         }
       }
@@ -361,14 +357,13 @@ export default function NotificationMessage() {
 
       setChats([...chats, newChat])
       setSelectedChat(newChat)
-      setIsNewChatModalOpen(false)
     },
     [chats, findExistingIndividualChat],
   )
 
   return (
     <div className="h-screen flex bg-gray-50 relative" style={{ marginTop: "80px" }}>
-      {/* Main Content - Full width now, no side notification bell */}
+      {/* Main Content */}
       <div className="flex flex-1 overflow-hidden h-full">
         {activeView === "chat" ? (
           <>
@@ -377,14 +372,6 @@ export default function NotificationMessage() {
               <div className="p-4 border-b border-gray-200 bg-gradient-to-r from-blue-50 to-purple-50 flex-shrink-0">
                 <div className="flex items-center justify-between mb-4">
                   <h2 className="text-lg font-semibold text-gray-800">Chats ({filteredChats.length})</h2>
-                  <Button
-                    onClick={() => setIsNewChatModalOpen(true)}
-                    size="sm"
-                    className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white shadow-sm"
-                  >
-                    <Plus className="w-4 h-4 mr-1" />
-                    New Chat
-                  </Button>
                 </div>
 
                 <div className="relative">
@@ -439,13 +426,6 @@ export default function NotificationMessage() {
           </>
         )}
       </div>
-
-      {/* New Chat Modal */}
-      <NewChatModal
-        isOpen={isNewChatModalOpen}
-        onClose={() => setIsNewChatModalOpen(false)}
-        onCreateChat={handleNewChat}
-      />
     </div>
   )
 }

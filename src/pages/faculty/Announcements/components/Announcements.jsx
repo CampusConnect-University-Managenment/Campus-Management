@@ -1,101 +1,85 @@
-import React, { useState } from 'react';
+"use client"
+
+import { useState } from "react"
 
 /**
- * AnnouncementSender Component
- *
- * This component provides a UI for faculty members to send announcements to students.
- * It includes fields for title, message, and a simplified recipient selection.
- * The sending process is simulated with a mock API call.
- * It is designed to be fully responsive using Tailwind CSS.
+ * Announcements Component
+ * Clean, simplified interface for sending announcements to all students
+ * Matches the exact design from the provided image
  */
-const AnnouncementSender = () => {
-  const [title, setTitle] = useState('');
-  const [message, setMessage] = useState('');
-  const [recipientType, setRecipientType] = useState('all'); // 'all', 'course', 'group'
-  const [selectedCourse, setSelectedCourse] = useState(''); // Stores selected course ID/name
-  const [selectedGroup, setSelectedGroup] = useState('');   // Stores selected group ID/name
-  const [isSending, setIsSending] = useState(false);
-  const [sendSuccess, setSendSuccess] = useState('');
-  const [sendError, setSendError] = useState('');
+const Announcements = () => {
+  const [title, setTitle] = useState("")
+  const [message, setMessage] = useState("")
+  const [isSending, setIsSending] = useState(false)
+  const [sendSuccess, setSendSuccess] = useState("")
+  const [sendError, setSendError] = useState("")
 
-  // Mock data for courses and groups (in a real app, these would come from an API)
-  const mockCourses = [
-    { id: 'CS101', name: 'Data Structures & Algorithms' },
-    { id: 'MA203', name: 'Linear Algebra' },
-    { id: 'PH105', name: 'Physics for Engineers' },
-  ];
-  const mockGroups = [
-    { id: 'CS101-A', name: 'CS101 - Section A' },
-    { id: 'CS101-B', name: 'CS101 - Section B' },
-    { id: 'MA203-G1', name: 'MA203 - Group 1' },
-  ];
-
-  // Mock API call to simulate sending an announcement
-  const sendAnnouncement = async (announcementData) => {
+  // Mock API call to simulate sending announcement to all students
+  const sendAnnouncementToAllStudents = async (announcementData) => {
     return new Promise((resolve, reject) => {
       setTimeout(() => {
-        console.log("Simulating sending announcement:", announcementData);
-        // Simulate success or failure
-        if (Math.random() > 0.1) { // 90% chance of success
-          resolve({ success: true, message: "Announcement sent successfully!" });
-        } else { // 10% chance of failure
-          reject({ success: false, message: "Failed to send announcement. Please try again." });
+        console.log("Sending announcement to all students:", announcementData)
+
+        if (Math.random() > 0.1) {
+          resolve({
+            success: true,
+            message: "Announcement sent to all students successfully!",
+            recipientCount: 1250,
+          })
+        } else {
+          reject({
+            success: false,
+            message: "Failed to send announcement. Please try again.",
+          })
         }
-      }, 1500); // Simulate network delay
-    });
-  };
+      }, 1500)
+    })
+  }
 
   const handleSubmit = async (e) => {
-    e.preventDefault();
-    setSendError('');
-    setSendSuccess('');
-    setIsSending(true);
+    e.preventDefault()
+    setSendError("")
+    setSendSuccess("")
+    setIsSending(true)
 
     if (!title.trim() || !message.trim()) {
-      setSendError("Title and Message cannot be empty.");
-      setIsSending(false);
-      return;
+      setSendError("Title and Message cannot be empty.")
+      setIsSending(false)
+      return
     }
 
     const announcementData = {
       title: title.trim(),
       message: message.trim(),
-      recipients: {
-        type: recipientType,
-        courseId: recipientType === 'course' ? selectedCourse : null,
-        groupId: recipientType === 'group' ? selectedGroup : null,
-      },
+      recipients: "all_students",
       timestamp: new Date().toISOString(),
-      sender: 'Faculty Member Name (e.g., Dr. Ichshanackiyan Doe)', // In real app, get from auth context
-    };
+      sender: "Faculty Member",
+      type: "announcement",
+    }
 
     try {
-      const response = await sendAnnouncement(announcementData);
-      setSendSuccess(response.message);
+      const response = await sendAnnouncementToAllStudents(announcementData)
+      setSendSuccess(response.message)
+
       // Clear form on success
-      setTitle('');
-      setMessage('');
-      setRecipientType('all');
-      setSelectedCourse('');
-      setSelectedGroup('');
+      setTitle("")
+      setMessage("")
     } catch (err) {
-      setSendError(err.message || "An unexpected error occurred.");
+      setSendError(err.message || "An unexpected error occurred.")
     } finally {
-      setIsSending(false);
+      setIsSending(false)
     }
-  };
+  }
 
   return (
-    <div className="bg-gray-100 min-h-screen p-4 sm:p-8 font-inter flex justify-center items-start">
-      <div className="bg-white rounded-xl shadow-lg p-8 max-w-3xl w-full mx-auto my-8">
-        <h2 className="text-3xl font-bold text-gray-800 mb-6 text-center flex items-center justify-center">
-          Send Announcement
-        </h2>
+    <div className="min-h-screen bg-gray-100 flex items-center justify-center p-4">
+      <div className="bg-white rounded-lg shadow-lg p-8 w-full max-w-2xl">
+        <h1 className="text-2xl font-bold text-gray-900 text-center mb-8">Send Announcement</h1>
 
         <form onSubmit={handleSubmit} className="space-y-6">
           {/* Announcement Title */}
           <div>
-            <label htmlFor="announcement-title" className="block text-sm font-medium text-gray-700 mb-1">
+            <label htmlFor="announcement-title" className="block text-sm font-medium text-gray-700 mb-2">
               Announcement Title <span className="text-red-500">*</span>
             </label>
             <input
@@ -103,15 +87,15 @@ const AnnouncementSender = () => {
               id="announcement-title"
               value={title}
               onChange={(e) => setTitle(e.target.value)}
-              className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-colors"
               placeholder="e.g., Important Update: Exam Schedule Change"
               required
             />
           </div>
 
-          {/* Announcement Message */}
+          {/* Message */}
           <div>
-            <label htmlFor="announcement-message" className="block text-sm font-medium text-gray-700 mb-1">
+            <label htmlFor="announcement-message" className="block text-sm font-medium text-gray-700 mb-2">
               Message <span className="text-red-500">*</span>
             </label>
             <textarea
@@ -119,129 +103,114 @@ const AnnouncementSender = () => {
               value={message}
               onChange={(e) => setMessage(e.target.value)}
               rows="6"
-              className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-colors resize-none"
               placeholder="Write your announcement message here..."
               required
             ></textarea>
           </div>
 
-          {/* Recipient Selection */}
+          {/* Send To - Simple text display without radio button */}
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">Send To:</label>
-            <div className="flex flex-wrap gap-4">
-              <label className="inline-flex items-center">
-                <input
-                  type="radio"
-                  className="form-radio h-4 w-4 text-blue-600"
-                  name="recipientType"
-                  value="all"
-                  checked={recipientType === 'all'}
-                  onChange={() => setRecipientType('all')}
+            <label className="block text-sm font-medium text-gray-700 mb-3">Send To:</label>
+            <div className="flex items-center text-gray-700">
+              <svg className="w-5 h-5 text-blue-600 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"
                 />
-                <span className="ml-2 text-gray-700">All Students</span>
-              </label>
-              <label className="inline-flex items-center">
-                <input
-                  type="radio"
-                  className="form-radio h-4 w-4 text-blue-600"
-                  name="recipientType"
-                  value="course"
-                  checked={recipientType === 'course'}
-                  onChange={() => setRecipientType('course')}
-                />
-                <span className="ml-2 text-gray-700">Specific Course</span>
-              </label>
-              <label className="inline-flex items-center">
-                <input
-                  type="radio"
-                  className="form-radio h-4 w-4 text-blue-600"
-                  name="recipientType"
-                  value="group"
-                  checked={recipientType === 'group'}
-                  onChange={() => setRecipientType('group')}
-                />
-                <span className="ml-2 text-gray-700">Specific Group</span>
-              </label>
+              </svg>
+              <span className="font-medium">All Students</span>
             </div>
-
-            {recipientType === 'course' && (
-              <div className="mt-4">
-                <label htmlFor="select-course" className="block text-sm font-medium text-gray-700 mb-1">
-                  Select Course:
-                </label>
-                <select
-                  id="select-course"
-                  value={selectedCourse}
-                  onChange={(e) => setSelectedCourse(e.target.value)}
-                  className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
-                >
-                  <option value="">-- Select a Course --</option>
-                  {mockCourses.map(course => (
-                    <option key={course.id} value={course.id}>{course.name}</option>
-                  ))}
-                </select>
-              </div>
-            )}
-
-            {recipientType === 'group' && (
-              <div className="mt-4">
-                <label htmlFor="select-group" className="block text-sm font-medium text-gray-700 mb-1">
-                  Select Group:
-                </label>
-                <select
-                  id="select-group"
-                  value={selectedGroup}
-                  onChange={(e) => setSelectedGroup(e.target.value)}
-                  className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
-                >
-                  <option value="">-- Select a Group --</option>
-                  {mockGroups.map(group => (
-                    <option key={group.id} value={group.id}>{group.name}</option>
-                  ))}
-                </select>
-              </div>
-            )}
+            <p className="text-sm text-gray-500 mt-1 ml-7">
+              This announcement will be sent to all students and will appear in their notifications.
+            </p>
           </div>
 
-          {/* Submission and Status */}
+          {/* Status Messages */}
           {sendError && (
-            <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative" role="alert">
-              <strong className="font-bold">Error!</strong>
-              <span className="block sm:inline"> {sendError}</span>
-            </div>
-          )}
-          {sendSuccess && (
-            <div className="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative" role="alert">
-              <strong className="font-bold">Success!</strong>
-              <span className="block sm:inline"> {sendSuccess}</span>
+            <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg">
+              <div className="flex items-center">
+                <svg className="w-5 h-5 text-red-400 mr-2 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                  <path
+                    fillRule="evenodd"
+                    d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z"
+                    clipRule="evenodd"
+                  />
+                </svg>
+                <div>
+                  <span className="font-medium">Error!</span>
+                  <span className="ml-1">{sendError}</span>
+                </div>
+              </div>
             </div>
           )}
 
-          <div className="flex justify-center">
+          {sendSuccess && (
+            <div className="bg-green-50 border border-green-200 text-green-700 px-4 py-3 rounded-lg">
+              <div className="flex items-center">
+                <svg className="w-5 h-5 text-green-400 mr-2 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                  <path
+                    fillRule="evenodd"
+                    d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
+                    clipRule="evenodd"
+                  />
+                </svg>
+                <div>
+                  <span className="font-medium">Success!</span>
+                  <span className="ml-1">{sendSuccess}</span>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* Submit Button */}
+          <div className="flex justify-center pt-4">
             <button
               type="submit"
-              className={`px-8 py-3 rounded-lg font-bold text-white shadow-md transition-colors duration-200 ${
-                isSending ? 'bg-blue-400 cursor-not-allowed' : 'bg-blue-600 hover:bg-blue-700'
-              }`}
               disabled={isSending}
+              className={`px-8 py-3 rounded-lg font-medium text-white transition-all duration-200 ${
+                isSending
+                  ? "bg-blue-400 cursor-not-allowed"
+                  : "bg-blue-600 hover:bg-blue-700 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transform hover:scale-105"
+              }`}
             >
               {isSending ? (
                 <span className="flex items-center">
-                  <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                  <svg
+                    className="animate-spin -ml-1 mr-3 h-5 w-5 text-white"
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                  >
+                    <circle
+                      className="opacity-25"
+                      cx="12"
+                      cy="12"
+                      r="10"
+                      stroke="currentColor"
+                      strokeWidth="4"
+                    ></circle>
+                    <path
+                      className="opacity-75"
+                      fill="currentColor"
+                      d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                    ></path>
                   </svg>
                   Sending...
                 </span>
               ) : (
-                'Send Announcement'
+                "Send Announcement"
               )}
             </button>
           </div>
         </form>
+
+        
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default AnnouncementSender;
+export default Announcements
