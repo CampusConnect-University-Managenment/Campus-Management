@@ -24,24 +24,6 @@ const FacultyCalendar = () => {
     }
   };
 
-  const handlePrev = () => {
-    if (currentMonth === 0) {
-      setCurrentMonth(11);
-      setCurrentYear((prev) => prev - 1);
-    } else {
-      setCurrentMonth((prev) => prev - 1);
-    }
-  };
-
-  const handleNext = () => {
-    if (currentMonth === 11) {
-      setCurrentMonth(0);
-      setCurrentYear((prev) => prev + 1);
-    } else {
-      setCurrentMonth((prev) => prev + 1);
-    }
-  };
-
   const getBoxColor = (type) => {
     switch (type) {
       case "Exam":
@@ -86,16 +68,40 @@ const FacultyCalendar = () => {
 
   return (
     <div className="p-4 w-full max-w-5xl mx-auto">
-      <div className="flex justify-between items-center mb-4 gap-3">
-        <button onClick={handlePrev} className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600">
-          ← Prev
-        </button>
-        <h2 className="text-2xl font-bold">{monthNames[currentMonth]} {currentYear}</h2>
-        <button onClick={handleNext} className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600">
-          Next →
-        </button>
+      {/* Dropdown Header */}
+      <div className="flex flex-col items-center gap-2 mb-4">
+        <div className="flex gap-2">
+          <select
+            value={currentMonth}
+            onChange={(e) => setCurrentMonth(Number(e.target.value))}
+            className="px-3 py-2 border rounded font-bold"
+          >
+            {monthNames.map((name, index) => (
+              <option key={index} value={index}>
+                {name}
+              </option>
+            ))}
+          </select>
+
+          <select
+            value={currentYear}
+            onChange={(e) => setCurrentYear(Number(e.target.value))}
+            className="px-3 py-2 border rounded font-bold"
+          >
+            {Array.from({ length: 25 }, (_, i) => 2015 + i).map((year) => (
+              <option key={year} value={year}>
+                {year}
+              </option>
+            ))}
+          </select>
+        </div>
+
+        <h2 className="text-2xl font-extrabold">
+          {monthNames[currentMonth]} {currentYear}
+        </h2>
       </div>
 
+      {/* Calendar Grid */}
       <div className="bg-white p-4 rounded-xl shadow-md border">
         <div className="grid grid-cols-7 text-center text-xs text-gray-500 uppercase mb-2 font-bold">
           {["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"].map((d) => (
@@ -108,9 +114,10 @@ const FacultyCalendar = () => {
             week.map((d, idx) => {
               const eventsToday = d ? getEventForDay(d) : [];
               const isToday = isThisMonth && d === todayDate;
-              const boxStyle = eventsToday.length > 0
-                ? getBoxColor(eventsToday[0].type)
-                : "bg-white";
+              const boxStyle =
+                eventsToday.length > 0
+                  ? getBoxColor(eventsToday[0].type)
+                  : "bg-white";
 
               return (
                 <div
