@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import FacultyCalendar from "./FacultyCalendar";
 import {
-  Megaphone,
   Library,
   LayoutGrid,
   GraduationCap,
@@ -18,108 +17,53 @@ const Card = ({ title, value, icon }) => (
 );
 
 const FacultyDashboard = () => {
-  const [announcements] = useState([
-    { title: "Exam Schedule Released", date: "22 Jul 2025" },
-    { title: "New Course Material Uploaded", date: "21 Jul 2025" },
-    { title: "Semester Registration Deadline", date: "20 Jul 2025" },
-    { title: "Lab Manuals Updated", date: "19 Jul 2025" },
-    { title: "Guest Lecture on AI", date: "18 Jul 2025" },
-  ]);
-
-  const [announcementPage, setAnnouncementPage] = useState(1);
-  const itemsPerPage = 3;
-
-  const paginatedAnnouncements = announcements.slice(
-    (announcementPage - 1) * itemsPerPage,
-    announcementPage * itemsPerPage
-  );
-
   return (
     <div className="p-6 mt-20 max-w-6xl mx-auto">
       <h1 className="text-3xl font-bold text-blue-700 mb-6">
         Welcome back, Professor! 👋
       </h1>
 
-      {/* Profile + Stats Section */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-10">
-        {/* Profile Card */}
-        <div className="bg-white shadow rounded-xl p-6 col-span-1">
-          <div className="flex items-center space-x-4">
-            <img
-              src="https://cdn-icons-png.flaticon.com/512/3135/3135715.png"
-              alt="Faculty"
-              className="w-16 h-16 rounded-full"
-            />
-            <div>
-              <h3 className="text-xl font-bold text-gray-800">Dr. Ashokkumar</h3>
-              <p className="text-gray-500 text-sm">Assistant Professor, CSE</p>
-              <p className="text-gray-400 text-xs mt-1">Faculty ID: FAC1234</p>
-            </div>
-          </div>
-        </div>
+      {/* Stats Cards + Profile Card */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-6 mb-10">
+        <Card
+          title="Courses Handling"
+          value="05"
+          icon={<Library size={24} className="text-blue-600" />}
+        />
+        <Card
+          title="Total Classes"
+          value="12"
+          icon={<LayoutGrid size={24} className="text-purple-600" />}
+        />
+        <Card
+          title="Total Students"
+          value="340"
+          icon={<GraduationCap size={24} className="text-green-600" />}
+        />
+        <Card
+          title="Dept Handling"
+          value="6"
+          icon={<Building2 size={24} className="text-teal-600" />}
+        />
 
-        {/* Stats Cards */}
-        <div className="grid grid-cols-2 gap-6 col-span-2">
-          <Card
-            title="Courses Handling"
-            value="05"
-            icon={<Library size={24} className="text-blue-600" />}
+        {/* Compact Profile Card */}
+        <div className="bg-gradient-to-tr from-blue-100 via-white to-purple-100 rounded-xl shadow p-4 flex flex-col items-center text-center">
+          <img
+            src="https://cdn-icons-png.flaticon.com/512/3135/3135715.png"
+            alt="Faculty"
+            className="w-12 h-12 rounded-full border border-gray-300 mb-2"
           />
-          <Card
-            title="Total Classes"
-            value="12"
-            icon={<LayoutGrid size={24} className="text-purple-600" />}
-          />
-          <Card
-            title="Total Students"
-            value="340"
-            icon={<GraduationCap size={24} className="text-green-600" />}
-          />
-          <Card
-            title="Dept Handling"
-            value="6"
-            icon={<Building2 size={24} className="text-teal-600" />}
-          />
+          <h3 className="text-sm font-semibold text-gray-800">Dr. Ashokkumar</h3>
+          <p className="text-xs text-gray-600">Asst. Professor, CSE</p>
+          <p className="text-xs text-gray-400">ID: FAC1234</p>
         </div>
       </div>
 
-      {/* Calendar + Announcements Section */}
-      <div className="flex flex-col lg:flex-row gap-6 mb-10">
-        {/* Calendar Section (larger) */}
-        <div className="flex-[2] bg-white shadow rounded-xl p-6">
+      {/* Calendar Section */}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <div className="bg-white shadow rounded-xl p-6 lg:col-span-3">
           <h2 className="text-xl font-semibold text-gray-800 mb-4">Faculty Calendar</h2>
           <FacultyCalendar />
-        </div>
-
-        {/* Announcements Section (smaller) */}
-        <div className="flex-[1] bg-white shadow rounded-xl p-6">
-          <h2 className="text-xl font-semibold text-gray-800 mb-4 flex items-center gap-2">
-            <Megaphone className="text-orange-500" /> Announcements
-          </h2>
-          <ul className="space-y-3">
-            {paginatedAnnouncements.map((ann, idx) => (
-              <li key={idx} className="border-b pb-2">
-                <p className="font-medium text-gray-700">{ann.title}</p>
-                <p className="text-sm text-gray-500">{ann.date}</p>
-              </li>
-            ))}
-          </ul>
-          <div className="flex justify-between mt-4">
-            <button
-              onClick={() => setAnnouncementPage((prev) => Math.max(prev - 1, 1))}
-              disabled={announcementPage === 1}
-              className="px-3 py-1 bg-gray-200 rounded"
-            >
-              Prev
-            </button>
-            <button
-              onClick={() => setAnnouncementPage((prev) => prev + 1)}
-              disabled={announcementPage * itemsPerPage >= announcements.length}
-              className="px-3 py-1 bg-gray-200 rounded"
-            >
-              Next
-            </button>
-          </div>
         </div>
       </div>
     </div>

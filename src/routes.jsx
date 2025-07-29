@@ -11,7 +11,7 @@ import NotificationMessage from "./pages/admin/Notification_Message";
 import MockCourse from "./pages/admin/course";
 import Assign from "./pages/admin/Assign_class";
 import AllStudents from "./pages/admin/students/components/AllStudents";
-import AttendanceUpload from "./pages/faculty/AttendanceUpload";
+import AttendanceUpload from "./pages/faculty/AttendanceUpload/new.jsx";
 import Notification_Message from "./pages/faculty/Notification_Message";
 import Announcements from "./pages/faculty/Announcements/components/Announcements";
 import StudentDashboard from "./pages/student/StudentDashBoard/components/StudentDashboard";
@@ -19,8 +19,9 @@ import FacultyProfile from "./pages/faculty/Profile";
 import EditFacultyProfile from "./pages/faculty/EditProfile";
 import ViewStudyMaterial from "./pages/faculty/Exam_InterFace/View_Components/ViewStudyMaterials";
 import ViewQuestionPaper from "./pages/faculty/Exam_InterFace/View_Components/ViewQuestionPaper";
-import ViewAssignmentQuestions from "./pages/faculty/Exam_InterFace/View_Components/ViewAssignment";
+import ViewAssignmentQuestions from "./pages/faculty/Exam_InterFace/View_Components/ViewAssignmentQuestions";
 import UploadAssignment from "./pages/faculty/Exam_InterFace/Upload_Components/Upload_Assignment";
+import FacultyAssignmentGrading from "./pages/faculty/Exam_InterFace/View_Components/ViewAssignmentAndGrade"
 import FacultyMarksUpdate from "./pages/faculty/Exam_InterFace/Upload_Components/Upload_Marks";
 import UploadQuestionPaper from "./pages/faculty/Exam_InterFace/Upload_Components/Upload_QuestionPaper";
 import UploadStudyMaterial from "./pages/faculty/Exam_InterFace/Upload_Components/Upload_StudyMaterials";
@@ -165,7 +166,7 @@ const routes = [
     component: <PerformanceAnalytics />,
   },
   {
-    name: "Chats",
+    name: "Discussion Forum",
     layout: "/student",
     path: "notifications",
     icon: <FaComments className="h-5 w-5" />,
@@ -216,7 +217,7 @@ const routes = [
     component: <AttendanceUpload />,
   },
   {
-    name: "Chats",
+    name: "Discussion Forum",
     layout: "/faculty",
     path: "Notification&Message",
     icon: <FaComments className="h-6 w-6"  />,
@@ -240,6 +241,11 @@ const routes = [
         layout: "/faculty",
         path: "ExamInterFace/upload-marks",
         component: <FacultyMarksUpdate />,
+      },
+      {
+        layout: "/faculty",
+        path: "ExamInterFace/view-assignment-and-grade",
+        component: <FacultyAssignmentGrading />,
       },
       {
         layout: "/faculty",
