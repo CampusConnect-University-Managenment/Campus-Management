@@ -11,7 +11,7 @@ import NotificationMessage from "./pages/admin/Notification_Message";
 import MockCourse from "./pages/admin/course";
 import Assign from "./pages/admin/Assign_class";
 import AllStudents from "./pages/admin/students/components/AllStudents";
-import AttendanceUpload from "./pages/faculty/AttendanceUpload";
+import AttendanceUpload from "./pages/faculty/AttendanceUpload/new.jsx";
 import Notification_Message from "./pages/faculty/Notification_Message";
 import Announcements from "./pages/faculty/Announcements/components/Announcements";
 import StudentDashboard from "./pages/student/StudentDashBoard/components/StudentDashboard";
