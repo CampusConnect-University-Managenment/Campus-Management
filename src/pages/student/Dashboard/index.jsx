@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+
 import {
   CalendarDays,
   NotebookPen,
@@ -19,24 +20,25 @@ export default function StudentDashboard() {
   const [selectedDate, setSelectedDate] = useState(null);
 
   // Dummy Academic Events (Admin will add in real case)
-  const academicEvents = [
-    // Exams (Blue)
-    { date: "2025-07-30", title: "Internal 1", type: "Exam" },
-    { date: "2025-08-10", title: "Internal 2", type: "Exam" },
-    { date: "2025-08-15", title: "Model Lab 1", type: "Exam" },
-    { date: "2025-08-18", title: "Model Lab 2", type: "Exam" },
-    { date: "2025-08-25", title: "End Semester Exam", type: "Exam" },
+  const [academicEvents, setAcademicEvents] = useState([]);
 
-    // Government Holidays (Red)
-    { date: "2025-08-05", title: "Independence Day Holiday", type: "Holiday" },
+useEffect(() => {
+  const data = localStorage.getItem("calendarEvents");
+  if (data) {
+    setAcademicEvents(JSON.parse(data));
+  }
+}, []);
+useEffect(() => {
+  const sync = () => {
+    const data = localStorage.getItem("calendarEvents");
+    if (data) {
+      setAcademicEvents(JSON.parse(data));
+    }
+  };
+  window.addEventListener("storage", sync);
+  return () => window.removeEventListener("storage", sync);
+}, []);
 
-    // Events (Green)
-    { date: "2025-08-12", title: "Musical Evening", type: "Event" },
-    { date: "2025-08-14", title: "Flash Mob", type: "Event" },
-    { date: "2025-08-19", title: "Hostel Day", type: "Event" },
-    { date: "2025-08-21", title: "Technical Event", type: "Event" },
-    { date: "2025-08-28", title: "Intercollege Fest (Dhruva)", type: "Event" },
-  ];
 
   const getCardClass = (cardKey) =>
     `rounded-xl shadow-md p-4 flex flex-col items-center justify-center transition-all duration-300 cursor-pointer ${
