@@ -446,6 +446,7 @@ const filteredStudents = students.filter((s) => {
   return (
     <div className="p-6 bg-gray-50 min-h-screen" style={{ paddingTop: "120px" }}>
       <AboutStudent students={students} />
+      <div className="mb-10">
 {!selectedDeptForPage ? (
   <DepartmentCards
     students={students}
@@ -457,10 +458,13 @@ const filteredStudents = students.filter((s) => {
     students={students}
     onBack={() => setSelectedDeptForPage(null)}
   />
-)}
+)}</div>
 
 
-
+   <h1 className="text-3xl font-bold flex items-center gap-2">
+       All Students
+      </h1>
+      <div className="mb-10">
       {/* Filters */}
       <div className="flex flex-wrap gap-4 items-center justify-between mb-6">
         <div className="flex items-center border rounded-md px-2 py-1 bg-white flex-1 max-w-sm">
@@ -515,7 +519,7 @@ const filteredStudents = students.filter((s) => {
 
         </div>
       </div>
-      
+     
       {/* Table */}
       <div className="bg-white rounded-lg shadow overflow-x-auto">
         <div className="p-4 border-b font-semibold text-lg text-gray-800 bg-gray-50 rounded-t-lg">
@@ -628,7 +632,8 @@ const filteredStudents = students.filter((s) => {
           </button>
         </div>
       )}
-
+ </div>
+      
      {/* Top CGPA + Top CGPA Department-wise - Side by Side */}
 <div className="mt-10 grid grid-cols-1 lg:grid-cols-2 gap-8">
   {/* Overall Top CGPA Students */}
