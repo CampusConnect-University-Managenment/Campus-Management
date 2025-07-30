@@ -1,8 +1,9 @@
+
+
 // import React, { useState } from "react";
 // import { ArrowRight, User, BookOpen } from "lucide-react";
 // import AddCourse from "./AddCourse";
 
-// // ✅ 3 Courses
 // const courses = [
 //   {
 //     id: 1,
@@ -33,7 +34,6 @@
 //   },
 // ];
 
-// // ✅ Course-specific Dummy Data with URLs
 // const courseData = {
 //   1: {
 //     materials: [
@@ -41,7 +41,7 @@
 //         title: "MLT Lecture Notes.pdf",
 //         postedOn: "Jan 20, 2025",
 //         type: "Material",
-//         url: "/files/mlt-stud.pdf", // public folder link
+//         url: "/files/mlt-stud.pdf",
 //       },
 //     ],
 //     questions: [
@@ -50,6 +50,22 @@
 //         type: "Question Paper",
 //         url: "/files/mlt-qb.pdf",
 //       },
+//     ],
+//     assignments: [
+//       {
+//         title: "Assignment 1 - ML Basics.pdf",
+//         url: "/files/mlt-stud.pdf",
+//         postedOn: "July 20, 2025",
+//         deadline: "July 30, 2025",
+//         isSubmitted: false
+//       },
+//       {
+//         title: "Assignment 2 - Supervised vs Unsupervised.pdf",
+//         url: "/files/ml-assignment2.pdf",
+//         postedOn: "July 22, 2025",
+//         deadline: "August 1, 2025",
+//         isSubmitted: false
+//       }
 //     ],
 //   },
 //   2: {
@@ -68,6 +84,15 @@
 //         url: "/files/ai-qb.pdf",
 //       },
 //     ],
+//     assignments: [
+//       {
+//         title: "Assignment 1 - ER Diagrams",
+//         postedOn: "July 10, 2025",
+//         deadline: "July 25, 2025",
+//         url: "/files/ai-stud.pdf",
+//         submitted: false,
+//       }
+//     ],
 //   },
 //   3: {
 //     materials: [
@@ -85,15 +110,15 @@
 //         url: "/files/dbms-qb.pdf",
 //       },
 //     ],
-//       assignments: [
-//     {
-//       title: "Assignment 1 - ER Diagrams",
-//       postedOn: "July 10, 2025",
-//       deadline: "July 25, 2025",
-//       url: "/files/assignment1.pdf",
-//       submitted: false,
-//     },
-//   ],
+//     assignments: [
+//       {
+//         title: "Assignment 1 - ER Diagrams",
+//         postedOn: "July 10, 2025",
+//         deadline: "July 25, 2025",
+//         url: "/files/ai-stud.pdf",
+//         submitted: false,
+//       },
+//     ],
 //   },
 // };
 
@@ -101,6 +126,8 @@
 //   const [showAddCourse, setShowAddCourse] = useState(false);
 //   const [selectedCourse, setSelectedCourse] = useState(null);
 //   const [activeTab, setActiveTab] = useState("materials");
+//   const [assignments, setAssignments] = useState("assignments");
+
 
 //   if (showAddCourse) {
 //     return <AddCourse onBack={() => setShowAddCourse(false)} />;
@@ -117,9 +144,15 @@
 
 //   if (selectedCourse) {
 //     const data = courseData[selectedCourse.id];
+
+//       const handleMarkAsDone = (index) => {
+//     const updatedAssignments = [...assignments];
+//     updatedAssignments[index].isSubmitted = true;
+//     setAssignments(updatedAssignments);
+//   };
+
 //     return (
 //       <div className="pt-24 px-10 pb-16 min-h-screen bg-gradient-to-tr from-[#f4f6ff] to-[#fbfbff]">
-//         {/* Header */}
 //         <div className="flex items-center justify-between mb-10">
 //           <h1 className="text-3xl font-bold text-blue-600">
 //             {selectedCourse.courseName} Portal
@@ -134,74 +167,34 @@
 
 //         {/* Tabs */}
 //         <div className="flex space-x-6 mb-6 border-b pb-2">
-//           <button
-//             className={`${
-//               activeTab === "materials"
-//                 ? "text-blue-600 border-b-2 border-blue-600 font-semibold"
-//                 : "text-gray-600"
-//             } pb-2`}
-//             onClick={() => setActiveTab("materials")}
-//           >
-//             Student Materials
-//           </button>
-//           <button
-//             className={`${
-//               activeTab === "questions"
-//                 ? "text-blue-600 border-b-2 border-blue-600 font-semibold"
-//                 : "text-gray-600"
-//             } pb-2`}
-//             onClick={() => setActiveTab("questions")}
-//           >
-//             Question Papers
-//           </button>
+//           {["materials", "questions", "assignments"].map((tab) => (
+//             <button
+//               key={tab}
+//               className={`${
+//                 activeTab === tab
+//                   ? "text-blue-600 border-b-2 border-blue-600 font-semibold"
+//                   : "text-gray-600"
+//               } pb-2 capitalize`}
+//               onClick={() => setActiveTab(tab)}
+//             >
+//               {tab === "materials"
+//                 ? "Student Materials"
+//                 : tab === "questions"
+//                 ? "Question Papers"
+//                 : "Assignments"}
+//             </button>
+//           ))}
 //         </div>
 
-//         <div className="mt-6">
-//   <h3 className="text-lg font-semibold mb-2">Assignments</h3>
-//   <div className="space-y-4">
-//     {course.assignments.map((a, idx) => (
-//       <div
-//         key={idx}
-//         className="border p-4 rounded-md shadow-sm flex flex-col md:flex-row md:items-center justify-between gap-4"
-//       >
-//         <div>
-//           <h4 className="text-md font-semibold">{a.title}</h4>
-//           <p className="text-sm text-gray-600">Posted On: {a.postedOn}</p>
-//           <p className="text-sm text-red-600">Deadline: {a.deadline}</p>
-//           <a
-//             href={a.url}
-//             target="_blank"
-//             rel="noopener noreferrer"
-//             className="text-blue-500 underline text-sm"
-//           >
-//             View Assignment
-//           </a>
-//         </div>
-
-//         <div className="flex flex-col md:flex-row items-start md:items-center gap-2">
-//           <input type="file" className="text-sm" />
-//           <button
-//             className="px-3 py-1 bg-green-600 text-white rounded hover:bg-green-700 text-sm"
-//           >
-//             Mark as Done
-//           </button>
-//         </div>
-//       </div>
-//     ))}
-//   </div>
-// </div>
-
-
-//         {/* Tab Content */}
+//         {/* Content */}
 //         <div className="bg-white rounded-lg shadow-md p-6">
-//           {activeTab === "materials" ? (
+//           {activeTab === "materials" && (
 //             <ul className="space-y-4">
 //               {data.materials.map((item, index) => (
 //                 <li
 //                   key={index}
 //                   className="flex justify-between items-center border rounded-lg p-3 hover:bg-gray-50"
 //                 >
-//                   {/* Left: File Name */}
 //                   <div className="flex items-center gap-3">
 //                     <span className="text-gray-500">📄</span>
 //                     <a
@@ -213,8 +206,6 @@
 //                       {index + 1}. {item.title}
 //                     </a>
 //                   </div>
-
-//                   {/* Right: Date + Type */}
 //                   <div className="flex items-center gap-4">
 //                     {item.postedOn && (
 //                       <span className="text-sm text-gray-500">
@@ -228,7 +219,9 @@
 //                 </li>
 //               ))}
 //             </ul>
-//           ) : (
+//           )}
+
+//           {activeTab === "questions" && (
 //             <ul className="space-y-4">
 //               {data.questions.map((item, index) => (
 //                 <li
@@ -253,6 +246,43 @@
 //               ))}
 //             </ul>
 //           )}
+
+          
+//             {activeTab === "assignments" && (
+//   <ul className="space-y-4">
+//     {data.assignments.length === 0 ? (
+//       <p className="text-gray-500 text-sm">No assignments available.</p>
+//     ) : (
+//       data.assignments.map((item, index) => (
+//         <li
+//           key={index}
+//           className="flex justify-between items-center border rounded-lg p-3 hover:bg-gray-50"
+//         >
+//           <div className="flex items-center gap-3">
+//             <span className="text-gray-500">📄</span>
+//             <a
+//               href={item.url}
+//               target="_blank"
+//               rel="noopener noreferrer"
+//               className="font-medium text-blue-700 hover:underline"
+//             >
+//               {index + 1}. {item.title}
+//             </a>
+//           </div>
+//           <a
+//             href={item.url}
+//             download
+//             className="text-sm text-blue-600 hover:underline flex items-center gap-1"
+//           >
+//             ⬇️ Download
+//           </a>
+//         </li>
+//       ))
+//     )}
+//   </ul>
+// )}
+
+          
 //         </div>
 //       </div>
 //     );
@@ -270,7 +300,6 @@
 //         </button>
 //       </div>
 
-//       {/* Show only 3 cards */}
 //       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
 //         {courses.map((course) => (
 //           <div
@@ -303,7 +332,6 @@
 //     </div>
 //   );
 // }
-
 import React, { useState } from "react";
 import { ArrowRight, User, BookOpen } from "lucide-react";
 import AddCourse from "./AddCourse";
@@ -347,12 +375,23 @@ const courseData = {
         type: "Material",
         url: "/files/mlt-stud.pdf",
       },
+      {
+        title: "MLT Algorithms.docx",
+        postedOn: "Jan 25, 2025",
+        type: "Material",
+        url: "/files/mlt-algo.docx",
+      },
     ],
     questions: [
       {
         title: "Midterm 2023.pdf",
         type: "Question Paper",
         url: "/files/mlt-qb.pdf",
+      },
+      {
+        title: "Final 2024.pdf",
+        type: "Question Paper",
+        url: "/files/mlt-final.pdf",
       },
     ],
     assignments: [
@@ -361,15 +400,15 @@ const courseData = {
         url: "/files/mlt-stud.pdf",
         postedOn: "July 20, 2025",
         deadline: "July 30, 2025",
-        isSubmitted: false
+        grade: null,
       },
       {
         title: "Assignment 2 - Supervised vs Unsupervised.pdf",
         url: "/files/ml-assignment2.pdf",
         postedOn: "July 22, 2025",
         deadline: "August 1, 2025",
-        isSubmitted: false
-      }
+        grade: "A",
+      },
     ],
   },
   2: {
@@ -394,8 +433,8 @@ const courseData = {
         postedOn: "July 10, 2025",
         deadline: "July 25, 2025",
         url: "/files/ai-stud.pdf",
-        submitted: false,
-      }
+        grade: "B+",
+      },
     ],
   },
   3: {
@@ -420,7 +459,7 @@ const courseData = {
         postedOn: "July 10, 2025",
         deadline: "July 25, 2025",
         url: "/files/ai-stud.pdf",
-        submitted: false,
+        grade: null,
       },
     ],
   },
@@ -430,12 +469,9 @@ export default function CoursesOverview() {
   const [showAddCourse, setShowAddCourse] = useState(false);
   const [selectedCourse, setSelectedCourse] = useState(null);
   const [activeTab, setActiveTab] = useState("materials");
-  const [assignments, setAssignments] = useState("assignments");
+  const [assignmentStatus, setAssignmentStatus] = useState({});
 
-
-  if (showAddCourse) {
-    return <AddCourse onBack={() => setShowAddCourse(false)} />;
-  }
+  if (showAddCourse) return <AddCourse onBack={() => setShowAddCourse(false)} />;
 
   const handleViewDetails = (course) => {
     setSelectedCourse(course);
@@ -446,14 +482,43 @@ export default function CoursesOverview() {
     setSelectedCourse(null);
   };
 
+  const handleFileChange = (courseId, index, file) => {
+    setAssignmentStatus((prev) => ({
+      ...prev,
+      [courseId]: {
+        ...prev[courseId],
+        [index]: { file, submitted: false },
+      },
+    }));
+  };
+
+  const handleSubmit = (courseId, index) => {
+    const currentFile = assignmentStatus[courseId]?.[index]?.file;
+    if (currentFile) {
+      setAssignmentStatus((prev) => ({
+        ...prev,
+        [courseId]: {
+          ...prev[courseId],
+          [index]: { ...prev[courseId][index], submitted: true },
+        },
+      }));
+      alert(`✅ Submitted: ${currentFile.name}`);
+    }
+  };
+
+  const handleRemoveSubmittedFile = (courseId, index) => {
+    setAssignmentStatus((prev) => {
+      const updated = { ...prev };
+      if (updated[courseId] && updated[courseId][index]) {
+        delete updated[courseId][index];
+      }
+      return updated;
+    });
+    alert("❌ File removed! You can upload a new one.");
+  };
+
   if (selectedCourse) {
     const data = courseData[selectedCourse.id];
-
-      const handleMarkAsDone = (index) => {
-    const updatedAssignments = [...assignments];
-    updatedAssignments[index].isSubmitted = true;
-    setAssignments(updatedAssignments);
-  };
 
     return (
       <div className="pt-24 px-10 pb-16 min-h-screen bg-gradient-to-tr from-[#f4f6ff] to-[#fbfbff]">
@@ -490,8 +555,8 @@ export default function CoursesOverview() {
           ))}
         </div>
 
-        {/* Content */}
         <div className="bg-white rounded-lg shadow-md p-6">
+          {/* Materials Section */}
           {activeTab === "materials" && (
             <ul className="space-y-4">
               {data.materials.map((item, index) => (
@@ -525,6 +590,7 @@ export default function CoursesOverview() {
             </ul>
           )}
 
+          {/* Questions Section */}
           {activeTab === "questions" && (
             <ul className="space-y-4">
               {data.questions.map((item, index) => (
@@ -551,42 +617,107 @@ export default function CoursesOverview() {
             </ul>
           )}
 
-          
-            {activeTab === "assignments" && (
-  <ul className="space-y-4">
-    {data.assignments.length === 0 ? (
-      <p className="text-gray-500 text-sm">No assignments available.</p>
-    ) : (
-      data.assignments.map((item, index) => (
-        <li
-          key={index}
-          className="flex justify-between items-center border rounded-lg p-3 hover:bg-gray-50"
-        >
-          <div className="flex items-center gap-3">
-            <span className="text-gray-500">📄</span>
-            <a
-              href={item.url}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="font-medium text-blue-700 hover:underline"
-            >
-              {index + 1}. {item.title}
-            </a>
-          </div>
-          <a
-            href={item.url}
-            download
-            className="text-sm text-blue-600 hover:underline flex items-center gap-1"
-          >
-            ⬇️ Download
-          </a>
-        </li>
-      ))
-    )}
-  </ul>
-)}
+          {/* Assignments Section */}
+          {activeTab === "assignments" && (
+            <ul className="space-y-4">
+              {data.assignments.map((item, index) => {
+                const status = assignmentStatus[selectedCourse.id]?.[index];
+                const fileSelected = status?.file;
+                const submitted = status?.submitted;
 
-          
+                return (
+                  <li
+                    key={index}
+                    className="flex flex-col border rounded-lg p-4 hover:bg-gray-50"
+                  >
+                    <div className="flex justify-between items-center mb-2">
+                      <div className="flex items-center gap-3">
+                        <span className="text-gray-500">📄</span>
+                        <a
+                          href={item.url}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="font-medium text-blue-700 hover:underline"
+                        >
+                          {index + 1}. {item.title}
+                        </a>
+                      </div>
+                      <a
+                        href={item.url}
+                        download
+                        className="text-sm text-blue-600 hover:underline flex items-center gap-1"
+                      >
+                        ⬇ Download
+                      </a>
+                    </div>
+
+                    <div className="text-sm text-gray-500 mb-2">
+                      Deadline: {item.deadline} | Posted on: {item.postedOn}
+                    </div>
+
+                    {/* Grade Display */}
+                    <p className="text-sm font-semibold mb-2">
+                      Grade:{" "}
+                      {item.grade ? (
+                        <span className="text-green-600">{item.grade}</span>
+                      ) : (
+                        <span className="text-gray-500">Not graded yet</span>
+                      )}
+                    </p>
+
+                    {/* Upload & Submit Section */}
+                    {!submitted ? (
+                      <div className="mt-2 flex flex-col sm:flex-row sm:items-center gap-3">
+                        <input
+                          type="file"
+                          accept=".pdf,.doc,.docx"
+                          onChange={(e) =>
+                            handleFileChange(
+                              selectedCourse.id,
+                              index,
+                              e.target.files[0]
+                            )
+                          }
+                          className="border rounded p-2 w-full sm:w-auto"
+                        />
+
+                        <button
+                          disabled={!fileSelected}
+                          onClick={() =>
+                            handleSubmit(selectedCourse.id, index)
+                          }
+                          className={`px-4 py-2 rounded text-white ${
+                            fileSelected
+                              ? "bg-green-600 hover:bg-green-700"
+                              : "bg-gray-400 cursor-not-allowed"
+                          }`}
+                        >
+                          Submit
+                        </button>
+                      </div>
+                    ) : (
+                      <div className="flex items-center justify-between mt-2">
+                        <p className="text-green-600 font-semibold">
+                          ✅ Submitted: {fileSelected?.name}
+                        </p>
+                        <button
+                          onClick={() =>
+                            handleRemoveSubmittedFile(
+                              selectedCourse.id,
+                              index
+                            )
+                          }
+                          className="px-4 py-2 bg-red-500 hover:bg-red-600 text-white rounded"
+                        >
+                          Remove
+                        </button>
+                      </div>
+                    )}
+                  </li>
+                );
+              })}
+            </ul>
+          )}
         </div>
       </div>
     );
