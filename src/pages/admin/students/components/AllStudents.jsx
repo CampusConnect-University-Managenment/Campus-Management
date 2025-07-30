@@ -5,7 +5,15 @@ import AboutStudent from "./AboutStudent";
 import AddStudent from "./AddStudent";
 import StudentProfile from "./StudentProfile";
 import PerformanceChart from "./PerformanceChart";
+import { useNavigate } from "react-router-dom";
+import DepartmentCards from "./DepartmentCards";
+import DepartmentStudentList from "./DepartmentStudentList";
+
+
+
 import BulkAddStudents from "./BulkAddStudents";
+import { FaLaptopCode, FaMicrochip, FaBolt, FaRobot, FaDatabase } from "react-icons/fa";
+
 import Notification from "./notification";
 
 const AllStudents = () => {
@@ -18,6 +26,8 @@ const AllStudents = () => {
   const [showBulkModal, setShowBulkModal] = useState(false);
   const [editingStudent, setEditingStudent] = useState(null);
   const [selectedStudent, setSelectedStudent] = useState(null);
+  const [selectedDeptForPage, setSelectedDeptForPage] = useState(null);
+
   const [showAll, setShowAll] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const studentsPerPage = 5;
@@ -436,6 +446,20 @@ const filteredStudents = students.filter((s) => {
   return (
     <div className="p-6 bg-gray-50 min-h-screen" style={{ paddingTop: "120px" }}>
       <AboutStudent students={students} />
+{!selectedDeptForPage ? (
+  <DepartmentCards
+    students={students}
+    onDeptClick={(dept) => setSelectedDeptForPage(dept)}
+  />
+) : (
+  <DepartmentStudentList
+    department={selectedDeptForPage}
+    students={students}
+    onBack={() => setSelectedDeptForPage(null)}
+  />
+)}
+
+
 
       {/* Filters */}
       <div className="flex flex-wrap gap-4 items-center justify-between mb-6">
@@ -491,7 +515,7 @@ const filteredStudents = students.filter((s) => {
 
         </div>
       </div>
-
+      
       {/* Table */}
       <div className="bg-white rounded-lg shadow overflow-x-auto">
         <div className="p-4 border-b font-semibold text-lg text-gray-800 bg-gray-50 rounded-t-lg">
@@ -605,11 +629,11 @@ const filteredStudents = students.filter((s) => {
         </div>
       )}
 
-     {/* Top CGPA + Placed Students - Side by Side */}
+     {/* Top CGPA + Top CGPA Department-wise - Side by Side */}
 <div className="mt-10 grid grid-cols-1 lg:grid-cols-2 gap-8">
-  {/* Top CGPA Students */}
+  {/* Overall Top CGPA Students */}
   <div>
-    <h3 className="text-xl font-bold text-blue-800 mb-4">🌟 Top Performing Students (CGPA)</h3>
+    <h3 className="text-xl font-bold text-blue-800 mb-4">🌟 Top Performing Students (CGPA - Overall)</h3>
     <div className="space-y-4">
       {topCGPAStudents.map((s, idx) => {
         const medals = ["🥇", "🥈", "🥉"];
@@ -621,15 +645,49 @@ const filteredStudents = students.filter((s) => {
             onClick={() => setSelectedStudent(s)}
           >
             <div className="text-3xl w-10 text-center">{medals[idx] || "🎓"}</div>
-            <img 
-              src={s.photo || "https://via.placeholder.com/150"} // Use s.photo and fallback to placeholder if missing
-              alt={s.name} 
-              className="w-12 h-12 rounded-full object-cover" 
+            <img
+              src={s.photo || "https://via.placeholder.com/150"}
+              alt={s.name}
+              className="w-12 h-12 rounded-full object-cover"
             />
             <div>
               <div className="font-semibold text-blue-800 hover:underline">{s.name}</div>
               <div className="text-sm text-gray-600">{s.department}</div>
               <div className="text-sm font-medium text-green-700">CGPA: {s.cgpa}</div>
+            </div>
+          </div>
+        );
+      })}
+    </div>
+  </div>
+
+  {/* Top CGPA Student per Department */}
+  <div>
+    <h3 className="text-xl font-bold text-purple-800 mb-4">🏆 Top Student in Each Department</h3>
+    <div className="space-y-4">
+      {departmentOptions.map((dept) => {
+        const topDeptStudent = [...students]
+          .filter((s) => s.department === dept)
+          .sort((a, b) => b.cgpa - a.cgpa)[0];
+
+        if (!topDeptStudent) return null;
+
+        return (
+          <div
+            key={dept}
+            className="flex items-center gap-4 p-4 rounded-lg shadow bg-purple-50 hover:shadow-md transition cursor-pointer"
+            onClick={() => setSelectedStudent(topDeptStudent)}
+          >
+            <div className="text-2xl w-10 text-center">🎓</div>
+            <img
+              src={topDeptStudent.photo || "https://via.placeholder.com/150"}
+              alt={topDeptStudent.name}
+              className="w-12 h-12 rounded-full object-cover"
+            />
+            <div>
+              <div className="font-semibold text-purple-900 hover:underline">{topDeptStudent.name}</div>
+              <div className="text-sm text-gray-700">{topDeptStudent.department}</div>
+              <div className="text-sm font-medium text-green-700">CGPA: {topDeptStudent.cgpa}</div>
             </div>
           </div>
         );

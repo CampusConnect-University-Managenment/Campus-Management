@@ -1,6 +1,6 @@
 import { useState } from 'react';
 
-const allMonthEvents = {
+const initialEvents = {
   0: [{ start: 1, end: 1, label: 'New Year', venue: 'Auditorium', time: '10:00 AM' }],
   1: [{ start: 14, end: 14, label: 'Hackathon', venue: 'Lab 4', time: '9:00 AM - 6:00 PM' }],
   2: [{ start: 8, end: 10, label: 'Tech Fest', venue: 'Main Block', time: '10:00 AM - 5:00 PM' }],
@@ -19,6 +19,14 @@ const Attendance = () => {
   const today = new Date();
   const [currentMonth, setCurrentMonth] = useState(today.getMonth());
   const [currentYear, setCurrentYear] = useState(today.getFullYear());
+  const [events, setEvents] = useState(initialEvents);
+  const [selectedDay, setSelectedDay] = useState(null);
+  const [formData, setFormData] = useState({
+    label: '',
+    venue: '',
+    time: '',
+    type: '',
+  });
 
   const handlePrev = () => {
     if (currentMonth === 0) {
@@ -27,6 +35,7 @@ const Attendance = () => {
     } else {
       setCurrentMonth((prev) => prev - 1);
     }
+    setSelectedDay(null);
   };
 
   const handleNext = () => {
@@ -36,10 +45,36 @@ const Attendance = () => {
     } else {
       setCurrentMonth((prev) => prev + 1);
     }
+    setSelectedDay(null);
   };
 
   const handleMonthChange = (e) => setCurrentMonth(Number(e.target.value));
   const handleYearChange = (e) => setCurrentYear(Number(e.target.value));
+  const handleDayClick = (day) => setSelectedDay(day);
+
+  const handleInputChange = (e) => {
+    setFormData((prev) => ({ ...prev, [e.target.name]: e.target.value }));
+  };
+
+  const handleAddEvent = () => {
+    if (!formData.label || !formData.venue || !formData.time || selectedDay == null) return;
+
+    const newEvent = {
+      start: selectedDay,
+      end: selectedDay,
+      label: formData.label,
+      venue: formData.venue,
+      time: formData.time,
+    };
+
+    setEvents((prev) => ({
+      ...prev,
+      [currentMonth]: [...(prev[currentMonth] || []), newEvent],
+    }));
+
+    setFormData({ label: '', venue: '', time: '', type: '' });
+    setSelectedDay(null);
+  };
 
   const monthNames = Array.from({ length: 12 }, (_, i) =>
     new Date(0, i).toLocaleString('default', { month: 'long' })
@@ -98,13 +133,76 @@ const Attendance = () => {
       <SingleMonthCalendar
         year={currentYear}
         month={currentMonth}
-        events={allMonthEvents[currentMonth] || []}
+        events={events[currentMonth] || []}
+        onDayClick={handleDayClick}
+        selectedDay={selectedDay}
       />
+
+      {selectedDay && (
+        <div className="mt-6 max-w-5xl mx-auto bg-white p-4 rounded-xl border shadow">
+          <h3 className="text-lg font-semibold mb-3">
+            Add Event for {`${currentYear}-${String(currentMonth + 1).padStart(2, '0')}-${String(selectedDay).padStart(2, '0')}`}
+          </h3>
+          <div className="flex flex-wrap items-center gap-3">
+            <input
+              type="text"
+              readOnly
+              value={`${currentYear}-${String(currentMonth + 1).padStart(2, '0')}-${String(selectedDay).padStart(2, '0')}`}
+              className="px-3 py-2 border rounded bg-gray-100 w-[130px]"
+            />
+            <input
+              type="text"
+              name="label"
+              placeholder="Event Title"
+              value={formData.label}
+              onChange={handleInputChange}
+              className="px-3 py-2 border rounded flex-1 min-w-[160px]"
+            />
+            <select
+              name="type"
+              value={formData.type}
+              onChange={handleInputChange}
+              className="px-3 py-2 border rounded min-w-[130px]"
+            >
+              <option value="">Select Type</option>
+              <option value="Workshop">Workshop</option>
+              <option value="Seminar">Seminar</option>
+              <option value="Exam">Exam</option>
+              <option value="Fest">Fest</option>
+              <option value="Holiday">Holiday</option>
+            </select>
+            <input
+              type="text"
+              name="venue"
+              placeholder="Venue"
+              value={formData.venue}
+              onChange={handleInputChange}
+              className="px-3 py-2 border rounded flex-1 min-w-[160px]"
+            />
+            <input
+              type="text"
+              name="time"
+              placeholder="Time (e.g., 10:00 AM - 12:00 PM)"
+              value={formData.time}
+              onChange={handleInputChange}
+              className="px-3 py-2 border rounded flex-1 min-w-[200px]"
+            />
+            <button
+              onClick={handleAddEvent}
+              className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
+            >
+              Save Event
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
 
-const SingleMonthCalendar = ({ year, month, events }) => {
+// --- SingleMonthCalendar (unchanged) ---
+
+const SingleMonthCalendar = ({ year, month, events, onDayClick, selectedDay }) => {
   const daysInMonth = new Date(year, month + 1, 0).getDate();
   const startDayIndex = new Date(year, month, 1).getDay();
   const today = new Date();
@@ -147,13 +245,14 @@ const SingleMonthCalendar = ({ year, month, events }) => {
             return (
               <div
                 key={`${wIdx}-${idx}`}
+                onClick={() => d && onDayClick(d)}
                 className={`
-                  relative min-h-[90px] p-2 overflow-visible
-                  flex flex-col justify-start items-start
-                  transition-transform duration-200 transform hover:-translate-y-1
+                  cursor-pointer relative min-h-[90px] p-2 overflow-visible
+                  flex flex-col justify-start items-start transition-transform duration-200 transform hover:-translate-y-1
                   ${!d ? 'bg-gray-100 text-gray-400' : ''}
                   ${d && event ? 'bg-green-200' : d ? 'bg-white' : ''}
                   ${d && isToday ? 'border-2 border-black' : 'border border-white'}
+                  ${d === selectedDay ? 'ring-2 ring-blue-600' : ''}
                   group hover:z-50 z-10
                 `}
               >

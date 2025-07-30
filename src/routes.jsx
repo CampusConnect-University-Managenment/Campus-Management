@@ -11,7 +11,7 @@ import NotificationMessage from "./pages/admin/Notification_Message";
 import MockCourse from "./pages/admin/course";
 import Assign from "./pages/admin/Assign_class";
 import AllStudents from "./pages/admin/students/components/AllStudents";
-import AttendanceUpload from "./pages/faculty/AttendanceUpload";
+import AttendanceUpload from "./pages/faculty/AttendanceUpload/new.jsx";
 import Notification_Message from "./pages/faculty/Notification_Message";
 import Announcements from "./pages/faculty/Announcements/components/Announcements";
 import StudentDashboard from "./pages/student/StudentDashBoard/components/StudentDashboard";
@@ -166,7 +166,7 @@ const routes = [
     component: <PerformanceAnalytics />,
   },
   {
-    name: "Chats",
+    name: "Discussion Forum",
     layout: "/student",
     path: "notifications",
     icon: <FaComments className="h-5 w-5" />,
@@ -217,7 +217,7 @@ const routes = [
     component: <AttendanceUpload />,
   },
   {
-    name: "Chats",
+    name: "Discussion Forum",
     layout: "/faculty",
     path: "Notification&Message",
     icon: <FaComments className="h-6 w-6"  />,
