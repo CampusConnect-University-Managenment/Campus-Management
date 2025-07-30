@@ -44,7 +44,7 @@ export default function HelpSupport() {
     };
 
     fetchRequests();
-  }, []);
+  }, [formState.registerNumber]); // Dependency added to re-fetch if registerNumber changes
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -80,6 +80,7 @@ export default function HelpSupport() {
       const savedRequest = await res.json();
       setPreviousRequests((prev) => [savedRequest, ...prev]);
 
+      // Reset form
       setFormState((prev) => ({
         ...prev,
         location: "",

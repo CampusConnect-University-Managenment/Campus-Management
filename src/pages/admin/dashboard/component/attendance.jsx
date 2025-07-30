@@ -1,31 +1,43 @@
 import { useState, useEffect } from 'react';
 
 const allMonthEvents = {
-  6: [
-    { start: 30, end: 30, label: 'Holiday - Seminar', venue: 'Campus', time: 'Holiday' },
-    { start: 31, end: 31, label: 'Mid Exams', venue: 'Class', time: '9:00 AM' },
-  ],
-  7: [
-    { start: 15, end: 15, label: 'Dhruva Fest', venue: 'Auditorium', time: '6:00 PM' }
-  ]
+  0: [{ start: 1, end: 1, label: 'New Year', venue: 'Auditorium', time: '10:00 AM' }],
+  1: [{ start: 14, end: 14, label: 'Hackathon', venue: 'Lab 4', time: '9:00 AM - 6:00 PM' }],
+  2: [{ start: 8, end: 10, label: 'Tech Fest', venue: 'Main Block', time: '10:00 AM - 5:00 PM' }],
+  3: [{ start: 25, end: 30, label: 'Project Week', venue: 'Project Hall', time: 'All Day' }],
+  4: [{ start: 1, end: 3, label: 'Cultural Fest', venue: 'Ground', time: '6:00 PM onwards' }],
+  5: [{ start: 18, end: 20, label: 'Mid Exams', venue: 'Classrooms', time: '9:00 AM' }],
+  6: [{ start: 15, end: 15, label: 'Seminar', venue: 'Conference Room', time: '2:00 PM - 4:00 PM' }],
+  7: [{ start: 12, end: 13, label: 'Workshop', venue: 'Lab 2', time: '10:00 AM - 3:00 PM' }],
+  8: [{ start: 5, end: 5, label: "Teacher's Day", venue: 'Auditorium', time: '11:00 AM' }],
+  9: [{ start: 2, end: 2, label: 'Orientation', venue: 'Hall A', time: '10:00 AM - 1:00 PM' }],
+  10: [{ start: 14, end: 14, label: "Children's Day", venue: 'Playground', time: '3:00 PM' }],
+  11: [{ start: 25, end: 25, label: 'Christmas', venue: 'Campus', time: 'Holiday' }],
 };
 
 const Attendance = () => {
   const today = new Date();
   const [currentMonth, setCurrentMonth] = useState(today.getMonth());
   const [currentYear, setCurrentYear] = useState(today.getFullYear());
+  const [events, setEvents] = useState(allMonthEvents);
   const [selectedCalendarDate, setSelectedCalendarDate] = useState(null);
-
-  const [eventDate, setEventDate] = useState('');
-  const [eventTitle, setEventTitle] = useState('');
-  const [eventType, setEventType] = useState('');
+  const [formData, setFormData] = useState({
+    label: '',
+    venue: '',
+    time: '',
+    type: '',
+  });
 
   useEffect(() => {
     if (selectedCalendarDate) {
       const [year, month, day] = selectedCalendarDate.split('-');
-      setEventDate(`${year}-${month}-${day}`);
-      setEventTitle('');
-      setEventType('');
+      // You can pre-populate the form with existing event data here if needed
+      setFormData({
+        label: '',
+        venue: '',
+        time: '',
+        type: '',
+      });
       document.getElementById('form-heading').innerText = `Add/Edit Event for ${selectedCalendarDate}`;
     }
   }, [selectedCalendarDate]);
@@ -60,9 +72,29 @@ const Attendance = () => {
     setSelectedCalendarDate(null);
   };
 
-  const handleClearForm = () => {
-    setEventTitle('');
-    setEventType('');
+  const handleInputChange = (e) => {
+    setFormData((prev) => ({ ...prev, [e.target.name]: e.target.value }));
+  };
+
+  const handleAddEvent = () => {
+    if (!formData.label || !formData.venue || !formData.time || selectedCalendarDate == null) return;
+    const [year, month, day] = selectedCalendarDate.split('-').map(Number);
+
+    const newEvent = {
+      start: day,
+      end: day,
+      label: formData.label,
+      venue: formData.venue,
+      time: formData.time,
+    };
+
+    setEvents((prev) => ({
+      ...prev,
+      [month - 1]: [...(prev[month - 1] || []), newEvent],
+    }));
+
+    setFormData({ label: '', venue: '', time: '', type: '' });
+    setSelectedCalendarDate(null);
   };
 
   const monthNames = Array.from({ length: 12 }, (_, i) =>
@@ -96,67 +128,74 @@ const Attendance = () => {
       <Calendar
         year={currentYear}
         month={currentMonth}
-        events={allMonthEvents[currentMonth] || []}
+        events={events[currentMonth] || []}
         selectedDate={selectedCalendarDate}
         setSelectedDate={setSelectedCalendarDate}
       />
 
       {selectedCalendarDate && (
-        <div className="bg-white p-6 rounded-xl shadow-md border w-full max-w-5xl mx-auto mt-8">
-          <div className="flex justify-between items-center mb-4">
-            <h3 id="form-heading" className="text-xl font-bold">Add/Edit Event</h3>
-            <button
-              onClick={handleClearForm}
-              className="px-4 py-2 bg-gray-200 text-gray-800 rounded hover:bg-gray-300 transition duration-150"
+        <div className="mt-6 max-w-5xl mx-auto bg-white p-4 rounded-xl border shadow">
+          <h3 id="form-heading" className="text-lg font-semibold mb-3">
+            Add Event for {selectedCalendarDate}
+          </h3>
+          <div className="flex flex-wrap items-center gap-3">
+            <input
+              type="text"
+              readOnly
+              value={selectedCalendarDate}
+              className="px-3 py-2 border rounded bg-gray-100 w-[130px]"
+            />
+            <input
+              type="text"
+              name="label"
+              placeholder="Event Title"
+              value={formData.label}
+              onChange={handleInputChange}
+              className="px-3 py-2 border rounded flex-1 min-w-[160px]"
+            />
+            <select
+              name="type"
+              value={formData.type}
+              onChange={handleInputChange}
+              className="px-3 py-2 border rounded min-w-[130px]"
             >
-              Clear Form
+              <option value="">Select Type</option>
+              <option value="Workshop">Workshop</option>
+              <option value="Seminar">Seminar</option>
+              <option value="Exam">Exam</option>
+              <option value="Fest">Fest</option>
+              <option value="Holiday">Holiday</option>
+            </select>
+            <input
+              type="text"
+              name="venue"
+              placeholder="Venue"
+              value={formData.venue}
+              onChange={handleInputChange}
+              className="px-3 py-2 border rounded flex-1 min-w-[160px]"
+            />
+            <input
+              type="text"
+              name="time"
+              placeholder="Time (e.g., 10:00 AM - 12:00 PM)"
+              value={formData.time}
+              onChange={handleInputChange}
+              className="px-3 py-2 border rounded flex-1 min-w-[200px]"
+            />
+            <button
+              onClick={handleAddEvent}
+              className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
+            >
+              Save Event
             </button>
           </div>
-
-          <form className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div>
-              <label htmlFor="eventDate" className="block text-sm font-medium text-gray-700">Date</label>
-              <input
-                type="text"
-                id="eventDate"
-                value={eventDate}
-                className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2"
-                readOnly
-              />
-            </div>
-
-            <div>
-              <label htmlFor="eventTitle" className="block text-sm font-medium text-gray-700">Event Title</label>
-              <input
-                type="text"
-                id="eventTitle"
-                value={eventTitle}
-                onChange={(e) => setEventTitle(e.target.value)}
-                className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2"
-                placeholder="e.g., Sports Meet"
-              />
-            </div>
-
-            <div className="col-span-1 md:col-span-2">
-              <label htmlFor="eventType" className="block text-sm font-medium text-gray-700">Event Type</label>
-              <select
-                id="eventType"
-                value={eventType}
-                onChange={(e) => setEventType(e.target.value)}
-                className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2"
-              >
-                <option value="">Select Type</option>
-                <option value="exam">Exam</option>
-                <option value="event">Event</option>
-                <option value="holiday">Holiday</option>
-              </select>
-            </div>
-          </form>
         </div>
       )}
     </div>
   );
 };
+
+// --- Calendar Component ---
 
 const Calendar = ({ year, month, events, selectedDate, setSelectedDate }) => {
   const today = new Date();
