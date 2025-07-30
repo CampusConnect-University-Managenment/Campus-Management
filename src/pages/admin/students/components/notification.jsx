@@ -1,166 +1,165 @@
-import React, { useState } from "react";
-import { useInView } from "react-intersection-observer";
+import React, { useState, useEffect } from "react";
 
-const Notification = () => {
-  const { ref } = useInView({ triggerOnce: true });
-
-  const [studentRequests, setStudentRequests] = useState([
-    { id: 1, studentName: "Alex Johnson", rollNo: "CS2021001", location: "Block A", subject: "AC not working in Room 205", description: "The air conditioning unit in Room 205 has stopped functioning since yesterday. Students are finding it very difficult to concentrate in the class due to the heat. Requesting urgent maintenance.", department: "CS", priority: "Medium", read: false },
-    { id: 2, studentName: "Maria Garcia", rollNo: "IT2021002", location: "Block B", subject: "Praise for Prof. Smith", description: "Prof. Smith has been using innovative teaching techniques that help students understand concepts much faster. She incorporates interactive sessions and real-life examples, making the classes engaging and productive.", department: "IT", priority: "Low", read: false },
-    { id: 3, studentName: "John Smith", rollNo: "ECE2021003", location: "Block C", subject: "Projector malfunction in Lab 3", description: "The projector in Lab 3 has stopped turning on. Multiple students have reported being unable to view lecture slides, and several classes have already been delayed due to this technical issue.", department: "ECE", priority: "High", read: false },
-    { id: 4, studentName: "Emma Wilson", rollNo: "EEE2021004", location: "Block A", subject: "Need more practice sessions", description: "Students are struggling to keep up with lab assignments and would appreciate additional practice sessions, particularly before exams, to clarify doubts and practice more problems.", department: "EEE", priority: "Medium", read: false },
-    { id: 5, studentName: "Ryan Lee", rollNo: "CS2021005", location: "Block B", subject: "Broken chair in Room 101", description: "One of the chairs in Room 101 is broken and poses a safety hazard. Students are avoiding using it as it wobbles and could break further, causing injury.", department: "CS", priority: "Low", read: false },
-    { id: 6, studentName: "Olivia Brown", rollNo: "IT2021006", location: "Library", subject: "Wi-Fi issues in Library", description: "Wi-Fi connectivity in the library has been intermittent for the past week, making it difficult for students to access online study materials and complete assignments.", department: "IT", priority: "Medium", read: false },
-    { id: 7, studentName: "Ethan Davis", rollNo: "ECE2021007", location: "Block C", subject: "Need extra office hours", description: "Students in the ECE department are finding the Math module challenging and have requested that the professor hold additional office hours to provide more guidance.", department: "ECE", priority: "High", read: false },
-    { id: 8, studentName: "Sophia Martinez", rollNo: "CS2021008", location: "Lab 1", subject: "Leaking ceiling in Lab 1", description: "Water leakage from the ceiling in Lab 1 has become a recurring issue, especially during rains, creating unsafe conditions for students and equipment.", department: "CS", priority: "High", read: false },
-    { id: 9, studentName: "Liam Thompson", rollNo: "EEE2021009", location: "Room 103", subject: "Appreciation for Prof. Allen", description: "Prof. Allen explains concepts with clarity and patience. Students find his classes easy to follow, even for complex topics, and wanted to share their appreciation.", department: "EEE", priority: "Low", read: false },
-    { id: 10, studentName: "Mason Clark", rollNo: "ECE2021010", location: "Room 210", subject: "No power in Room 210", description: "The electrical power supply in Room 210 is non-functional. Classes have been interrupted multiple times due to this, and students cannot use any equipment.", department: "ECE", priority: "High", read: false },
-    { id: 11, studentName: "Ava Rodriguez", rollNo: "CS2021011", location: "Lab 5", subject: "Need more programming examples", description: "Students have requested additional examples in programming classes as the current examples are too few and do not cover enough real-world scenarios.", department: "CS", priority: "Medium", read: false },
-    { id: 12, studentName: "Noah Walker", rollNo: "IT2021012", location: "IT Block", subject: "Whiteboard markers missing", description: "Most classrooms in the IT block lack working whiteboard markers. Professors often have to borrow markers from other rooms, disrupting classes.", department: "IT", priority: "Low", read: false },
-    { id: 13, studentName: "Isabella Hall", rollNo: "ECE2021013", location: "ECE Lab", subject: "Slow computer lab PCs", description: "The PCs in the ECE computer lab are very slow, making it difficult for students to complete lab work efficiently. Many systems frequently hang during use.", department: "ECE", priority: "Medium", read: false },
-    { id: 14, studentName: "James Allen", rollNo: "EEE2021014", location: "Lab 2", subject: "Request for more lab sessions", description: "Students in EEE would like additional lab sessions to better prepare for practical exams and to clarify doubts in person.", department: "EEE", priority: "Medium", read: false },
-    { id: 15, studentName: "Charlotte King", rollNo: "IT2021015", location: "Library", subject: "Printer not working in Library", description: "The main printer in the library has been out of service for three days. Students are unable to print notes or assignments, causing inconvenience.", department: "IT", priority: "High", read: false },
-  ]);
-
-  const [studentPage, setStudentPage] = useState(1);
-  const [selectedPriority, setSelectedPriority] = useState("High");
+const Notification = ({ isAdminView = false }) => {
+  const [priority, setPriority] = useState("High");
+  const [studentRequests, setStudentRequests] = useState([]);
   const [expandedId, setExpandedId] = useState(null);
-  const itemsPerPage = 15;
+  const [readIds, setReadIds] = useState(new Set());
+  const [completedIds, setCompletedIds] = useState(new Set());
 
-  const handleMarkCompleted = (id) =>
-    setStudentRequests(studentRequests.filter((r) => r.id !== id));
-  const handleMarkRead = (id) =>
-    setStudentRequests(studentRequests.map((r) => r.id === id ? { ...r, read: true } : r));
-  const toggleDescription = (id) =>
-    setExpandedId(expandedId === id ? null : id);
+  useEffect(() => {
+    const fetchRequests = async () => {
+      try {
+        const res = await fetch("http://localhost:5000/api/requests");
+        const data = await res.json();
+        setStudentRequests(Array.isArray(data) ? data : []);
+      } catch (err) {
+        console.error("Error fetching requests:", err);
+      }
+    };
+    fetchRequests();
+  }, []);
 
-  const paginate = (data, page) => {
-    const startIndex = (page - 1) * itemsPerPage;
-    return data.slice(startIndex, startIndex + itemsPerPage);
+  const toggleDescription = (id) => {
+    setExpandedId((prevId) => (prevId === id ? null : id));
   };
 
-  const buttonStyle = (disabled) => ({
-    fontSize: "18px",
-    padding: "6px 12px",
-    backgroundColor: disabled ? "#ccc" : "#1976d2",
-    color: "#fff",
-    border: "none",
-    borderRadius: "50%",
-    cursor: disabled ? "default" : "pointer",
-    width: "40px",
-    height: "40px",
-  });
+  const handleStatusUpdate = async (id, actionType) => {
+    if (actionType === "read") {
+      setReadIds((prev) => new Set([...prev, id]));
+    } else if (actionType === "resolve") {
+      setCompletedIds((prev) => new Set([...prev, id]));
+    }
 
-  const renderPaginationControls = (page, setPage, totalItems) => {
-    const totalPages = Math.ceil(totalItems / itemsPerPage);
-    return (
-      <div style={{ textAlign: "center", marginTop: "10px", display: "flex", justifyContent: "center", alignItems: "center", gap: "10px" }}>
-        <button onClick={() => setPage(page - 1)} disabled={page === 1} style={buttonStyle(page === 1)}>←</button>
-        <span style={{ fontWeight: "bold" }}>{page} / {totalPages}</span>
-        <button onClick={() => setPage(page + 1)} disabled={page === totalPages} style={buttonStyle(page === totalPages)}>→</button>
-      </div>
-    );
+    const endpoint =
+      actionType === "resolve"
+        ? `http://localhost:5000/api/requests/resolve/${id}`
+        : `http://localhost:5000/api/requests/markAsRead/${id}`;
+
+    try {
+      const res = await fetch(endpoint, { method: "PUT" });
+      if (!res.ok) throw new Error("Failed to update status");
+
+      const updatedRequest = await res.json();
+
+      if (actionType === "resolve") {
+        setStudentRequests((prev) => prev.filter((req) => req.id !== id));
+      } else if (actionType === "read") {
+        setStudentRequests((prev) =>
+          prev.map((req) => (req.id === id ? updatedRequest : req))
+        );
+      }
+    } catch (err) {
+      console.error("Error updating status:", err);
+      alert("Status update failed");
+    }
   };
 
-  const filteredRequests = paginate(
-    studentRequests.filter((r) => r.priority === selectedPriority),
-    studentPage
+  const filteredRequests = studentRequests.filter(
+    (req) => req.priority === priority && req.status !== "Resolved"
   );
 
   return (
-    <div className="bg-white p-6 rounded-2xl shadow-sm border h-full">
-      <div ref={ref} style={{ padding: "1rem", fontFamily: "Segoe UI, Roboto, sans-serif" }}>
-        <h1 style={{ fontSize: "28px", fontWeight: "bold", marginBottom: "1rem", textAlign: "center", color: "#333" }}>HELP DESK</h1>
+    <div className="min-h-screen bg-gray-100 p-6">
+      <h1 className="text-2xl font-bold mb-6 text-center">HELP DESK</h1>
 
-        {/* Tabs */}
-        <div style={{ display: "flex", justifyContent: "center", gap: "10px", marginBottom: "20px" }}>
-          {["High", "Medium", "Low"].map((priority) => (
-            <button
-              key={priority}
-              onClick={() => setSelectedPriority(priority)}
-              style={{
-                padding: "8px 16px",
-                backgroundColor: selectedPriority === priority ? "#1976d2" : "#e0e0e0",
-                color: selectedPriority === priority ? "#fff" : "#333",
-                border: "none",
-                borderRadius: "6px",
-                cursor: "pointer",
-              }}
-            >
-              {priority} Priority
-            </button>
-          ))}
-        </div>
+      <div className="flex justify-center space-x-4 mb-4">
+        {["High", "Medium", "Low"].map((level) => (
+          <button
+            key={level}
+            onClick={() => {
+              setPriority(level);
+              setExpandedId(null);
+            }}
+            className={`px-4 py-2 rounded ${
+              priority === level
+                ? level === "High"
+                  ? "bg-blue-600 text-white"
+                  : level === "Medium"
+                  ? "bg-yellow-500 text-white"
+                  : "bg-green-500 text-white"
+                : "bg-gray-300"
+            }`}
+          >
+            {level} Priority
+          </button>
+        ))}
+      </div>
 
-        <section>
-          <h2 style={{ fontWeight: "600", fontSize: "20px", marginBottom: "10px", color: "#444", textAlign: "center" }}>
-            {selectedPriority} Priority Requests
-          </h2>
+      <h2 className="text-xl font-semibold mb-4 text-center">
+        {priority} Priority Requests
+      </h2>
 
-          {filteredRequests.map((req) => (
-            <article
-              key={req.id}
-              style={{
-                border: "1px solid #ccc",
-                borderRadius: "8px",
-                padding: "10px",
-                marginBottom: "10px",
-                backgroundColor: req.read ? "#e6ffe6" : "#f9f9f9",
-                lineHeight: "1.5",
-              }}
-            >
-              <p><strong>Name:</strong> {req.studentName}</p>
-              <p><strong>Roll No.:</strong> {req.rollNo}</p>
-              <p><strong>Department:</strong> {req.department}</p>
-              <p><strong>Location:</strong> {req.location}</p>
+      {filteredRequests.length === 0 ? (
+        <p className="text-center text-gray-500">
+          No {priority.toLowerCase()} priority requests available.
+        </p>
+      ) : (
+        filteredRequests.map((req) => (
+          <article key={req.id} className="bg-white p-4 mb-4 rounded shadow">
+            <p>
+              <strong>Name:</strong> {req.name}
+            </p>
+            <p>
+              <strong>Roll No.:</strong> {req.registerNumber}
+            </p>
+            <p>
+              <strong>Department:</strong> {req.department}
+            </p>
+            <p>
+              <strong>Location:</strong> {req.location}
+            </p>
 
-              <p style={{ display: "flex", alignItems: "center", gap: "6px", maxWidth: "100%", marginBottom: "5px" }}>
-                <strong>Subject:</strong>
-                <span style={{ flex: 1, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
-                  {req.subject}
-                </span>
+            {expandedId === req.id ? (
+              <p>
+                <strong>Description:</strong> {req.description}
               </p>
+            ) : (
+              <p>
+                <strong>Subject:</strong>{" "}
+                {req.subject || (req.description?.slice(0, 50) + "...")}
+              </p>
+            )}
 
-              <button
-                onClick={() => toggleDescription(req.id)}
-                style={{
-                  background: "none",
-                  border: "none",
-                  color: "#1976d2",
-                  textDecoration: "underline",
-                  cursor: "pointer",
-                  marginBottom: "5px",
-                }}
-              >
-                {expandedId === req.id ? "Hide" : "View More"}
-              </button>
+            <button
+              onClick={() => toggleDescription(req.id)}
+              className="text-blue-600 text-sm mt-2"
+            >
+              {expandedId === req.id ? "View Less" : "View More"}
+            </button>
 
-              {expandedId === req.id && (
-                <p style={{ marginTop: "5px", whiteSpace: "pre-line" }}>
-                  <strong>Description:</strong> {req.description}
-                </p>
-              )}
-
-              <div style={{ display: "flex", gap: "10px", marginTop: "8px" }}>
+            <div className="mt-4 flex space-x-2">
+              {/* ✅ Mark as Completed / Resolved Label */}
+              {(isAdminView && completedIds.has(req.id)) ||
+              req.status === "Resolved" ? (
+                <span className="bg-green-100 text-green-700 px-3 py-1 rounded font-medium">
+                  Resolved
+                </span>
+              ) : (
                 <button
-                  onClick={() => handleMarkCompleted(req.id)}
-                  style={{ backgroundColor: "#4caf50", color: "#fff", border: "none", padding: "5px 10px", borderRadius: "4px", cursor: "pointer" }}
+                  onClick={() => handleStatusUpdate(req.id, "resolve")}
+                  className="px-3 py-1 rounded text-white transition bg-green-500 hover:bg-green-600"
                 >
                   Mark as Completed
                 </button>
-                <button
-                  onClick={() => handleMarkRead(req.id)}
-                  style={{ backgroundColor: "#ff9800", color: "#fff", border: "none", padding: "5px 10px", borderRadius: "4px", cursor: "pointer" }}
-                >
-                  Mark as Read
-                </button>
-              </div>
-            </article>
-          ))}
-        </section>
+              )}
 
-        {renderPaginationControls(studentPage, setStudentPage, studentRequests.filter((r) => r.priority === selectedPriority).length)}
-      </div>
+              {/* ✅ Mark as Read */}
+              <button
+                onClick={() => handleStatusUpdate(req.id, "read")}
+                className={`px-3 py-1 rounded text-white transition ${
+                  readIds.has(req.id) || completedIds.has(req.id)
+                    ? "bg-orange-300 opacity-50 cursor-not-allowed pointer-events-none"
+                    : "bg-orange-400 hover:bg-orange-500"
+                }`}
+                disabled={readIds.has(req.id) || completedIds.has(req.id)}
+              >
+                Mark as Read
+              </button>
+            </div>
+          </article>
+        ))
+      )}
     </div>
   );
 };
