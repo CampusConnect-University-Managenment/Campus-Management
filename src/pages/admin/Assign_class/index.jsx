@@ -1,9 +1,9 @@
-import AssignClass from "./component/assignClass"; 
+import AssignmentManager from "./component/assignmanager"; 
 
 const Assign = () => {
   return (
     <>
-           <AssignClass />
+           <AssignmentManager />
      </>
   )
 }
