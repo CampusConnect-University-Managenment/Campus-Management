@@ -24,7 +24,8 @@ export default function HelpSupport() {
       setIsLoading(true);
       setError(null);
       try {
-        const res = await fetch("http://localhost:5000/api/helpdesk/all");
+        const res = await fetch(`http://localhost:5000/api/requests/student/${formState.registerNumber}`);
+
         if (!res.ok) {
           throw new Error(`HTTP error! status: ${res.status}`);
         }
@@ -36,21 +37,21 @@ export default function HelpSupport() {
       } catch (err) {
         console.error("Failed to load requests:", err);
         setError(err.message);
-        setPreviousRequests([]); // Ensure it's always an array
+        setPreviousRequests([]);
       } finally {
         setIsLoading(false);
       }
     };
 
     fetchRequests();
-  }, []);
+  }, [formState.registerNumber]); // Dependency added to re-fetch if registerNumber changes
 
   const handleChange = (e) => {
     const { name, value } = e.target;
 
     if (name === "subject") {
       const wordCount = value.trim().split(/\s+/).filter(Boolean).length;
-      if (wordCount > 20) return; // Prevent more than 20 words
+      if (wordCount > 20) return;
     }
 
     setFormState((prev) => ({ ...prev, [name]: value }));
@@ -66,7 +67,7 @@ export default function HelpSupport() {
     };
 
     try {
-      const res = await fetch("http://localhost:5000/api/helpdesk/create", {
+      const res = await fetch("http://localhost:5000/api/requests/create", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -77,8 +78,6 @@ export default function HelpSupport() {
       if (!res.ok) throw new Error("Failed to submit request");
 
       const savedRequest = await res.json();
-
-      // Update local list
       setPreviousRequests((prev) => [savedRequest, ...prev]);
 
       // Reset form
@@ -95,7 +94,6 @@ export default function HelpSupport() {
     }
   };
 
-  // Ensure filteredRequests is always an array
   const filteredRequests = Array.isArray(previousRequests)
     ? filterStatus === "All"
       ? previousRequests
@@ -236,7 +234,6 @@ export default function HelpSupport() {
         </button>
       </form>
 
-      {/* Previous Requests with Pagination */}
       <div className="mt-10">
         <div className="flex justify-between items-center mb-4">
           <h2 className="text-xl font-semibold text-blue-700">
@@ -275,6 +272,12 @@ export default function HelpSupport() {
                     <p className="font-medium text-lg">{req.type}</p>
                     <p className="text-sm font-semibold text-gray-800">📌 {req.subject}</p>
                     <p className="text-gray-600 text-sm">{req.description}</p>
+
+                    {req.responseMessage && (
+                      <p className="text-sm italic text-blue-600 mt-1">
+                        💬 {req.responseMessage}
+                      </p>
+                    )}
                   </div>
                   <span
                     className={`font-semibold text-sm px-2 py-1 rounded ${

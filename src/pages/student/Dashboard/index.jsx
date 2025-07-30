@@ -1,5 +1,4 @@
-
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   CalendarDays,
   NotebookPen,
@@ -19,8 +18,8 @@ export default function StudentDashboard() {
   const [currentYear, setCurrentYear] = useState(today.getFullYear());
   const [selectedDate, setSelectedDate] = useState(null);
 
-  // Dummy Academic Events
-  const academicEvents = [
+  // Fallback Dummy Academic Events
+  const dummyAcademicEvents = [
     { date: "2025-07-30", title: "Internal 1", type: "Exam" },
     { date: "2025-08-10", title: "Internal 2", type: "Exam" },
     { date: "2025-08-05", title: "Model Lab 1", type: "Exam" },
@@ -35,6 +34,35 @@ export default function StudentDashboard() {
     { date: "2025-08-28", title: "Intercollege Fest (Dhruva)", type: "Event" },
     { date: "2025-07-15", title: "Seminar", type: "Event" },
   ];
+
+  const [academicEvents, setAcademicEvents] = useState([]);
+
+  useEffect(() => {
+    // Attempt to load events from localStorage,
+    // otherwise use the dummy data
+    try {
+      const data = localStorage.getItem("calendarEvents");
+      if (data) {
+        setAcademicEvents(JSON.parse(data));
+      } else {
+        setAcademicEvents(dummyAcademicEvents);
+      }
+    } catch (e) {
+      console.error("Failed to load events from localStorage", e);
+      setAcademicEvents(dummyAcademicEvents);
+    }
+  }, []);
+
+  useEffect(() => {
+    const sync = () => {
+      const data = localStorage.getItem("calendarEvents");
+      if (data) {
+        setAcademicEvents(JSON.parse(data));
+      }
+    };
+    window.addEventListener("storage", sync);
+    return () => window.removeEventListener("storage", sync);
+  }, []);
 
   const getCardClass = (cardKey) =>
     `rounded-xl shadow-md p-4 flex flex-col items-center justify-center transition-all duration-300 cursor-pointer ${
@@ -69,6 +97,7 @@ export default function StudentDashboard() {
     } else {
       setCurrentMonth(currentMonth - 1);
     }
+    setSelectedDate(null);
   };
 
   const nextMonth = () => {
@@ -78,6 +107,7 @@ export default function StudentDashboard() {
     } else {
       setCurrentMonth(currentMonth + 1);
     }
+    setSelectedDate(null);
   };
 
   const formatDate = (date) => {
@@ -235,6 +265,8 @@ export default function StudentDashboard() {
             {Array.from({ length: daysInMonth }, (_, i) => i + 1).map((date) => {
               const events = getEventsForDate(date);
               const hasEvent = events.length > 0;
+              const formattedDate = formatDate(date);
+              const isToday = today.getDate() === date && today.getMonth() === currentMonth && today.getFullYear() === currentYear;
 
               return (
                 <div
@@ -242,7 +274,7 @@ export default function StudentDashboard() {
                   onClick={() => setSelectedDate({ day: date, events })}
                   className={`p-4 h-24 border cursor-pointer relative text-sm text-center hover:bg-gray-100 ${
                     selectedDate?.day === date ? "border-2 border-black" : ""
-                  } ${hasEvent ? "bg-green-100" : ""}`}
+                  } ${isToday ? "bg-blue-100" : ""} ${hasEvent ? "bg-green-100" : ""}`}
                 >
                   <div className="font-bold">{date}</div>
                   {hasEvent && (
