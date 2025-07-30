@@ -1,4 +1,4 @@
-// Mock users data
+// ✅ Mock users used in UI and for matching senderId
 export const mockUsers = [
   {
     id: 1,
@@ -38,60 +38,31 @@ export const mockUsers = [
   },
 ]
 
-// Fixed mock chats data with clear separation of concerns
-export const mockChats = [
+/**
+ * ✅ Single course-based chat group
+ * Must match backend's groupId: "CSE101"
+ */
+export const mockChatsNew = [
   {
-    id: 1,
-    name: "General Announcements",
-    type: "general",
-    participantIds: [1, 2, 3, 4], // Array of user IDs for logic
-    participants: 4, // Number for display
+    id: "CSE101", // ✅ this is the groupId used by backend
+    name: "CSE101 - Demo Group",
+    type: "course",
+    participantIds: [1, 2], // Dr. Sarah (faculty) and John (student)
+    participants: 2,
     messages: [
       {
         id: 1,
-        content: "Welcome to the new academic year!",
-        senderId: 3,
-        senderName: "Admin User",
+        content: "Let's discuss the assignment.",
+        senderId: 1,
+        senderName: "Dr. Sarah Johnson",
         timestamp: new Date(Date.now() - 60000),
       },
       {
         id: 2,
-        content: "Please check your course schedules.",
-        senderId: 3,
-        senderName: "Admin User",
-        timestamp: new Date(Date.now() - 30000),
-      },
-    ],
-  },
-  {
-    id: 2,
-    name: "Faculty Discussion",
-    type: "faculty",
-    participantIds: [1, 3], // Array of user IDs for logic
-    participants: 2, // Number for display
-    messages: [
-      {
-        id: 1,
-        content: "How is the new semester going?",
-        senderId: 1,
-        senderName: "Dr. Sarah Johnson",
-        timestamp: new Date(Date.now() - 120000),
-      },
-    ],
-  },
-  {
-    id: 3,
-    name: "CS Students",
-    type: "general",
-    participantIds: [2, 4], // Array of user IDs for logic
-    participants: 2, // Number for display
-    messages: [
-      {
-        id: 1,
-        content: "Anyone have notes for today's lecture?",
+        content: "Sure! I'm almost done with mine.",
         senderId: 2,
         senderName: "John Smith",
-        timestamp: new Date(Date.now() - 180000),
+        timestamp: new Date(Date.now() - 30000),
       },
     ],
   },
