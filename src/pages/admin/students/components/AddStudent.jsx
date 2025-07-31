@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 
-const AddStudent = ({ editingStudent, onAddStudent, onEditStudent, onClose ,setSelectedStudent}) => {
+const AddStudent = ({ editingStudent, onSave, onEditStudent, onClose ,setSelectedStudent}) => {
   const [formData, setFormData] = useState({
   firstName: "",
   lastName: "",
@@ -104,7 +104,7 @@ useEffect(() => {
     setSelectedStudent(newStudent); // <-- Make sure StudentProfile updates
   }
 } else {
-  onAddStudent(newStudent); // Add new student
+  onSave(newStudent);
 }
 onClose(); // Close the modal after submit
   };
@@ -113,7 +113,9 @@ onClose(); // Close the modal after submit
   const yearOptions = ["1st Year", "2nd Year", "3rd Year", "4th Year"];
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-4 overflow-y-auto max-h-[90vh] p-4">
+    <div className="fixed inset-0 bg-black bg-opacity-30 flex items-center justify-center z-50">
+    <div className="bg-white p-6 rounded-lg shadow-lg w-full max-w-2xl max-h-[90vh] overflow-y-auto">
+    <form onSubmit={handleSubmit} className="space-y-4 ">
       <h2 className="text-xl font-bold mb-4">
         {editingStudent ? "Edit Student" : "Add New Student"}
       </h2>
@@ -382,8 +384,11 @@ onClose(); // Close the modal after submit
         >
           {editingStudent ? "Update Student" : "Add Student"}
         </button>
-      </div>
+        </div>
+  
     </form>
+          </div>
+      </div>
   );
 };
 
