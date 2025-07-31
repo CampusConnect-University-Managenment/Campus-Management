@@ -1,9 +1,45 @@
-import React from "react";
+
+import React, { useState } from "react";
 import { User, Lock } from "lucide-react";
 import { FaUniversity } from "react-icons/fa";
 import illustration from "../../../assets/images/collegecampus-bro.svg"; // adjust path if needed
-
+import axios from "axios"; // install if not: npm install axios
 export default function LoginPage() {
+  
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
+const handleLogin = async () => {
+  try {
+    const response = await axios.post("http://localhost:8088/api/auth/login", {
+      username,
+      password
+    });
+
+    const { token, role } = response.data;
+
+    // Optionally store the token (for protected routes)
+    localStorage.setItem("token", token);
+
+    // Redirect based on role
+    switch (role) {
+      case "admin":
+        window.location.href = "/admin/default";
+        break;
+      case "faculty":
+        window.location.href = "/faculty/default";
+        break;
+      case "student":
+        window.location.href = "/student/default";
+        break;
+      default:
+        setError("Invalid role");
+    }
+  } catch (err) {
+    setError("Invalid credentials or unauthorized access.");
+  }
+};
+
   return (
     <div className="flex h-screen w-full relative  ">
       {/* Top-Left Project Name */}
@@ -38,16 +74,19 @@ export default function LoginPage() {
           </h3>
 
           {/* Username Field */}
-          <div className="mb-6 relative">
-            <span className="absolute left-3 top-3.5 text-black">
-              <User size={20} />
-            </span>
-            <input
-              type="text"
-              placeholder="Username"
-              className="pl-10 pr-4 py-2 w-full rounded-md text-black focus:outline-none focus:ring-2 focus:ring-blue-400 hover:ring-2 hover:ring-blue-300 transition"
-            />
-          </div>
+         <div className="mb-6 relative">
+  <span className="absolute left-3 top-3.5 text-black">
+    <User size={20} />
+  </span>
+  <input
+    type="text"
+    placeholder="Username"
+    value={username}
+    onChange={(e) => setUsername(e.target.value)}
+    className="pl-10 pr-4 py-2 w-full rounded-md text-black focus:outline-none focus:ring-2 focus:ring-blue-400 hover:ring-2 hover:ring-blue-300 transition"
+  />
+</div>
+
 
           {/* Password Field */}
           <div className="mb-6 relative">
@@ -57,6 +96,8 @@ export default function LoginPage() {
             <input
               type="password"
               placeholder="Password"
+              value={password}
+              onChange={(e)=>setPassword(e.target.value)}
               className="pl-10 pr-4 py-2 w-full rounded-md text-black focus:outline-none focus:ring-2 focus:ring-blue-400 hover:ring-2 hover:ring-blue-300 transition"
             />
           </div>
@@ -67,17 +108,15 @@ export default function LoginPage() {
               <input type="checkbox" className="accent-black" />
               <span>Remember me</span>
             </label>
-            <a href="#" className="text-white underline hover:text-gray-200">
-              Forgot Password?
-            </a>
+          
           </div>
 
           {/* Login Button */}
-          <button className="w-full bg-black text-white py-2 rounded-md hover:opacity-90 transition">
+          <button   onClick={handleLogin} className="w-full bg-black text-white py-2 rounded-md hover:opacity-90 transition">
             Login
           </button>
         </div>
       </div>
     </div>
   );
-}
+} 

@@ -1,186 +1,254 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import axios from 'axios';
 
-const allMonthEvents = {
-  0: [{ start: 1, end: 1, label: 'New Year', venue: 'Auditorium', time: '10:00 AM' }],
-  1: [{ start: 14, end: 14, label: 'Hackathon', venue: 'Lab 4', time: '9:00 AM - 6:00 PM' }],
-  2: [{ start: 8, end: 10, label: 'Tech Fest', venue: 'Main Block', time: '10:00 AM - 5:00 PM' }],
-  3: [{ start: 25, end: 30, label: 'Project Week', venue: 'Project Hall', time: 'All Day' }],
-  4: [{ start: 1, end: 3, label: 'Cultural Fest', venue: 'Ground', time: '6:00 PM onwards' }],
-  5: [{ start: 18, end: 20, label: 'Mid Exams', venue: 'Classrooms', time: '9:00 AM' }],
-  6: [{ start: 15, end: 15, label: 'Seminar', venue: 'Conference Room', time: '2:00 PM - 4:00 PM' }],
-  7: [{ start: 12, end: 13, label: 'Workshop', venue: 'Lab 2', time: '10:00 AM - 3:00 PM' }],
-  8: [{ start: 5, end: 5, label: "Teacher's Day", venue: 'Auditorium', time: '11:00 AM' }],
-  9: [{ start: 2, end: 2, label: 'Orientation', venue: 'Hall A', time: '10:00 AM - 1:00 PM' }],
-  10: [{ start: 14, end: 14, label: "Children's Day", venue: 'Playground', time: '3:00 PM' }],
-  11: [{ start: 25, end: 25, label: 'Christmas', venue: 'Campus', time: 'Holiday' }],
+const formatDateToYMD = (date) => {
+  try {
+    return new Date(date).toISOString().slice(0, 10);
+  } catch (err) {
+    return '';
+  }
+};
+
+const Calendar = ({ year, month, events, selectedDate, setSelectedDate }) => {
+  const daysInMonth = new Date(year, month + 1, 0).getDate();
+  const startDay = new Date(year, month, 1).getDay();
+  const weeks = [];
+  let day = 1 - startDay;
+
+  while (day <= daysInMonth) {
+    const week = [];
+    for (let i = 0; i < 7; i++) {
+      week.push(day > 0 && day <= daysInMonth ? day : null);
+      day++;
+    }
+    weeks.push(week);
+  }
+
+  const getEventsForDay = (d) => {
+    const dayStr = `${year}-${String(month + 1).padStart(2, '0')}-${String(d).padStart(2, '0')}`;
+    return events.filter(ev => dayStr >= ev.startDate && dayStr <= ev.endDate);
+  };
+
+  const getBoxStyle = (type) => {
+    switch (type.toLowerCase()) {
+      case 'exam': return 'bg-blue-200';
+      case 'modal lab': return 'bg-purple-200';
+      case 'holiday': return 'bg-red-300';
+      default: return 'bg-green-200';
+    }
+  };
+
+  return (
+    <div className="bg-white border rounded-xl shadow-md p-4 max-w-5xl mx-auto">
+      <div className="grid grid-cols-7 text-center text-xs text-gray-600 font-bold mb-2">
+        {['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].map((d) => <div key={d}>{d}</div>)}
+      </div>
+
+      <div className="grid grid-cols-7 gap-0 bg-gray-200 text-sm">
+        {weeks.map((week, i) =>
+          week.map((d, j) => {
+            const formattedKey = d ? `${year}-${String(month + 1).padStart(2, '0')}-${String(d).padStart(2, '0')}` : null;
+            const isSelected = selectedDate === formattedKey;
+            const eventsToday = d ? getEventsForDay(d) : [];
+
+            return (
+              <div
+                key={`${i}-${j}`}
+                onClick={d ? () => setSelectedDate(formattedKey) : undefined}
+                className={`min-h-[90px] p-2 flex flex-col items-start justify-start
+                  ${d ? 'bg-white cursor-pointer' : 'bg-gray-100 text-gray-400'}
+                  ${d && isSelected ? 'border border-black' : 'border border-white'}
+                `}
+              >
+                {d && <div className="text-lg font-extrabold">{d}</div>}
+                {eventsToday.map((ev, idx) => (
+                  <div key={idx} className={`text-xs mt-1 px-2 py-1 rounded ${getBoxStyle(ev.type)} font-semibold`}>
+                    {ev.title}
+                  </div>
+                ))}
+              </div>
+            );
+          })
+        )}
+      </div>
+    </div>
+  );
 };
 
 const Attendance = () => {
   const today = new Date();
   const [currentMonth, setCurrentMonth] = useState(today.getMonth());
   const [currentYear, setCurrentYear] = useState(today.getFullYear());
+  const [selectedDate, setSelectedDate] = useState(null);
+  const [startDate, setStartDate] = useState('');
+  const [endDate, setEndDate] = useState('');
+  const [eventTitle, setEventTitle] = useState('');
+  const [eventType, setEventType] = useState('');
+  const [eventId, setEventId] = useState(null);
+  const [events, setEvents] = useState([]);
+  const [manualEdit, setManualEdit] = useState(false);
 
-  const handlePrev = () => {
-    if (currentMonth === 0) {
-      setCurrentMonth(11);
-      setCurrentYear((prev) => prev - 1);
-    } else {
-      setCurrentMonth((prev) => prev - 1);
+  const fetchEvents = async () => {
+    try {
+      const res = await axios.get('http://localhost:5000/api/events');
+      setEvents(res.data);
+    } catch (err) {
+      console.error('Failed to fetch events:', err);
     }
   };
 
-  const handleNext = () => {
-    if (currentMonth === 11) {
-      setCurrentMonth(0);
-      setCurrentYear((prev) => prev + 1);
-    } else {
-      setCurrentMonth((prev) => prev + 1);
+  useEffect(() => {
+    fetchEvents();
+  }, [currentMonth, currentYear]);
+
+  useEffect(() => {
+    if (selectedDate) {
+      const found = events.find(ev => selectedDate >= ev.startDate && selectedDate <= ev.endDate);
+      setStartDate(found ? found.startDate : selectedDate);
+      setEndDate(found ? found.endDate : selectedDate);
+      setEventTitle(found ? found.title : '');
+      setEventType(found ? found.type : '');
+      setEventId(found ? found.id : null);
+    }
+  }, [selectedDate]);
+
+  useEffect(() => {
+    if (selectedDate && !manualEdit) autoFillRange(eventType, selectedDate);
+  }, [eventType]);
+
+  const autoFillRange = (type, baseDate) => {
+    if (!type || !baseDate) return;
+    const start = new Date(baseDate);
+    let current = new Date(start);
+    let added = 0, daysNeeded = 0;
+
+    if (type === 'exam') daysNeeded = 6;
+    else if (type === 'modal lab') daysNeeded = 3;
+    else {
+      setStartDate(baseDate);
+      setEndDate(baseDate);
+      return;
+    }
+
+    while (added < daysNeeded) {
+      current.setDate(current.getDate() + 1);
+      if (current.getDay() !== 0) added++; // Skip Sundays
+    }
+
+    setStartDate(baseDate);
+    setEndDate(formatDateToYMD(current));
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    if (!eventTitle || !eventType || !startDate || !endDate) return alert('Fill all fields');
+    if (startDate > endDate) return alert('Start date after end date');
+
+    const payload = { startDate, endDate, title: eventTitle, type: eventType };
+    try {
+      if (eventId) {
+        await axios.put(`http://localhost:5000/api/events/${eventId}`, payload);
+        alert('Event updated');
+      } else {
+        await axios.post('http://localhost:5000/api/events', payload);
+        alert('Event created');
+      }
+      fetchEvents();
+      clearForm();
+    } catch (err) {
+      console.error(err);
+      alert('Failed to save event.');
     }
   };
 
-  const handleMonthChange = (e) => setCurrentMonth(Number(e.target.value));
-  const handleYearChange = (e) => setCurrentYear(Number(e.target.value));
+  const handleDelete = async () => {
+    if (!eventId) return;
+    if (!window.confirm("Are you sure to delete this event?")) return;
 
-  const monthNames = Array.from({ length: 12 }, (_, i) =>
-    new Date(0, i).toLocaleString('default', { month: 'long' })
-  );
-  const maxYear = today.getFullYear();
-  const yearOptions = Array.from({ length: maxYear - 1999 }, (_, i) => 2000 + i);
+    try {
+      await axios.delete(`http://localhost:5000/api/events/${eventId}`);
+      alert("Event deleted");
+      fetchEvents();
+      clearForm();
+    } catch (err) {
+      console.error(err);
+      alert("Failed to delete event.");
+    }
+  };
+
+  const clearForm = () => {
+    setEventId(null);
+    setStartDate('');
+    setEndDate('');
+    setEventTitle('');
+    setEventType('');
+    setSelectedDate(null);
+    setManualEdit(false);
+  };
 
   return (
     <div className="p-4">
-      <div className="flex flex-wrap justify-between items-center max-w-5xl mx-auto mb-4 gap-3">
-        <button
-          onClick={handlePrev}
-          className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
-        >
-          ← Prev
-        </button>
-
-        <div className="flex items-center gap-3">
-          <select
-            value={currentMonth}
-            onChange={handleMonthChange}
-            className="px-3 py-2 border rounded font-bold"
-          >
-            {monthNames.map((name, index) => (
-              <option key={index} value={index}>
-                {name}
-              </option>
-            ))}
+      <div className="flex justify-between items-center max-w-5xl mx-auto mb-4 gap-3">
+        <button onClick={() => setCurrentMonth(prev => prev === 0 ? 11 : prev - 1)} className="bg-blue-500 text-white px-4 py-2 rounded">← Prev</button>
+        <div className="flex gap-3">
+          <select value={currentMonth} onChange={(e) => setCurrentMonth(Number(e.target.value))} className="border p-2 rounded">
+            {[...Array(12)].map((_, idx) => <option key={idx} value={idx}>{new Date(0, idx).toLocaleString('default', { month: 'long' })}</option>)}
           </select>
-
-          <select
-            value={currentYear}
-            onChange={handleYearChange}
-            className="px-3 py-2 border rounded font-bold"
-          >
-            {yearOptions.map((year) => (
-              <option key={year} value={year}>
-                {year}
-              </option>
-            ))}
+          <select value={currentYear} onChange={(e) => setCurrentYear(Number(e.target.value))} className="border p-2 rounded">
+            {[...Array(10)].map((_, i) => today.getFullYear() - 5 + i).map((y) => <option key={y} value={y}>{y}</option>)}
           </select>
         </div>
-
-        <button
-          onClick={handleNext}
-          className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
-        >
-          Next →
-        </button>
+        <button onClick={() => setCurrentMonth(prev => prev === 11 ? 0 : prev + 1)} className="bg-blue-500 text-white px-4 py-2 rounded">Next →</button>
       </div>
 
-      <h2 className="text-2xl font-extrabold text-center w-full mb-4">
-        {monthNames[currentMonth]} {currentYear}
-      </h2>
-
-      <SingleMonthCalendar
+      <Calendar
         year={currentYear}
         month={currentMonth}
-        events={allMonthEvents[currentMonth] || []}
+        events={events}
+        selectedDate={selectedDate}
+        setSelectedDate={setSelectedDate}
       />
-    </div>
-  );
-};
 
-const SingleMonthCalendar = ({ year, month, events }) => {
-  const daysInMonth = new Date(year, month + 1, 0).getDate();
-  const startDayIndex = new Date(year, month, 1).getDay();
-  const today = new Date();
-  const isThisMonth = today.getMonth() === month && today.getFullYear() === year;
-  const todayDay = today.getDate();
-
-  const weeks = [];
-  let day = 1 - startDayIndex;
-  while (day <= daysInMonth) {
-    const week = [];
-    for (let i = 0; i < 7; i++) {
-      if (day > 0 && day <= daysInMonth) {
-        week.push(day);
-      } else {
-        week.push(null);
-      }
-      day++;
-    }
-    weeks.push(week);
-  }
-
-  const getEventForDay = (d) => {
-    return events.find((e) => d >= e.start && d <= e.end);
-  };
-
-  return (
-    <div className="bg-white p-4 rounded-xl shadow-md border w-full max-w-5xl mx-auto">
-      <div className="grid grid-cols-7 text-center text-xs text-gray-500 uppercase mb-2 font-bold">
-        {['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].map((d) => (
-          <div key={d}>{d}</div>
-        ))}
-      </div>
-
-      <div className="grid grid-cols-7 gap-[1px] bg-gray-200 text-sm overflow-visible relative z-0">
-        {weeks.map((week, wIdx) =>
-          week.map((d, idx) => {
-            const isToday = isThisMonth && d === todayDay;
-            const event = d ? getEventForDay(d) : null;
-
-            return (
-              <div
-                key={`${wIdx}-${idx}`}
-                className={`
-                  relative min-h-[90px] p-2 overflow-visible
-                  flex flex-col justify-start items-start
-                  transition-transform duration-200 transform hover:-translate-y-1
-                  ${!d ? 'bg-gray-100 text-gray-400' : ''}
-                  ${d && event ? 'bg-green-200' : d ? 'bg-white' : ''}
-                  ${d && isToday ? 'border-2 border-black' : 'border border-white'}
-                  group hover:z-50 z-10
-                `}
-              >
-                {d && <div className="text-lg font-extrabold text-gray-800">{d}</div>}
-
-                {d && event && (
-                  <>
-                    <div className="mt-1 text-sm font-bold text-green-800 leading-snug truncate">
-                      {event.label}
-                    </div>
-                    <div
-                      className={`
-                        absolute hidden group-hover:block bg-black text-white text-xs rounded p-2 w-44 shadow-lg
-                        ${idx >= 5 ? 'right-full mr-2 top-0' : 'left-full ml-2 top-0'}
-                      `}
-                    >
-                      <div><strong>{event.label}</strong></div>
-                      <div>📍 {event.venue}</div>
-                      <div>⏰ {event.time}</div>
-                    </div>
-                  </>
-                )}
-              </div>
-            );
-          })
-        )}
-      </div>
+      {selectedDate && (
+        <div className="bg-white p-6 mt-6 border rounded-xl shadow-md max-w-5xl mx-auto">
+          <div className="flex justify-between items-center mb-4">
+            <h3 className="text-xl font-semibold">Add/Edit Event for {selectedDate}</h3>
+            <button onClick={clearForm} className="bg-gray-200 px-3 py-2 rounded hover:bg-gray-300">Clear Form</button>
+          </div>
+          <form onSubmit={handleSubmit} className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <label>Start Date</label>
+              <input type="date" value={formatDateToYMD(startDate)} onChange={(e) => { setStartDate(e.target.value); setManualEdit(true); }} className="w-full border p-2 rounded" />
+            </div>
+            <div>
+              <label>End Date</label>
+              <input type="date" value={formatDateToYMD(endDate)} onChange={(e) => { setEndDate(e.target.value); setManualEdit(true); }} className="w-full border p-2 rounded" />
+            </div>
+            <div>
+              <label>Event Title</label>
+              <input type="text" value={eventTitle} onChange={(e) => setEventTitle(e.target.value)} className="w-full border p-2 rounded" />
+            </div>
+            <div>
+              <label>Event Type</label>
+              <select value={eventType} onChange={(e) => setEventType(e.target.value)} className="w-full border p-2 rounded">
+                <option value="">Select Type</option>
+                <option value="exam">Exam</option>
+                <option value="modal lab">Modal Lab</option>
+                <option value="event">Event</option>
+                <option value="holiday">Holiday</option>
+              </select>
+            </div>
+            <div className="col-span-2 flex justify-between">
+              {eventId && (
+                <button type="button" onClick={handleDelete} className="bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700">Delete Event</button>
+              )}
+              <button type="submit" className="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 ml-auto">
+                {eventId ? 'Update Event' : 'Save Event'}
+              </button>
+            </div>
+          </form>
+        </div>
+      )}
     </div>
   );
 };
