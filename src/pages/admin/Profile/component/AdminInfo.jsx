@@ -7,24 +7,40 @@ export default function AdminInfo({ admin }) {
   const [confirmPass, setConfirmPass] = useState('');
   const [error, setError] = useState('');
 
-  const handleChangePassword = () => {
-    if (!oldPass || !newPass || !confirmPass) {
-      setError('Please fill all fields');
-      return;
+const handleChangePassword = async () => {
+  if (!oldPass || !newPass || !confirmPass) {
+    setError('Please fill all fields');
+    return;
+  }
+  if (newPass !== confirmPass) {
+    setError("New password and confirm password don't match");
+    return;
+  }
+
+  try {
+    const response = await fetch(`http://localhost:8080/api/admin/${admin.adminCode}/change-password`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ password: newPass }),
+    });
+
+    if (!response.ok) {
+      throw new Error('Password change failed');
     }
-    if (newPass !== confirmPass) {
-      setError("New password and confirm password don't match");
-      return;
-    }
-    setError('');
-    // TODO: Add password update logic here (API call etc)
+
     alert('Password changed successfully!');
     setShowModal(false);
     setOldPass('');
     setNewPass('');
     setConfirmPass('');
-  };
-
+    setError('');
+  } catch (error) {
+    setError('Failed to change password. Please try again.');
+    console.error(error);
+  }
+};
   return (
     <>
      <div className="bg-white shadow-lg rounded-2xl p-8 max-w-xl w-full mx-auto mt-24">
