@@ -34,7 +34,7 @@ const FacultyList = ({
 
   return (
     <div className="overflow-x-auto mt-6 max-w-5xl mx-auto">
-      {/* Search and Sort Controls */}
+      {/* Search and Filter */}
       <div className="mb-4 flex flex-col md:flex-row md:justify-between md:items-center gap-3">
         <input
           type="text"
@@ -84,7 +84,7 @@ const FacultyList = ({
         </thead>
         <tbody className="text-sm divide-y divide-gray-200 text-center">
           {filteredData.map((fac) => (
-            <tr key={fac.id} className="hover:bg-blue-50 transition">
+            <tr key={fac.facultyCode} className="hover:bg-blue-50 transition">
               <td className="p-3">
                 <img
                   src={fac.photo}
@@ -131,61 +131,59 @@ const FacultyList = ({
 
       {/* Modal */}
       {selectedFaculty && (
-  <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 overflow-y-auto">
-    <div className="bg-white rounded-lg max-w-2xl w-full p-6 relative shadow-xl">
-      <button
-        onClick={() => setSelectedFaculty(null)}
-        className="absolute top-2 right-2 text-gray-500 hover:text-gray-700 text-2xl"
-      >
-        &times;
-      </button>
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 overflow-y-auto">
+          <div className="bg-white rounded-lg max-w-2xl w-full p-6 relative shadow-xl">
+            <button
+              onClick={() => setSelectedFaculty(null)}
+              className="absolute top-2 right-2 text-gray-500 hover:text-gray-700 text-2xl"
+            >
+              &times;
+            </button>
 
-      <div className="flex items-center gap-4 mb-4">
-        <img
-          src={selectedFaculty.photo}
-          alt={`${selectedFaculty.firstName} ${selectedFaculty.lastName}`}
-          className="w-20 h-20 rounded-full object-cover border"
-        />
-        <div>
-          <h2 className="text-xl font-semibold">
-            {selectedFaculty.firstName} {selectedFaculty.lastName}
-          </h2>
-          <p className="text-gray-600">{selectedFaculty.email}</p>
-          <p className="text-gray-600">{selectedFaculty.phone}</p>
-        </div>
-      </div>
+            <div className="flex items-center gap-4 mb-4">
+              <img
+                src={selectedFaculty.photo}
+                alt={`${selectedFaculty.firstName} ${selectedFaculty.lastName}`}
+                className="w-20 h-20 rounded-full object-cover border"
+              />
+              <div>
+                <h2 className="text-xl font-semibold">
+                  {selectedFaculty.firstName} {selectedFaculty.lastName}
+                </h2>
+                <p className="text-gray-600">{selectedFaculty.email}</p>
+                <p className="text-gray-600">{selectedFaculty.phone}</p>
+              </div>
+            </div>
 
-      <div className="grid grid-cols-2 gap-4 text-sm mb-4">
-        <div><strong>Department:</strong> {selectedFaculty.department}</div>
-        <div><strong>Department ID:</strong> {selectedFaculty.departmentId}</div>
-        <div><strong>Role:</strong> {selectedFaculty.role}</div>
-        <div><strong>Faculty ID:</strong> {selectedFaculty.facultyId}</div>
-        <div><strong>Degree:</strong> {selectedFaculty.degree}</div>
-        <div><strong>Experience:</strong> {selectedFaculty.experience} years</div>
-        <div><strong>Age:</strong> {selectedFaculty.age}</div>
-        <div><strong>Date of Birth:</strong> {selectedFaculty.dob}</div>
-        <div><strong>Gender:</strong> {selectedFaculty.gender}</div>
-        <div><strong>Blood Group:</strong> {selectedFaculty.bloodGroup}</div>
-        <div className="col-span-2"><strong>Address:</strong> {selectedFaculty.address}</div>
-      </div>
+            <div className="grid grid-cols-2 gap-4 text-sm mb-4">
+              <div><strong>Department:</strong> {selectedFaculty.department}</div>
+              <div><strong>Department ID:</strong> {selectedFaculty.departmentId}</div>
+              <div><strong>Role:</strong> {selectedFaculty.role}</div>
+              <div><strong>Faculty Code:</strong> {selectedFaculty.facultyCode}</div>
+              <div><strong>Degree:</strong> {selectedFaculty.degree}</div>
+              <div><strong>Experience:</strong> {selectedFaculty.experience} years</div>
+              <div><strong>Age:</strong> {selectedFaculty.age}</div>
+              <div><strong>Date of Birth:</strong> {selectedFaculty.dob}</div>
+              <div><strong>Gender:</strong> {selectedFaculty.gender}</div>
+              <div><strong>Blood Group:</strong> {selectedFaculty.bloodGroup}</div>
+              <div className="col-span-2"><strong>Address:</strong> {selectedFaculty.address}</div>
+            </div>
 
-      <div className="flex justify-end gap-2 mt-6">
-        <button
-          onClick={() => { onEdit(selectedFaculty.id); setSelectedFaculty(null); }}
-          className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
-        >
-          Edit
-        </button>
-        <button
-          onClick={() => { onDelete(selectedFaculty.id); setSelectedFaculty(null); }}
-          className="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700"
-        >
-          Delete
-        </button>
-      </div>
-    </div>
-  
-
+            <div className="flex justify-end gap-2 mt-6">
+              <button
+                onClick={() => { onEdit(selectedFaculty.facultyCode); setSelectedFaculty(null); }}
+                className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
+              >
+                Edit
+              </button>
+              <button
+                onClick={() => { onDelete(selectedFaculty.facultyCode); setSelectedFaculty(null); }}
+                className="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700"
+              >
+                Delete
+              </button>
+            </div>
+          </div>
         </div>
       )}
     </div>
