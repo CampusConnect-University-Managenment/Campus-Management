@@ -43,9 +43,7 @@ const Notification = () => {
       const updatedRequest = await res.json();
 
       setStudentRequests((prev) =>
-        prev.map((req) =>
-          req._id === id ? updatedRequest : req
-        )
+        prev.map((req) => (req.id === id ? updatedRequest : req))
       );
     } catch (err) {
       console.error("Status update failed:", err);
@@ -58,8 +56,7 @@ const Notification = () => {
   const getRequestsByStatus = (status) =>
     studentRequests.filter(
       (req) =>
-        (req.status || "").trim().toLowerCase() ===
-        status.toLowerCase()
+        (req.status || "").trim().toLowerCase() === status.toLowerCase()
     );
 
   const toggleSection = (status) => {
@@ -104,11 +101,11 @@ const Notification = () => {
                       ? `http://localhost:5000/api/requests/image/${req.imagePath}`
                       : null;
 
-                    const isExpanded = expandedId === req._id;
+                    const isExpanded = expandedId === req.id;
 
                     return (
                       <article
-                        key={req._id}
+                        key={req.id}
                         className={`border rounded p-4 bg-gray-50 shadow-sm transition-all duration-300 ${
                           isExpanded ? "scale-105 shadow-lg" : ""
                         }`}
@@ -136,8 +133,7 @@ const Notification = () => {
 
                         {isExpanded ? (
                           <p>
-                            <strong>Description:</strong>{" "}
-                            {req.description}
+                            <strong>Description:</strong> {req.description}
                           </p>
                         ) : (
                           <p>
@@ -146,7 +142,7 @@ const Notification = () => {
                         )}
 
                         <button
-                          onClick={() => toggleDescription(req._id)}
+                          onClick={() => toggleDescription(req.id)}
                           className="text-blue-600 text-sm mt-2"
                         >
                           {isExpanded ? "View Less" : "View More"}
@@ -160,7 +156,7 @@ const Notification = () => {
                           ) : (
                             <button
                               onClick={() =>
-                                handleStatusUpdate(req._id, "resolve")
+                                handleStatusUpdate(req.id, "resolve")
                               }
                               className="px-3 py-1 rounded text-white bg-green-500 hover:bg-green-600"
                             >
@@ -170,7 +166,7 @@ const Notification = () => {
 
                           <button
                             onClick={() =>
-                              handleStatusUpdate(req._id, "read")
+                              handleStatusUpdate(req.id, "read")
                             }
                             className={`px-3 py-1 rounded text-white ${
                               isRead
