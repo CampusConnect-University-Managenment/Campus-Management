@@ -60,7 +60,7 @@ const Notification = ({ isAdminView = false }) => {
   );
 
   return (
-    <div className="min-h-screen bg-gray-100 p-6">
+    <div className="min-h-screen bg-gray-100 p-6 mt-[100px]">
       <h1 className="text-2xl font-bold mb-6 text-center">HELP DESK</h1>
 
       <div className="flex justify-center space-x-4 mb-4">

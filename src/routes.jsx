@@ -38,6 +38,7 @@ import HelpSupport from "./pages/student/HelpSupport";
 import FacultyDashboard from "./pages/faculty/dashboard";
 import ExamSchedule from "./pages/admin/exam/components/examschedule";
 import FaCourse from "./pages/faculty/Course/Course";
+import HelpDesk from "./pages/admin/HelpDesk/component/notification";
 
 // IMPORT BOTH COMPONENTS FROM THE SINGLE INDEX.JSX FILE
 import { ClassList, ClassList_Students } from "./pages/faculty/ClassList";
@@ -126,6 +127,13 @@ const routes = [
     path: "course",
     icon: <FaBookOpen className="h-5 w-5" />,
     component: <MockCourse />,
+  },
+  {
+    name: "Help Desk",
+    layout: "/admin",
+    path: "help",
+    icon: <MdDashboard className="h-6 w-6" />,
+    component: <HelpDesk/>,
   },
   {
     name: "My Profile",
