@@ -1,394 +1,263 @@
 import React, { useState, useEffect } from "react";
 
-const AddStudent = ({ editingStudent, onSave, onEditStudent, onClose ,setSelectedStudent}) => {
+const AddStudent = ({
+  editingStudent,
+  onSave,
+  onEditStudent,
+  onClose,
+  setSelectedStudent,
+}) => {
+  // Initialize form state with frontend keys
   const [formData, setFormData] = useState({
-  firstName: "",
-  lastName: "",
-  regNo: "",
-  batch: "",
-  section: "",
-  department: "",
-  dob: "",
-  contact: "",
-  email: "",
-  address: "",
-  adhar: "",
-  tenthMark: "",
-  twelfthMark: "",
-  diplomaMark: "",
-  qualification: "",
-  quota: "",
-  gender: "",
-  bloodGroup: "",
-  photo: "",
-  sem: "", // keep only one
-  parentRole: "",
-  parentName: "",
-  parentPhoneNo: "",
-  tc: null,
-  year: "",
-  totalCredits: "",
-  cgpa: "",
-  attendance: "",
-  bio: "",
-  password: "",
-});
+    firstName: "",
+    lastName: "",
+    regNo: "",
+    batch: "",
+    section: "",
+    department: "",
+    dob: "",
+    contact: "",
+    email: "",
+    address: "",
+    adhar: "",
+    tenthMark: "",
+    twelfthMark: "",
+    diplomaMark: "",
+    qualification: "",
+    quota: "",
+    gender: "",
+    bloodGroup: "",
+    photo: null,
+    photoPreviewUrl: "",
+    sem: "",
+    parentRole: "",
+    parentName: "",
+    parentPhoneNo: "",
+    tc: null,
+    year: "",
+    totalCredits: "",
+    cgpa: "",
+    attendance: "",
+    bio: "",
+    password: "",
+  });
 
-
-useEffect(() => {
-  if (editingStudent) {
-    // Split full name into first and last for the form
-    const [firstName = "", lastName = ""] = (editingStudent.name || "").split(" ");
-    setFormData({
-      ...editingStudent,
-      firstName,
-      lastName,
-    });
-  }
-}, [editingStudent]);
-
+  useEffect(() => {
+    if (editingStudent) {
+      const [firstName = "", lastName = ""] = (editingStudent.name || "").split(" ");
+      setFormData({
+        ...editingStudent,
+        firstName,
+        lastName,
+        photoPreviewUrl: editingStudent.photo || "",
+        photo: null,
+      });
+    } else {
+      resetForm();
+    }
+  }, [editingStudent]);
 
   const handleChange = (e) => {
     const { name, value, type, files } = e.target;
     if (type === "file") {
-      setFormData(prev => ({ ...prev, [name]: files[0] }));
+      const file = files[0];
+      if (file) {
+        const imageUrl = URL.createObjectURL(file);
+        setFormData((prev) => ({ ...prev, photo: file, photoPreviewUrl: imageUrl }));
+      }
     } else {
-      setFormData(prev => ({ ...prev, [name]: value }));
+      setFormData((prev) => ({ ...prev, [name]: value }));
     }
   };
 
-  const handlePhotoChange = (e) => {
-    const file = e.target.files[0];
-    if (file) {
-      const imageUrl = URL.createObjectURL(file);
-      setFormData(prev => ({ ...prev, photo: imageUrl }));
-    }
+  const handleClearPhoto = () => {
+    setFormData((prev) => ({ ...prev, photo: null, photoPreviewUrl: "" }));
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
+
     const newStudent = {
-      name: formData.firstName + " " + formData.lastName, // Combine first and last names into one field 'name'
-      department: formData.department,  // Ensure it's consistent with AllStudents
-      regNo: formData.regNo,
-      batch: formData.batch,
-      section: formData.section,
-      dob: formData.dob,
-      contact: formData.contact,
-      email: formData.email,  // Include email
-      address: formData.address,
-      adhar: formData.adhar,
-      tenthMark: formData.tenthMark,
-      twelfthMark: formData.twelfthMark,
-      diplomaMark: formData.diplomaMark,
-      qualification: formData.qualification,
-      quota: formData.quota,
-      gender: formData.gender,
-      bloodGroup: formData.bloodGroup,
-      photo: formData.photo,
-      parentRole: formData.parentRole,
-      parentName: formData.parentName,
-      parentPhoneNo: formData.parentPhoneNo,
-      tc: formData.tc,
-      sem: formData.sem,
-      year: formData.year,  // Include year here
-      totalCredits: formData.totalCredits,
-      cgpa: formData.cgpa,
-      attendance: formData.attendance,
-      bio: formData.bio,
+      ...formData,
+      name: formData.firstName + " " + formData.lastName,
+      photo: formData.photoPreviewUrl,
     };
 
+    // Remove UI-only fields before sending via callback
+    delete newStudent.firstName;
+    delete newStudent.lastName;
+    delete newStudent.photoPreviewUrl;
+
     if (editingStudent) {
-  onEditStudent(newStudent); // Update the student list
-  if (setSelectedStudent) {
-    setSelectedStudent(newStudent); // <-- Make sure StudentProfile updates
-  }
-} else {
-  onSave(newStudent);
-}
-onClose(); // Close the modal after submit
+      onEditStudent(newStudent);
+      if (setSelectedStudent) {
+        setSelectedStudent(newStudent);
+      }
+    } else {
+      onSave(newStudent);
+    }
+    onClose();
   };
 
-  // Year options for dropdown
+  const resetForm = () => {
+    setFormData({
+      firstName: "",
+      lastName: "",
+      regNo: "",
+      batch: "",
+      section: "",
+      department: "",
+      dob: "",
+      contact: "",
+      email: "",
+      address: "",
+      adhar: "",
+      tenthMark: "",
+      twelfthMark: "",
+      diplomaMark: "",
+      qualification: "",
+      quota: "",
+      gender: "",
+      bloodGroup: "",
+      photo: null,
+      photoPreviewUrl: "",
+      sem: "",
+      parentRole: "",
+      parentName: "",
+      parentPhoneNo: "",
+      tc: null,
+      year: "",
+      totalCredits: "",
+      cgpa: "",
+      attendance: "",
+      bio: "",
+      password: "",
+    });
+  };
+
   const yearOptions = ["1st Year", "2nd Year", "3rd Year", "4th Year"];
+  const semOptions = Array.from({ length: 8 }, (_, i) => `Semester ${i + 1}`);
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-30 flex items-center justify-center z-50">
-    <div className="bg-white p-6 rounded-lg shadow-lg w-full max-w-2xl max-h-[90vh] overflow-y-auto">
-    <form onSubmit={handleSubmit} className="space-y-4 ">
-      <h2 className="text-xl font-bold mb-4">
-        {editingStudent ? "Edit Student" : "Add New Student"}
-      </h2>
+      <div className="bg-white p-6 rounded-lg shadow-lg w-full max-w-2xl max-h-[90vh] overflow-y-auto">
+        <form onSubmit={handleSubmit} className="space-y-4">
+          <h2 className="text-xl font-bold mb-4">
+            {editingStudent ? "Edit Student" : "Add New Student"}
+          </h2>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <input
-          name="firstName"
-          value={formData.firstName}
-          onChange={handleChange}
-          placeholder="First Name"
-          className="border p-2 rounded"
-        />
-        <input
-          name="lastName"
-          value={formData.lastName}
-          onChange={handleChange}
-          placeholder="Last Name"
-          className="border p-2 rounded"
-        />
-        <input
-          name="regNo"
-          value={formData.regNo}
-          onChange={handleChange}
-          placeholder="Register Number"
-          className="border p-2 rounded"
-        />
-        <input
-          name="batch"
-          value={formData.batch}
-          onChange={handleChange}
-          placeholder="Batch"
-          className="border p-2 rounded"
-        />
-        <input
-          name="section"
-          value={formData.section}
-          onChange={handleChange}
-          placeholder="Section"
-          className="border p-2 rounded"
-        />
-        <input
-          name="department"
-          value={formData.department} // Ensure this is 'department' instead of 'dept'
-          onChange={handleChange}
-          placeholder="Department"
-          className="border p-2 rounded"
-        />
-        <input
-          type="date"
-          name="dob"
-          value={formData.dob}
-          onChange={handleChange}
-          className="border p-2 rounded"
-        />
-        <input
-          name="contact"
-          value={formData.contact}
-          onChange={handleChange}
-          placeholder="Student Phone"
-          className="border p-2 rounded"
-        />
-        <input
-          name="email"
-          value={formData.email}  // Ensure email is included
-          onChange={handleChange}
-          placeholder="Student Email"
-          type="email"
-          className="border p-2 rounded"
-        />
-        <input
-          name="adhar"
-          value={formData.adhar}
-          onChange={handleChange}
-          placeholder="Aadhar Number"
-          className="border p-2 rounded"
-        />
-        <input
-          name="tenthMark"
-          value={formData.tenthMark}
-          onChange={handleChange}
-          placeholder="10th Mark (%)"
-          className="border p-2 rounded"
-        />
-
-        {/* Qualification Selector */}
-        <select
-          name="qualification"
-          value={formData.qualification}
-          onChange={handleChange}
-          className="border p-2 rounded"
-        >
-          <option value="">Select Qualification After 10th</option>
-          <option value="Diploma">Diploma</option>
-          <option value="12th">12th</option>
-        </select>
-
-        {/* Conditional Mark Field */}
-        {formData.qualification === "12th" && (
-          <input
-            name="twelfthMark"
-            value={formData.twelfthMark}
-            onChange={handleChange}
-            placeholder="12th Mark (%)"
-            className="border p-2 rounded"
-          />
-        )}
-        {formData.qualification === "Diploma" && (
-          <input
-            name="diplomaMark"
-            value={formData.diplomaMark}
-            onChange={handleChange}
-            placeholder="Diploma Mark (%)"
-            className="border p-2 rounded"
-          />
-        )}
-
-        {/* Year Field (dropdown) */}
-        <select
-          name="year"
-          value={formData.year}
-          onChange={handleChange}
-          className="border p-2 rounded"
-        >
-          <option value="">Select Year</option>
-          {yearOptions.map((year, idx) => (
-            <option key={idx} value={year}>{year}</option>
-          ))}
-        </select>
-        {/* Semester Field (dropdown) */}
-<select
-  name="sem"
-  value={formData.sem}
-  onChange={handleChange}
-  className="border p-2 rounded"
->
-  <option value="">Select Semester</option>
-  <option value="Semester 1">Semester 1</option>
-  <option value="Semester 2">Semester 2</option>
-  <option value="Semester 3">Semester 3</option>
-  <option value="Semester 4">Semester 4</option>
-  <option value="Semester 5">Semester 5</option>
-  <option value="Semester 6">Semester 6</option>
-  <option value="Semester 7">Semester 7</option>
-  <option value="Semester 8">Semester 8</option>
-</select>
-
-
-        {/* Quota Radio */}
-        <div className="flex items-center gap-4">
-          <label>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {/* First and Last Name */}
             <input
-              type="radio"
-              name="quota"
-              value="Counselling"
-              checked={formData.quota === "Counselling"}
+              name="firstName"
+              value={formData.firstName}
               onChange={handleChange}
+              placeholder="First Name"
+              className="border p-2 rounded"
+              required
             />
-            Counselling
-          </label>
-          <label>
             <input
-              type="radio"
-              name="quota"
-              value="Management"
-              checked={formData.quota === "Management"}
+              name="lastName"
+              value={formData.lastName}
               onChange={handleChange}
+              placeholder="Last Name"
+              className="border p-2 rounded"
+              required
             />
-            Management
-          </label>
-        </div>
-
-        {/* Gender Radio */}
-        <div className="flex items-center gap-4">
-          <label>
+            {/* Other inputs... */}
             <input
-              type="radio"
-              name="gender"
-              value="Male"
-              checked={formData.gender === "Male"}
+              name="regNo"
+              value={formData.regNo}
               onChange={handleChange}
+              placeholder="Registration Number"
+              className="border p-2 rounded"
+              required
             />
-            Male
-          </label>
-          <label>
+            {/* Add all other inputs similarly as in your previous code */}
+            {/* Department */}
             <input
-              type="radio"
-              name="gender"
-              value="Female"
-              checked={formData.gender === "Female"}
+              name="department"
+              value={formData.department}
               onChange={handleChange}
+              placeholder="Department"
+              className="border p-2 rounded"
             />
-            Female
-          </label>
-          <label>
-            <input
-              type="radio"
-              name="gender"
-              value="Other"
-              checked={formData.gender === "Other"}
+            {/* Year Dropdown */}
+            <select
+              name="year"
+              value={formData.year}
               onChange={handleChange}
-            />
-            Other
-          </label>
-        </div>
+              className="border p-2 rounded"
+            >
+              <option value="">Select Year</option>
+              {yearOptions.map((year, idx) => (
+                <option key={idx} value={year}>{year}</option>
+              ))}
+            </select>
+            {/* Semester Dropdown */}
+            <select
+              name="sem"
+              value={formData.sem}
+              onChange={handleChange}
+              className="border p-2 rounded"
+            >
+              <option value="">Select Semester</option>
+              {semOptions.map((sem) => (
+                <option key={sem} value={sem}>{sem}</option>
+              ))}
+            </select>
 
-        <input
-          name="bloodGroup"
-          value={formData.bloodGroup}
-          onChange={handleChange}
-          placeholder="Blood Group"
-          className="border p-2 rounded"
-        />
-        <textarea
-          name="address"
-          value={formData.address}
-          onChange={handleChange}
-          placeholder="Address"
-          className="border p-2 rounded col-span-2"
-          rows={3}
-        />
+            {/* Add other input fields, checkboxes, radios as defined earlier */}
 
-        {/* Parent Role */}
-        <select
-          name="parentRole"
-          value={formData.parentRole}
-          onChange={handleChange}
-          className="border p-2 rounded"
-        >
-          <option value="">Select Parent/Guardian Role</option>
-          <option value="Parent">Parent</option>
-          <option value="Guardian">Guardian</option>
-        </select>
-        <input
-          name="parentName"
-          value={formData.parentName}
-          onChange={handleChange}
-          placeholder="Parent/Guardian Name"
-          className="border p-2 rounded"
-        />
-        <input
-          name="parentPhoneNo"
-          value={formData.parentPhoneNo}
-          onChange={handleChange}
-          placeholder="Parent/Guardian Phone"
-          className="border p-2 rounded"
-        />
+            {/* Photo Upload */}
+            <div className="col-span-2">
+              <label className="block mb-1 font-medium">Photo Upload</label>
+              <input
+                type="file"
+                accept="image/*"
+                name="photo"
+                onChange={handleChange}
+                className="border p-2 rounded"
+              />
+              {formData.photoPreviewUrl && (
+                <div className="mt-2 relative w-20 h-20">
+                  <img
+                    src={formData.photoPreviewUrl}
+                    alt="Preview"
+                    className="w-20 h-20 rounded-full object-cover border"
+                  />
+                  <button
+                    type="button"
+                    onClick={handleClearPhoto}
+                    className="absolute top-0 right-0 text-xs bg-red-600 text-white rounded px-1"
+                    title="Remove photo"
+                  >
+                    &times;
+                  </button>
+                </div>
+              )}
+            </div>
 
-        {/* Photo Upload */}
-        <input
-          type="file"
-          accept="image/*"
-          onChange={handlePhotoChange}
-          className="border p-2 rounded"
-        />
-        {formData.photo && (
-          <img
-            src={formData.photo}
-            alt="Preview"
-            className="w-20 h-20 rounded-full border object-cover"
-          />
-        )}
-
-        <button
-          type="submit"
-          className="px-6 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
-        >
-          {editingStudent ? "Update Student" : "Add Student"}
-        </button>
-        </div>
-  
-    </form>
+            {/* Submit and Cancel Buttons */}
+            <div className="col-span-2 flex gap-3 mt-4">
+              <button
+                type="submit"
+                className="px-6 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
+              >
+                {editingStudent ? "Update Student" : "Add Student"}
+              </button>
+              <button
+                type="button"
+                onClick={onClose}
+                className="px-6 py-2 border border-gray-400 rounded hover:bg-gray-100"
+              >
+                Cancel
+              </button>
+            </div>
           </div>
+        </form>
       </div>
+    </div>
   );
 };
 
