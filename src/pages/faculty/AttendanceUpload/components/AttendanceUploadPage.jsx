@@ -22,10 +22,15 @@ const AttendanceUploadPage = ({ onNewSubmission, submittedHours }) => {
   const [selectedClasses, setSelectedClasses] = useState([]);
   const [hourBlocks, setHourBlocks] = useState([]);
 
+  const toYYYYMMDD = (dateObj) => {
+    const d = new Date(dateObj);
+    return d.toISOString().split("T")[0];
+  };
+
   const formattedDate = useMemo(() => {
     const dateObj =
       filters.date instanceof Date ? filters.date : new Date(filters.date);
-    return dateObj.toISOString().split("T")[0];
+    return toYYYYMMDD(dateObj);
   }, [filters.date]);
 
   useEffect(() => {
@@ -66,7 +71,7 @@ const AttendanceUploadPage = ({ onNewSubmission, submittedHours }) => {
     if (!filters.date || !filters.batch || !filters.courseCode) return;
     const dateObj =
       filters.date instanceof Date ? filters.date : new Date(filters.date);
-    const formatted = dateObj.toISOString().split("T")[0];
+    const formatted = toYYYYMMDD(dateObj);
     axios
       .get("/attendance/classes/hour", {
         params: {
@@ -129,6 +134,7 @@ const AttendanceUploadPage = ({ onNewSubmission, submittedHours }) => {
     const selected = []
       .concat(...hourBlocks)
       .filter((c) => selectedHourIds.includes(c.id));
+
     setSelectedClasses(selected);
 
     const first = selected[0];
@@ -155,10 +161,21 @@ const AttendanceUploadPage = ({ onNewSubmission, submittedHours }) => {
   };
 
   const handleSubmit = (attendanceData) => {
+    const dateStr = toYYYYMMDD(filters.date);
+    const fixedSelectedClasses = selectedClasses.map((cls) => ({
+      ...cls,
+      id: `${dateStr}-${filters.courseCode}-${cls.hour}`,
+    }));
+
+    console.log(
+      "✅ Final class IDs:",
+      fixedSelectedClasses.map((c) => c.id)
+    );
+
     axios
       .post("/attendance/submit", {
         filters,
-        selectedClasses,
+        selectedClasses: fixedSelectedClasses,
         students: studentData,
         attendanceData,
       })
@@ -166,7 +183,7 @@ const AttendanceUploadPage = ({ onNewSubmission, submittedHours }) => {
         alert(res.data);
         onNewSubmission?.({
           filters,
-          selectedClasses,
+          selectedClasses: fixedSelectedClasses,
           students: studentData,
           attendanceData,
         });

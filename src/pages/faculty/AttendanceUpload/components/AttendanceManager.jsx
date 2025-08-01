@@ -17,23 +17,24 @@ const toYYYYMMDD = (date) =>
 
 const AttendanceManager = () => {
   const [view, setView] = useState("upload");
+  const [attendanceHistory, setAttendanceHistory] = useState([]);
 
-  const [attendanceHistory, setAttendanceHistory] = useState(() => {
-    try {
-      const savedHistory = localStorage.getItem("attendanceHistory");
-      return savedHistory ? JSON.parse(savedHistory) : [];
-    } catch (error) {
-      console.error("Failed to parse attendance history:", error);
-      return [];
-    }
-  });
+  // Fetch attendance history from backend
+  const fetchHistory = () => {
+    fetch("http://localhost:8080/attendance/history")
+      .then((res) => res.json())
+      .then((data) => {
+        const sorted = data.sort(
+          (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()
+        );
+        setAttendanceHistory(sorted);
+      })
+      .catch((err) => console.error("Failed to fetch history:", err));
+  };
 
   useEffect(() => {
-    localStorage.setItem(
-      "attendanceHistory",
-      JSON.stringify(attendanceHistory)
-    );
-  }, [attendanceHistory]);
+    fetchHistory();
+  }, [view]);
 
   const submittedHours = useMemo(
     () => getUniqueValues(attendanceHistory, "classId"),
@@ -43,10 +44,24 @@ const AttendanceManager = () => {
   const handleNewSubmission = (submissionData) => {
     const { filters, selectedClasses, students, attendanceData } =
       submissionData;
-    const newRecords = [];
     const date = toYYYYMMDD(filters.date);
+    const newRecords = [];
+
+    const alreadySubmitted = new Set(submittedHours);
 
     for (const sClass of selectedClasses) {
+      if (
+        !sClass ||
+        !sClass.batch ||
+        !sClass.courseCode ||
+        !sClass.courseName ||
+        sClass.hour == null ||
+        alreadySubmitted.has(sClass.id)
+      ) {
+        console.warn("Skipped invalid or already submitted class:", sClass);
+        continue;
+      }
+
       for (const student of students) {
         newRecords.push({
           date,
@@ -62,11 +77,24 @@ const AttendanceManager = () => {
       }
     }
 
-    setAttendanceHistory((prev) =>
-      [...prev, ...newRecords].sort(
-        (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()
-      )
-    );
+    if (newRecords.length === 0) {
+      console.warn("No valid attendance records to submit.");
+      return;
+    }
+
+    fetch("http://localhost:8080/attendance/submit", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(newRecords),
+    })
+      .then((res) => {
+        if (!res.ok) throw new Error("Failed to submit attendance");
+        return res.json();
+      })
+      .then(() => {
+        fetchHistory(); // refresh history after successful submission
+      })
+      .catch((err) => console.error("Error submitting attendance:", err));
   };
 
   return (

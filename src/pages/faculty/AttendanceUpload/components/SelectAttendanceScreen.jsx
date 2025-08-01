@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import "./MarkAttendanceScreen.css"; // for styling (see below)
 
 const MarkAttendanceScreen = ({ selectedClasses, onBack, onSubmit }) => {
   const [students, setStudents] = useState([]);
@@ -8,7 +9,7 @@ const MarkAttendanceScreen = ({ selectedClasses, onBack, onSubmit }) => {
   useEffect(() => {
     if (selectedClasses.length === 0) return;
 
-    const { batch, courseCode } = selectedClasses[0]; // assuming same for all
+    const { batch, courseCode } = selectedClasses[0];
 
     fetch(
       `http://localhost:8080/attendance/students?batch=${batch}&courseCode=${courseCode}`
@@ -18,7 +19,7 @@ const MarkAttendanceScreen = ({ selectedClasses, onBack, onSubmit }) => {
         setStudents(data);
         const initial = {};
         data.forEach((s) => {
-          initial[s.studentId] = "Present"; // default
+          initial[s.studentId] = "P";
         });
         setAttendance(initial);
         setLoading(false);
@@ -30,8 +31,8 @@ const MarkAttendanceScreen = ({ selectedClasses, onBack, onSubmit }) => {
       });
   }, [selectedClasses]);
 
-  const handleStatusChange = (id, status) => {
-    setAttendance((prev) => ({ ...prev, [id]: status }));
+  const handleStatusChange = (studentId, status) => {
+    setAttendance((prev) => ({ ...prev, [studentId]: status }));
   };
 
   const handleSubmit = () => {
@@ -58,41 +59,68 @@ const MarkAttendanceScreen = ({ selectedClasses, onBack, onSubmit }) => {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(records),
     })
-      .then((res) => {
+      .then(async (res) => {
         if (res.ok) {
           alert("Attendance submitted successfully!");
           onSubmit?.(records);
         } else {
+          const errMsg = await res.text();
+          console.error("Backend error:", errMsg);
           alert("Failed to submit attendance.");
         }
       })
       .catch((err) => {
         console.error("Submit failed", err);
-        alert("Error occurred.");
+        alert("Error occurred while submitting.");
       });
   };
 
-  if (loading) return <div>Loading students...</div>;
+  if (loading) return <div className="loading">Loading students...</div>;
 
   return (
-    <div>
-      <h2>Mark Attendance</h2>
-      {students.map((student) => (
-        <div key={student.studentId}>
-          {student.studentName} ({student.studentId}) -{" "}
-          <select
-            value={attendance[student.studentId]}
-            onChange={(e) =>
-              handleStatusChange(student.studentId, e.target.value)
-            }
-          >
-            <option>Present</option>
-            <option>Absent</option>
-          </select>
-        </div>
-      ))}
-      <button onClick={handleSubmit}>Submit</button>
-      <button onClick={onBack}>Back</button>
+    <div className="attendance-container">
+      <h2 className="title">Mark Attendance</h2>
+      <div className="table-wrapper">
+        <table className="attendance-table">
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Student ID</th>
+              <th>Name</th>
+              <th className="p">P</th>
+              <th className="a">A</th>
+              <th className="od">OD</th>
+            </tr>
+          </thead>
+          <tbody>
+            {students.map((s, index) => (
+              <tr key={s.studentId}>
+                <td>{index + 1}</td>
+                <td>{s.studentId}</td>
+                <td>{s.studentName}</td>
+                {["P", "A", "OD"].map((status) => (
+                  <td key={status}>
+                    <input
+                      type="checkbox"
+                      checked={attendance[s.studentId] === status}
+                      onChange={() => handleStatusChange(s.studentId, status)}
+                    />
+                  </td>
+                ))}
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+
+      <div className="button-group">
+        <button className="submit-btn" onClick={handleSubmit}>
+          Submit
+        </button>
+        <button className="back-btn" onClick={onBack}>
+          Back
+        </button>
+      </div>
     </div>
   );
 };
