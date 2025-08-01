@@ -145,20 +145,17 @@ const FacultyAdminPage = () => {
     if (!file) return;
 
     const formData = new FormData();
-    formData.append('file', file);
+for (const key in formState) {
+  formData.append(key, formState[key]);
+}
 
-    try {
-      await axios.post('http://localhost:8080/api/admin/faculty/bulk-upload', formData, {
-        headers: { 'Content-Type': 'multipart/form-data' },
-      });
-      alert('Faculty list uploaded successfully!');
-      fetchFaculty();
-      if (facultyExcelInputRef.current) facultyExcelInputRef.current.value = '';
-    } catch (error) {
-      console.error('Upload failed:', error);
-      alert('Upload failed');
-    }
-  };
+
+await axios.post("http://localhost:8080/api/admin/faculty/upload-excel", formData, {
+  headers: {
+    "Content-Type": "multipart/form-data",
+  },
+});
+};
 
   const totalPages = Math.ceil(facultyData.length / itemsPerPage);
   const paginatedData = facultyData.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
