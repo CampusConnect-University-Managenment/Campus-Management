@@ -21,11 +21,9 @@ const AllStudents = () => {
   const studentsPerPage = 5;
   const [students, setStudents] = useState([]);
 
-  // Fixed department/year options – ideally should come from backend
   const departmentOptions = ["IT", "CSE", "ECE", "EEE", "AIDS"];
   const yearOptions = ["1", "2", "3", "4"];
 
-  // Normalize backend student entity to frontend format
   const normalizeStudent = (student) => ({
     id: student.studentId,
     firstName: student.studentFirstname,
@@ -54,28 +52,26 @@ const AllStudents = () => {
     attendance: student.studentAttendance,
     cgpa: student.studentCgpa,
     photo: student.studentProfilepic,
-    bio: student.bio,       // If exists in backend
-    password: student.password // If exists
+    bio: student.bio,
+    password: student.password,
   });
 
-  // Fetch students from backend and normalize
   const fetchStudents = async () => {
     try {
       const res = await axios.get("http://localhost:8080/api/admin/students/all");
       const fetched = res.data?.data || [];
       const normalized = fetched.map(normalizeStudent);
+      console.log("Fetched students:", normalized); // debug
       setStudents(normalized);
     } catch (error) {
       console.error("Error fetching students:", error);
     }
   };
 
-  // Load students on mount
   useEffect(() => {
     fetchStudents();
   }, []);
 
-  // Format frontend student data into backend structure before sending
   const formatForBackend = (formData) => ({
     studentId: formData.id,
     studentFirstname: formData.firstName,
@@ -102,18 +98,20 @@ const AllStudents = () => {
     studentCredits: parseInt(formData.totalCredits) || 0,
     studentAttendance: parseFloat(formData.attendance) || 0,
     studentCgpa: parseFloat(formData.cgpa) || 0,
-    studentProfilepic: formData.photo || "", // You may need to upload file separately
+    studentProfilepic: formData.photo || "",
     bio: formData.bio,
     password: formData.password,
   });
 
-  // Add student
   const addStudent = async (newStudent) => {
     try {
       const backendData = formatForBackend(newStudent);
       const res = await axios.post("http://localhost:8080/api/admin/students/add", backendData);
       if (res.data?.status === "SUCCESS") {
         alert(res.data.message || "Student added successfully");
+        setSelectedDept("All");
+        setSelectedYear("All");
+        setSearchTerm("");
         fetchStudents();
       } else {
         alert("Failed to add student: " + (res.data?.message || "Unknown error"));
@@ -124,7 +122,6 @@ const AllStudents = () => {
     }
   };
 
-  // Update student
   const updateStudent = async (updatedStudent) => {
     try {
       if (!updatedStudent.regNo) {
@@ -148,7 +145,6 @@ const AllStudents = () => {
     }
   };
 
-  // Delete student
   const deleteStudent = async (id) => {
     if (!window.confirm("Are you sure you want to delete this student?")) return;
     try {
@@ -165,7 +161,6 @@ const AllStudents = () => {
     }
   };
 
-  // Filter & paginate students
   const filteredStudents = students.filter((student) => {
     const matchDept = selectedDept === "All" || student.department === selectedDept;
     const matchYear = selectedYear === "All" || String(student.year) === selectedYear;
@@ -244,7 +239,7 @@ const AllStudents = () => {
         <table className="min-w-full divide-y divide-gray-200">
           <thead className="bg-gray-100">
             <tr>
-              <th className="px-4 py-2 text-left text-sm font-semibold text-gray-600">ID</th>
+              <th className="px-4 py-2 text-left text-sm font-semibold text-gray-600">E-mail</th>
               <th className="px-4 py-2 text-left text-sm font-semibold text-gray-600">Name</th>
               <th className="px-4 py-2 text-left text-sm font-semibold text-gray-600">Reg. No</th>
               <th className="px-4 py-2 text-left text-sm font-semibold text-gray-600">Department</th>
@@ -263,7 +258,7 @@ const AllStudents = () => {
             ) : (
               currentStudents.map(student => (
                 <tr key={student.id}>
-                  <td className="px-4 py-2">{student.id}</td>
+                  <td className="px-4 py-2">{student.email}</td>
                   <td className="px-4 py-2">{student.name}</td>
                   <td className="px-4 py-2">{student.regNo}</td>
                   <td className="px-4 py-2">{student.department}</td>
@@ -297,9 +292,7 @@ const AllStudents = () => {
         {Array.from({ length: totalPages }, (_, i) => (
           <button
             key={i + 1}
-            className={`px-3 py-1 rounded border ${
-              currentPage === i + 1 ? "bg-blue-500 text-white" : "bg-white"
-            }`}
+            className={`px-3 py-1 rounded border ${currentPage === i + 1 ? "bg-blue-500 text-white" : "bg-white"}`}
             onClick={() => setCurrentPage(i + 1)}
           >
             {i + 1}
@@ -324,7 +317,9 @@ const AllStudents = () => {
         <BulkAddStudents
           isOpen={showBulkModal}
           onClose={() => setShowBulkModal(false)}
-          onBulkAdd={(bulkStudents) => setStudents([...students, ...bulkStudents])}
+          onBulkAdd={(bulkStudents) => {
+            fetchStudents(); // Reload from backend after bulk add
+          }}
         />
       )}
     </div>
