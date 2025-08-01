@@ -161,16 +161,23 @@ const AllStudents = () => {
     }
   };
 
-  const filteredStudents = students.filter((student) => {
-    const matchDept = selectedDept === "All" || student.department === selectedDept;
-    const matchYear = selectedYear === "All" || String(student.year) === selectedYear;
-    const matchSearch =
-      student.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      student.id.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      student.regNo.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      student.department.toLowerCase().includes(searchTerm.toLowerCase());
-    return matchDept && matchYear && matchSearch;
-  });
+const filteredStudents = students.filter((student) => {
+  const searchLower = searchTerm.toLowerCase();
+
+  const matchesSearch =
+    student.name.toLowerCase().includes(searchLower) ||
+    student.regNo.toLowerCase().includes(searchLower) ||
+    student.id.toLowerCase().includes(searchLower);
+
+  const matchesDept = selectedDept === "All" || student.department === selectedDept;
+const matchesYear = selectedYear === "All" || String(student.year) === selectedYear;
+
+
+  return matchesSearch && matchesDept && matchesYear;
+});
+
+
+
 
   const indexOfLastStudent = currentPage * studentsPerPage;
   const indexOfFirstStudent = indexOfLastStudent - studentsPerPage;
