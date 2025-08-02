@@ -1,15 +1,15 @@
 import React, { useState, useEffect } from "react";
 import { FiSearch } from "react-icons/fi";
 import { FaPlus, FaBriefcase } from "react-icons/fa";
+import axios from "axios";
+
 import AboutStudent from "./AboutStudent";
 import AddStudent from "./AddStudent";
 import DepartmentCards from "./DepartmentCards";
 import DepartmentStudentList from "./DepartmentStudentList";
-import axios from "axios";
 import BulkAddStudents from "./BulkAddStudents";
 
 const AllStudents = () => {
-  const RECENT_STUDENTS_COUNT = 3;
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedDept, setSelectedDept] = useState("All");
   const [selectedYear, setSelectedYear] = useState("All");
@@ -21,61 +21,163 @@ const AllStudents = () => {
   const studentsPerPage = 5;
   const [students, setStudents] = useState([]);
 
-  // Fetch and normalize data
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const result = await axios.get("http://localhost:8080/api/admin/students/all");
-        const fetched = result.data.data || [];
-        // normalize field names
-        const normalized = fetched.map((student) => ({
-          id: student.studentId,
-          name: student.studentName,
-          regNo: student.studentRollNo,
-          department: student.studentDepartment,
-          year: student.studentYear,
-          cgpa: student.studentCgpa,
-          placement: student.placement
-        }));
-        setStudents(normalized);
-      } catch (error) {
-        console.error("Error fetching students:", error);
-      }
-    };
-    fetchData();
-  }, []);
-
-  // Add, update and delete student
-  const addStudent = (newStudent) => {
-    const nextId = `STU${String(students.length + 1).padStart(3, "0")}`;
-    setStudents([...students, { ...newStudent, id: nextId }]);
-  };
-
-  const updateStudent = (updatedStudent) => {
-    setStudents(students.map((s) => (s.id === updatedStudent.id ? updatedStudent : s)));
-  };
-
-  const deleteStudent = (id) => {
-    if (window.confirm("Are you sure you want to delete this student?")) {
-      setStudents(students.filter((s) => s.id !== id));
-    }
-  };
-
-  // Department & year options
   const departmentOptions = ["IT", "CSE", "ECE", "EEE", "AIDS"];
   const yearOptions = ["1", "2", "3", "4"];
 
-  // Filtering & Pagination
-  const filteredStudents = students.filter((student) => {
-    const matchesDept = selectedDept === "All" || student.department === selectedDept;
-    const matchesYear = selectedYear === "All" || String(student.year) === selectedYear;
-    const matchesSearch =
-      student.name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      student.id?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      student.regNo?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      student.department?.toLowerCase().includes(searchTerm.toLowerCase());
-    return matchesDept && matchesYear && matchesSearch;
+  const normalizeStudent = (student) => ({
+    id: student.studentId,
+    firstName: student.studentFirstname,
+    lastName: student.studentLastname,
+    name: `${student.studentFirstname} ${student.studentLastname}`,
+    regNo: student.studentRollNo,
+    department: student.studentDepartment,
+    dob: student.studentDob,
+    contact: student.studentPhoneNo,
+    email: student.studentEmail,
+    adhar: student.studentAadharno,
+    tenthMark: student.studentTenthmark,
+    diplomaMark: student.studentDiplomamark,
+    twelfthMark: student.studentTwelfthmark,
+    year: student.studentYear,
+    sem: student.studentSem,
+    quota: student.studentModeofjoing,
+    gender: student.studentGender,
+    bloodGroup: student.studentBloodgroup,
+    address: student.studentAddress,
+    parentRole: student.studentParentorguardian,
+    parentName: student.studentParentorguardianname,
+    parentPhoneNo: student.studentParentorguardianphone,
+    section: student.studentSection,
+    totalCredits: student.studentCredits,
+    attendance: student.studentAttendance,
+    cgpa: student.studentCgpa,
+    photo: student.studentProfilepic,
+    bio: student.bio,
+    password: student.password,
   });
+
+  const fetchStudents = async () => {
+    try {
+      const res = await axios.get("http://localhost:8080/api/admin/students/all");
+      const fetched = res.data?.data || [];
+      const normalized = fetched.map(normalizeStudent);
+      console.log("Fetched students:", normalized); // debug
+      setStudents(normalized);
+    } catch (error) {
+      console.error("Error fetching students:", error);
+    }
+  };
+
+  useEffect(() => {
+    fetchStudents();
+  }, []);
+
+  const formatForBackend = (formData) => ({
+    studentId: formData.id,
+    studentFirstname: formData.firstName,
+    studentLastname: formData.lastName,
+    studentRollNo: formData.regNo,
+    studentDepartment: formData.department,
+    studentDob: formData.dob,
+    studentPhoneNo: formData.contact,
+    studentEmail: formData.email,
+    studentAadharno: formData.adhar,
+    studentTenthmark: parseFloat(formData.tenthMark),
+    studentDiplomamark: parseFloat(formData.diplomaMark),
+    studentTwelfthmark: parseFloat(formData.twelfthMark),
+    studentYear: formData.year,
+    studentSem: formData.sem,
+    studentModeofjoing: formData.quota,
+    studentGender: formData.gender,
+    studentBloodgroup: formData.bloodGroup,
+    studentAddress: formData.address,
+    studentParentorguardian: formData.parentRole,
+    studentParentorguardianname: formData.parentName,
+    studentParentorguardianphone: formData.parentPhoneNo,
+    studentSection: formData.section,
+    studentCredits: parseInt(formData.totalCredits) || 0,
+    studentAttendance: parseFloat(formData.attendance) || 0,
+    studentCgpa: parseFloat(formData.cgpa) || 0,
+    studentProfilepic: formData.photo || "",
+    bio: formData.bio,
+    password: formData.password,
+  });
+
+  const addStudent = async (newStudent) => {
+    try {
+      const backendData = formatForBackend(newStudent);
+      const res = await axios.post("http://localhost:8080/api/admin/students/add", backendData);
+      if (res.data?.status === "SUCCESS") {
+        alert(res.data.message || "Student added successfully");
+        setSelectedDept("All");
+        setSelectedYear("All");
+        setSearchTerm("");
+        fetchStudents();
+      } else {
+        alert("Failed to add student: " + (res.data?.message || "Unknown error"));
+      }
+    } catch (error) {
+      console.error("Error adding student:", error);
+      alert("Failed to add student, check console for details.");
+    }
+  };
+
+  const updateStudent = async (updatedStudent) => {
+    try {
+      if (!updatedStudent.regNo) {
+        alert("Registration number required for update");
+        return;
+      }
+      const backendData = formatForBackend(updatedStudent);
+      const res = await axios.put(
+        `http://localhost:8080/api/admin/students/rollno/${updatedStudent.regNo}`,
+        backendData
+      );
+      if (res.data?.status === "SUCCESS") {
+        alert(res.data.message || "Student updated successfully");
+        fetchStudents();
+      } else {
+        alert("Failed to update student: " + (res.data?.message || "Unknown error"));
+      }
+    } catch (error) {
+      console.error("Error updating student:", error);
+      alert("Failed to update student, check console.");
+    }
+  };
+
+  const deleteStudent = async (id) => {
+    if (!window.confirm("Are you sure you want to delete this student?")) return;
+    try {
+      const res = await axios.delete(`http://localhost:8080/api/admin/students/${id}`);
+      if (res.data?.status === "SUCCESS") {
+        alert(res.data.message || "Student deleted");
+        fetchStudents();
+      } else {
+        alert("Failed to delete student: " + (res.data?.message || "Unknown error"));
+      }
+    } catch (error) {
+      console.error("Delete student error:", error);
+      alert("Error deleting student, check console.");
+    }
+  };
+
+const filteredStudents = students.filter((student) => {
+  const searchLower = searchTerm.toLowerCase();
+
+  const matchesSearch =
+    student.name.toLowerCase().includes(searchLower) ||
+    student.regNo.toLowerCase().includes(searchLower) ||
+    student.id.toLowerCase().includes(searchLower);
+
+  const matchesDept = selectedDept === "All" || student.department === selectedDept;
+const matchesYear = selectedYear === "All" || String(student.year) === selectedYear;
+
+
+  return matchesSearch && matchesDept && matchesYear;
+});
+
+
+
 
   const indexOfLastStudent = currentPage * studentsPerPage;
   const indexOfFirstStudent = indexOfLastStudent - studentsPerPage;
@@ -84,15 +186,9 @@ const AllStudents = () => {
 
   return (
     <div className="p-6 bg-gray-50 min-h-screen" style={{ paddingTop: "120px" }}>
-      {/* Overview Section */}
       <AboutStudent students={students} />
-
-      {/* Department Overview */}
       {!selectedDeptForPage ? (
-        <DepartmentCards
-          students={students}
-          onDeptClick={(dept) => setSelectedDeptForPage(dept)}
-        />
+        <DepartmentCards students={students} onDeptClick={setSelectedDeptForPage} />
       ) : (
         <DepartmentStudentList
           department={selectedDeptForPage}
@@ -101,68 +197,56 @@ const AllStudents = () => {
         />
       )}
 
-      {/* Student List Below Department Overview */}
       <div className="flex flex-wrap items-center justify-between gap-4 my-4">
-  {/* Search Bar */}
-  <div className="relative flex-1 min-w-[200px]">
-    <input
-      type="text"
-      className="w-full px-4 py-2 pl-10 border rounded shadow-sm"
-      placeholder="Search by Name, ID, RegNo..."
-      value={searchTerm}
-      onChange={(e) => setSearchTerm(e.target.value)}
-    />
-    <FiSearch className="absolute top-2.5 left-3 text-gray-400" />
-  </div>
+        <div className="relative flex-1 min-w-[200px]">
+          <input
+            type="text"
+            className="w-full px-4 py-2 pl-10 border rounded shadow-sm"
+            placeholder="Search by Name, ID, RegNo..."
+            value={searchTerm}
+            onChange={e => setSearchTerm(e.target.value)}
+          />
+          <FiSearch className="absolute top-2.5 left-3 text-gray-400" />
+        </div>
+        <select
+          value={selectedDept}
+          onChange={e => setSelectedDept(e.target.value)}
+          className="flex-1 min-w-[150px] px-4 py-2 border rounded shadow-sm"
+        >
+          <option value="All">All Departments</option>
+          {departmentOptions.map(dept => (
+            <option key={dept} value={dept}>{dept}</option>
+          ))}
+        </select>
+        <select
+          value={selectedYear}
+          onChange={e => setSelectedYear(e.target.value)}
+          className="flex-1 min-w-[150px] px-4 py-2 border rounded shadow-sm"
+        >
+          <option value="All">All Years</option>
+          {yearOptions.map(year => (
+            <option key={year} value={year}>{year}</option>
+          ))}
+        </select>
+        <button
+          onClick={() => setShowAddModal(true)}
+          className="flex-1 min-w-[150px] px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
+        >
+          <FaPlus className="inline mr-2" /> Add Student
+        </button>
+        <button
+          onClick={() => setShowBulkModal(true)}
+          className="flex-1 min-w-[150px] px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700"
+        >
+          <FaBriefcase className="inline mr-2" /> Bulk Upload
+        </button>
+      </div>
 
-  {/* Department Dropdown */}
-  <select
-    value={selectedDept}
-    onChange={(e) => setSelectedDept(e.target.value)}
-    className="flex-1 min-w-[150px] px-4 py-2 border rounded shadow-sm"
-  >
-    <option value="All">All Departments</option>
-    {departmentOptions.map((dept) => (
-      <option key={dept} value={dept}>{dept}</option>
-    ))}
-  </select>
-
-  {/* Year Dropdown */}
-  <select
-    value={selectedYear}
-    onChange={(e) => setSelectedYear(e.target.value)}
-    className="flex-1 min-w-[150px] px-4 py-2 border rounded shadow-sm"
-  >
-    <option value="All">All Years</option>
-    {yearOptions.map((year) => (
-      <option key={year} value={year}>{year}</option>
-    ))}
-  </select>
-
-  {/* Add Student Button */}
-  <button
-    onClick={() => setShowAddModal(true)}
-    className="flex-1 min-w-[150px] px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
-  >
-    <FaPlus className="inline mr-2" /> Add Student
-  </button>
-
-  {/* Bulk Upload Button */}
-  <button
-    onClick={() => setShowBulkModal(true)}
-    className="flex-1 min-w-[150px] px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700"
-  >
-    <FaBriefcase className="inline mr-2" /> Bulk Upload
-  </button>
-</div>
-
-
-      {/* Students Table */}
       <div className="overflow-x-auto bg-white shadow rounded-lg">
         <table className="min-w-full divide-y divide-gray-200">
           <thead className="bg-gray-100">
             <tr>
-              <th className="px-4 py-2 text-left text-sm font-semibold text-gray-600">ID</th>
+              <th className="px-4 py-2 text-left text-sm font-semibold text-gray-600">E-mail</th>
               <th className="px-4 py-2 text-left text-sm font-semibold text-gray-600">Name</th>
               <th className="px-4 py-2 text-left text-sm font-semibold text-gray-600">Reg. No</th>
               <th className="px-4 py-2 text-left text-sm font-semibold text-gray-600">Department</th>
@@ -179,14 +263,14 @@ const AllStudents = () => {
                 </td>
               </tr>
             ) : (
-              currentStudents.map((student) => (
+              currentStudents.map(student => (
                 <tr key={student.id}>
-                  <td className="px-4 py-2">{student.id}</td>
+                  <td className="px-4 py-2">{student.email}</td>
                   <td className="px-4 py-2">{student.name}</td>
                   <td className="px-4 py-2">{student.regNo}</td>
                   <td className="px-4 py-2">{student.department}</td>
                   <td className="px-4 py-2">{student.year}</td>
-                  <td className="px-4 py-2">{student.cgpa ?? "-"}</td>
+                  <td className="px-4 py-2">{student.cgpa || "-"}</td>
                   <td className="px-4 py-2 space-x-2">
                     <button
                       onClick={() => {
@@ -211,14 +295,11 @@ const AllStudents = () => {
         </table>
       </div>
 
-      {/* Pagination */}
       <div className="flex justify-center items-center space-x-2 mt-4">
         {Array.from({ length: totalPages }, (_, i) => (
           <button
             key={i + 1}
-            className={`px-3 py-1 rounded border ${
-              currentPage === i + 1 ? "bg-blue-500 text-white" : "bg-white"
-            }`}
+            className={`px-3 py-1 rounded border ${currentPage === i + 1 ? "bg-blue-500 text-white" : "bg-white"}`}
             onClick={() => setCurrentPage(i + 1)}
           >
             {i + 1}
@@ -226,23 +307,26 @@ const AllStudents = () => {
         ))}
       </div>
 
-      {/* Modals */}
       {showAddModal && (
         <AddStudent
-          isOpen={showAddModal}
+          editingStudent={editingStudent}
+          onSave={addStudent}
+          onEditStudent={updateStudent}
           onClose={() => {
             setShowAddModal(false);
             setEditingStudent(null);
           }}
-          onSave={editingStudent ? updateStudent : addStudent}
-          student={editingStudent}
+          setSelectedStudent={setEditingStudent}
         />
       )}
+
       {showBulkModal && (
         <BulkAddStudents
           isOpen={showBulkModal}
           onClose={() => setShowBulkModal(false)}
-          onBulkAdd={(bulkStudents) => setStudents([...students, ...bulkStudents])}
+          onBulkAdd={(bulkStudents) => {
+            fetchStudents(); // Reload from backend after bulk add
+          }}
         />
       )}
     </div>

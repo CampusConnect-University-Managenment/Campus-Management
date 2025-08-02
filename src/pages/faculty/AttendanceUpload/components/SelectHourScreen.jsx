@@ -1,77 +1,70 @@
 import React, { useState } from "react";
 
-const SelectHourScreen = ({ onProceed, onBack, hourBlocks }) => {
-  const [selectedBlock, setSelectedBlock] = useState(null);
+const SelectHourScreen = ({ hourBlocks, onProceed, onBack }) => {
+  const [selected, setSelected] = useState([]);
 
-  const handleCheckboxChange = (block) => {
-    setSelectedBlock((prevBlock) => (prevBlock === block ? null : block));
+  const toggleSelect = (block) => {
+    const ids = block.map((b) => b.id);
+    if (selected.includes(ids[0])) {
+      setSelected((prev) => prev.filter((id) => !ids.includes(id)));
+    } else {
+      setSelected((prev) => [...prev, ...ids]);
+    }
   };
 
   const formatBlockText = (block) => {
-    const hours = block.map((h) => h.hour);
-    const ordinals = { 1: "st", 2: "nd", 3: "rd" };
-    const formatHour = (h) => `${h}${ordinals[h] || "th"}`;
-
-    if (hours.length === 1) {
-      return `${formatHour(hours[0])} Hour (${block[0].time})`;
-    }
-
-    const hourText = hours.map(formatHour).join(" & ");
-    return `${hourText} Hours (${block[0].time.split(" - ")[0]} - ${
-      block[block.length - 1].time.split(" - ")[1]
-    })`;
+    const hours = block.map((b) => b.hour).sort((a, b) => a - b);
+    if (hours.length === 1) return `${hours[0]}${getOrdinal(hours[0])} Hour`;
+    return `${hours[0]}${getOrdinal(hours[0])} - ${
+      hours[hours.length - 1]
+    }${getOrdinal(hours[hours.length - 1])} Hours`;
   };
 
-  const courseInfo = hourBlocks[0]?.[0];
-  const selectedHourIds = selectedBlock ? selectedBlock.map((h) => h.id) : [];
+  const getOrdinal = (n) => {
+    if (n === 1) return "st";
+    if (n === 2) return "nd";
+    if (n === 3) return "rd";
+    return "th";
+  };
 
   return (
-    <div className="p-8">
-      <div className="pb-4 mb-6 border-b border-gray-200">
-        <h2 className="text-2xl font-bold text-gray-800">Select Hour Block</h2>
-        {courseInfo && (
-          <p className="text-gray-500">
-            Choose the class hours for {courseInfo.courseCode} -{" "}
-            {courseInfo.courseName}.
-          </p>
-        )}
-      </div>
-      <div className="space-y-4">
-        {hourBlocks.length > 0 ? (
-          hourBlocks.map((block, index) => (
-            <label
-              key={index}
-              className="flex items-center p-5 border border-gray-300 rounded-lg cursor-pointer has-[:checked]:border-blue-500 has-[:checked]:bg-blue-50"
-            >
-              <input
-                type="checkbox"
-                checked={selectedBlock === block}
-                onChange={() => handleCheckboxChange(block)}
-                className="w-5 h-5 mr-5 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
-              />
-              <h3 className="text-lg font-semibold text-gray-900">
+    <div className="p-6">
+      <h2 className="text-xl font-semibold mb-4">Select Hour Block</h2>
+      {hourBlocks.length === 0 ? (
+        <div className="bg-gray-100 p-4 rounded">
+          No available hours for this course, or attendance has already been
+          submitted.
+        </div>
+      ) : (
+        <div className="space-y-4">
+          {hourBlocks.map((block, index) => {
+            const ids = block.map((b) => b.id);
+            const isSelected = selected.some((id) => ids.includes(id));
+
+            return (
+              <div
+                key={index}
+                className={`p-4 border rounded cursor-pointer ${
+                  isSelected
+                    ? "bg-blue-100 border-blue-500"
+                    : "hover:bg-gray-50"
+                }`}
+                onClick={() => toggleSelect(block)}
+              >
                 {formatBlockText(block)}
-              </h3>
-            </label>
-          ))
-        ) : (
-          <p className="p-4 text-center text-gray-500 bg-gray-100 rounded-md">
-            No available hours for this course, or attendance has already been
-            submitted.
-          </p>
-        )}
-      </div>
-      <div className="flex justify-between mt-8">
-        <button
-          onClick={onBack}
-          className="px-6 py-2 font-semibold text-gray-700 bg-gray-200 rounded-md hover:bg-gray-300"
-        >
+              </div>
+            );
+          })}
+        </div>
+      )}
+      <div className="mt-6 flex justify-between">
+        <button onClick={onBack} className="bg-gray-300 px-4 py-2 rounded">
           ← Back
         </button>
         <button
-          onClick={() => onProceed(selectedHourIds)}
-          disabled={selectedHourIds.length === 0}
-          className="px-6 py-2 font-semibold text-white bg-blue-600 rounded-md shadow-sm hover:bg-blue-700 disabled:bg-blue-300"
+          onClick={() => onProceed(selected)}
+          disabled={selected.length === 0}
+          className="bg-blue-500 text-white px-4 py-2 rounded disabled:opacity-50"
         >
           Proceed →
         </button>

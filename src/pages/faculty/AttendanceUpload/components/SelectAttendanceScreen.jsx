@@ -1,107 +1,124 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect, useState } from "react";
+import "./MarkAttendanceScreen.css"; // for styling (see below)
 
-const MarkAttendanceScreen = ({
-  selectedClasses,
-  students,
-  onBack,
-  onSubmit,
-}) => {
+const MarkAttendanceScreen = ({ selectedClasses, onBack, onSubmit }) => {
+  const [students, setStudents] = useState([]);
   const [attendance, setAttendance] = useState({});
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    setAttendance(
-      students.reduce((acc, student) => ({ ...acc, [student.id]: "P" }), {})
-    );
-  }, [students]);
+    if (selectedClasses.length === 0) return;
 
-  const handleStatusChange = (studentId, status) =>
+    const { batch, courseCode } = selectedClasses[0];
+
+    fetch(
+      `http://localhost:8080/attendance/students?batch=${batch}&courseCode=${courseCode}`
+    )
+      .then((res) => res.json())
+      .then((data) => {
+        setStudents(data);
+        const initial = {};
+        data.forEach((s) => {
+          initial[s.studentId] = "P";
+        });
+        setAttendance(initial);
+        setLoading(false);
+      })
+      .catch((err) => {
+        console.error("Failed to fetch students", err);
+        alert("Failed to load student list.");
+        setLoading(false);
+      });
+  }, [selectedClasses]);
+
+  const handleStatusChange = (studentId, status) => {
     setAttendance((prev) => ({ ...prev, [studentId]: status }));
+  };
 
-  const selectedHoursText = selectedClasses
-    .map((c) => c.hour)
-    .sort((a, b) => a - b)
-    .map((h) => {
-      const ordinals = { 1: "st", 2: "nd", 3: "rd" };
-      return `${h}${ordinals[h] || "th"}`;
+  const handleSubmit = () => {
+    const records = [];
+
+    selectedClasses.forEach((cls) => {
+      const formattedDate = new Date(cls.date).toISOString().split("T")[0];
+
+      students.forEach((student) => {
+        records.push({
+          studentId: student.studentId,
+          studentName: student.studentName,
+          batch: cls.batch,
+          courseCode: cls.courseCode,
+          date: formattedDate,
+          hour: cls.hour,
+          status: attendance[student.studentId],
+        });
+      });
+    });
+
+    fetch("http://localhost:8080/attendance/submit", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(records),
     })
-    .join(" & ");
+      .then(async (res) => {
+        if (res.ok) {
+          alert("Attendance submitted successfully!");
+          onSubmit?.(records);
+        } else {
+          const errMsg = await res.text();
+          console.error("Backend error:", errMsg);
+          alert("Failed to submit attendance.");
+        }
+      })
+      .catch((err) => {
+        console.error("Submit failed", err);
+        alert("Error occurred while submitting.");
+      });
+  };
 
-  const courseInfo = selectedClasses[0];
+  if (loading) return <div className="loading">Loading students...</div>;
 
   return (
-    <div className="p-8">
-      <div className="pb-4 mb-6 border-b border-gray-200">
-        {courseInfo && (
-          <h2 className="text-2xl font-bold text-gray-800">
-            Mark Attendance: {courseInfo.courseCode}
-          </h2>
-        )}
-        <p className="text-gray-500">
-          <strong>Hour(s):</strong> {selectedHoursText}
-        </p>
-      </div>
-      <div className="overflow-hidden border border-gray-200 rounded-lg">
-        <table className="min-w-full divide-y divide-gray-200">
-          <thead className="bg-gray-50">
+    <div className="attendance-container">
+      <h2 className="title">Mark Attendance</h2>
+      <div className="table-wrapper">
+        <table className="attendance-table">
+          <thead>
             <tr>
-              {["S.No", "Roll No", "Student Name", "Status"].map((header) => (
-                <th
-                  key={header}
-                  className="px-6 py-3 text-xs font-bold tracking-wider text-left text-gray-600 uppercase"
-                >
-                  {header}
-                </th>
-              ))}
+              <th>#</th>
+              <th>Student ID</th>
+              <th>Name</th>
+              <th className="p">P</th>
+              <th className="a">A</th>
+              <th className="od">OD</th>
             </tr>
           </thead>
-          <tbody className="bg-white divide-y divide-gray-200">
-            {students.map((student, index) => (
-              <tr key={student.id} className="hover:bg-gray-50">
-                <td className="px-6 py-4 text-sm text-gray-500">{index + 1}</td>
-                <td className="px-6 py-4 text-sm font-medium text-gray-900">
-                  {student.id}
-                </td>
-                <td className="px-6 py-4 text-sm text-gray-800">
-                  {student.name}
-                </td>
-                <td className="px-6 py-4">
-                  <div className="flex items-center space-x-4">
-                    {["P", "A", "OD"].map((status) => (
-                      <label
-                        key={status}
-                        className="flex items-center space-x-2 text-sm cursor-pointer"
-                      >
-                        <input
-                          type="radio"
-                          name={`status_${student.id}`}
-                          checked={attendance[student.id] === status}
-                          onChange={() =>
-                            handleStatusChange(student.id, status)
-                          }
-                          className="w-4 h-4 text-blue-600 border-gray-300 focus:ring-blue-500"
-                        />
-                        <span>{status}</span>
-                      </label>
-                    ))}
-                  </div>
-                </td>
+          <tbody>
+            {students.map((s, index) => (
+              <tr key={s.studentId}>
+                <td>{index + 1}</td>
+                <td>{s.studentId}</td>
+                <td>{s.studentName}</td>
+                {["P", "A", "OD"].map((status) => (
+                  <td key={status}>
+                    <input
+                      type="checkbox"
+                      checked={attendance[s.studentId] === status}
+                      onChange={() => handleStatusChange(s.studentId, status)}
+                    />
+                  </td>
+                ))}
               </tr>
             ))}
           </tbody>
         </table>
       </div>
-      <div className="flex justify-between mt-8">
-        <button
-          onClick={onBack}
-          className="px-6 py-2 font-semibold text-gray-700 bg-gray-200 rounded-md hover:bg-gray-300"
-        >
-          ← Back
-        </button>
-        <button
-          onClick={() => onSubmit(attendance)}
-          className="px-6 py-2 font-semibold text-white bg-blue-600 rounded-md shadow-sm hover:bg-blue-700"
-        >
+
+      <div className="button-group">
+        <button className="submit-btn" onClick={handleSubmit}>
           Submit
+        </button>
+        <button className="back-btn" onClick={onBack}>
+          Back
         </button>
       </div>
     </div>
