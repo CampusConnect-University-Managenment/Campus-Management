@@ -207,17 +207,7 @@ export default function HelpSupport() {
           ))}
         </select>
 
-        {/* <select
-          name="priority"
-          value={formState.priority}
-          onChange={handleChange}
-          className="w-full p-3 border rounded"
-          required
-        >
-          <option value="High">High</option>
-          <option value="Medium">Medium</option>
-          <option value="Low">Low</option>
-        </select> */}
+   
 
         <div>
           <label className="block text-gray-700 mb-1 font-medium">
