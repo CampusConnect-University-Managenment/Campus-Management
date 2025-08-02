@@ -1,32 +1,14 @@
-
-
-// export default MyProfile;
 import React, { useState } from "react";
 
 const MyProfile = () => {
   const defaultProfile =
     "https://cdn-icons-png.flaticon.com/512/3135/3135715.png";
 
-  const [profileImage, setProfileImage] = useState(defaultProfile);
+  const [profileImage] = useState(defaultProfile);
   const [showPasswordFields, setShowPasswordFields] = useState(false);
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [errors, setErrors] = useState({});
-
-  const handleImageChange = (e) => {
-    const file = e.target.files[0];
-    if (file && file.type.startsWith("image/")) {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setProfileImage(reader.result);
-      };
-      reader.readAsDataURL(file);
-    }
-  };
-
-  const handleDeleteImage = () => {
-    setProfileImage(defaultProfile);
-  };
 
   const handlePasswordSubmit = (e) => {
     e.preventDefault();
@@ -64,43 +46,33 @@ const MyProfile = () => {
           alt="Profile"
           className="w-32 h-32 rounded-full border-4 border-[#0F1B4C] shadow-md object-cover"
         />
-        <label className="text-[#0F1B4C] hover:underline text-sm font-medium cursor-pointer">
-          Change Profile Picture
-          <input
-            type="file"
-            accept="image/*"
-            className="hidden"
-            onChange={handleImageChange}
-          />
-        </label>
-
-        {/* Show delete only if custom image is uploaded */}
-        {profileImage !== defaultProfile && (
-          <button
-            onClick={handleDeleteImage}
-            className="text-red-600 text-sm hover:underline"
-          >
-            Delete Profile Picture
-          </button>
-        )}
+        {/* Change and Delete buttons are removed */}
       </div>
 
       <div className="mt-10 mx-auto max-w-xl bg-gray-100 p-6 rounded-xl shadow-md">
         <div className="grid grid-cols-2 gap-4 text-sm sm:text-base">
-          <div className="font-medium">Name:</div><div>Riya Sharma</div>
-          <div className="font-medium">Register Number:</div><div>21CSE019</div>
-          <div className="font-medium">Department:</div><div>Computer Science and Engineering</div>
-          <div className="font-medium">Batch:</div><div>2021</div>
-
-          {/* ✅ New Section field added here below Batch */}
-          <div className="font-medium">Section:</div><div>C</div>
-
-          <div className="font-medium">Year:</div><div>3rd year</div>
-          <div className="font-medium">Semester:</div><div>6</div>
-          <div className="font-medium">Father's Name:</div><div>Robert Sharma</div>
-          <div className="font-medium">Contact:</div><div>+91 9876543210</div>
-          <div className="font-medium">Email:</div><div>riya.sharma@kce.ac.in</div>
-          <div className="font-medium">Aadhar:</div><div>1234 5678 9012</div>
+          <div className="font-medium">Name:</div>
+          <div>Riya Sharma</div>
+          <div className="font-medium">Register Number:</div>
+          <div>21CSE019</div>
+          <div className="font-medium">Department:</div>
+          <div>Computer Science and Engineering</div>
+          <div className="font-medium">Batch:</div>
+          <div>2021</div>
+          <div className="font-medium">Section:</div>
+          <div>C</div>
+          <div className="font-medium">Year:</div>
+          <div>3rd year</div>
+          <div className="font-medium">Semester:</div>
+          <div>6</div>
+          <div className="font-medium">Father's Name:</div>
+          <div>Robert Sharma</div>
+          <div className="font-medium">Contact:</div>
+          <div>+91 9876543210</div>
+          <div className="font-medium">Email:</div>
+          <div>riya.sharma@kce.ac.in</div>
+          <div className="font-medium">Aadhar:</div>
+          <div>1234 5678 9012</div>
         </div>
 
         <div className="mt-8">
@@ -163,4 +135,4 @@ const MyProfile = () => {
   );
 };
 
-export default MyProfile;
+export default MyProfile; // Keep this line.

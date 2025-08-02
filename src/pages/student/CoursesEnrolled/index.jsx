@@ -1,4 +1,7 @@
+<<<<<<< HEAD
 
+=======
+>>>>>>> main
 import React, { useState } from "react";
 import { ArrowRight, User, BookOpen } from "lucide-react";
 import AddCourse from "./AddCourse";
@@ -136,7 +139,7 @@ export default function CoursesOverview() {
   const [showAddCourse, setShowAddCourse] = useState(false);
   const [selectedCourse, setSelectedCourse] = useState(null);
   const [activeTab, setActiveTab] = useState("materials");
-  const [assignmentStatus, setAssignmentStatus] = useState({});
+  const [assignmentStatus, setAssignmentStatus] = useState({}); // Renamed from uploadedAssignments for clarity
 
   if (showAddCourse) return <AddCourse onBack={() => setShowAddCourse(false)} />;
 
@@ -154,19 +157,21 @@ export default function CoursesOverview() {
       ...prev,
       [courseId]: {
         ...prev[courseId],
-        [index]: { file, submitted: false },
+        [index]: { file, submitted: false }, // Store file and its submission status
       },
     }));
   };
 
   const handleSubmit = (courseId, index) => {
-    const currentFile = assignmentStatus[courseId]?.[index]?.file;
+    const currentStatus = assignmentStatus[courseId]?.[index];
+    const currentFile = currentStatus?.file;
+
     if (currentFile) {
       setAssignmentStatus((prev) => ({
         ...prev,
         [courseId]: {
           ...prev[courseId],
-          [index]: { ...prev[courseId][index], submitted: true },
+          [index]: { ...currentStatus, submitted: true }, // Mark as submitted
         },
       }));
       alert(`✅ Submitted: ${currentFile.name}`);
@@ -177,7 +182,7 @@ export default function CoursesOverview() {
     setAssignmentStatus((prev) => {
       const updated = { ...prev };
       if (updated[courseId] && updated[courseId][index]) {
-        delete updated[courseId][index];
+        delete updated[courseId][index]; // Remove the entry
       }
       return updated;
     });

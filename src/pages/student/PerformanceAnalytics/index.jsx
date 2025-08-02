@@ -10,7 +10,7 @@ import {
   ResponsiveContainer,
   Legend,
 } from "recharts";
-import { GraduationCap, Activity, BookOpen } from "lucide-react";
+import { GraduationCap, Activity, BookOpen, AlertCircle } from "lucide-react";
 
 // ✅ CGPA data for each semester
 const chartData = [
@@ -45,6 +45,12 @@ const quickStats = [
     icon: <BookOpen className="text-blue-600 w-5 h-5" />,
     color: "from-blue-100 to-blue-200",
   },
+];
+
+// ✅ Pending Backlog Courses Data
+const backlogCourses = [
+  { code: "MA102", name: "Mathematics II" },
+  { code: "CS201", name: "Data Structures" },
 ];
 
 // 🧠 Custom tooltip to avoid colon
@@ -84,7 +90,7 @@ export default function PerformanceAnalytics() {
       </div>
 
       {/* ✅ Bar Chart for Semester-Wise CGPA */}
-      <div className="bg-white rounded-2xl shadow-md p-6">
+      <div className="bg-white rounded-2xl shadow-md p-6 mb-12">
         <h2 className="text-lg font-semibold text-gray-800 mb-4">
           🎓 Semester-wise CGPA
         </h2>
@@ -109,6 +115,37 @@ export default function PerformanceAnalytics() {
             </defs>
           </BarChart>
         </ResponsiveContainer>
+      </div>
+
+      {/* ✅ Pending Backlog Courses Section */}
+      <div className="bg-white rounded-2xl shadow-md p-6">
+        <div className="flex items-center gap-2 mb-4">
+          <AlertCircle className="text-red-500 w-5 h-5" />
+          <h2 className="text-lg font-semibold text-gray-800">
+            Pending Backlog Courses
+          </h2>
+        </div>
+        <table className="w-full border-t text-sm">
+          <thead>
+            <tr className="bg-gray-100 text-gray-700">
+              <th className="text-left py-2 px-3 font-semibold">COURSE CODE</th>
+              <th className="text-left py-2 px-3 font-semibold">COURSE NAME</th>
+            </tr>
+          </thead>
+          <tbody>
+            {backlogCourses.map((course, index) => (
+              <tr
+                key={index}
+                className="border-b hover:bg-gray-50 transition-colors"
+              >
+                <td className="py-2 px-3 text-blue-500 font-medium">
+                  {course.code}
+                </td>
+                <td className="py-2 px-3 text-gray-800">{course.name}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
       </div>
     </div>
   );
