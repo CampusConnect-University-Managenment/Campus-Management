@@ -7,7 +7,6 @@ export default function HelpSupport() {
     department: "Computer Science",
     type: "Academic",
     location: "",
-    priority: "Medium",
     subject: "",
     description: "",
     image: null,
@@ -77,13 +76,13 @@ export default function HelpSupport() {
     if (!confirmSubmit) return;
 
     const formData = new FormData();
-    Object.entries(formState).forEach(([key, value]) => {
-      if (key === "image") {
-        if (value) formData.append("image", value);
-      } else {
-        formData.append(key, value || "");
-      }
-    });
+   Object.entries(formState).forEach(([key, value]) => {
+  if (key === "image") {
+    if (value) formData.append("image", value);
+  } else {
+    formData.append(key, value || "");
+  }
+});
 
     formData.append("status", "Pending");
     formData.append("createdAt", new Date().toISOString().slice(0, 19));
@@ -102,7 +101,6 @@ export default function HelpSupport() {
       setFormState((prev) => ({
         ...prev,
         location: "",
-        priority: "Medium",
         subject: "",
         description: "",
         image: null,
@@ -209,7 +207,7 @@ export default function HelpSupport() {
           ))}
         </select>
 
-        <select
+        {/* <select
           name="priority"
           value={formState.priority}
           onChange={handleChange}
@@ -219,7 +217,7 @@ export default function HelpSupport() {
           <option value="High">High</option>
           <option value="Medium">Medium</option>
           <option value="Low">Low</option>
-        </select>
+        </select> */}
 
         <div>
           <label className="block text-gray-700 mb-1 font-medium">
@@ -338,7 +336,7 @@ export default function HelpSupport() {
                   </span>
                 </div>
                 <div className="text-sm text-gray-500 mt-2">
-                  📍 {req.location} | ⚡ {req.priority} | 🕒{" "}
+                  📍 {req.location} | 🕒 {new Date(req.createdAt).toLocaleString()}
                   {new Date(req.createdAt).toLocaleString()}
                 </div>
               </div>
