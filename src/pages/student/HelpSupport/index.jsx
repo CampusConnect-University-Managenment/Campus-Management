@@ -7,113 +7,144 @@ export default function HelpSupport() {
     department: "Computer Science",
     type: "Academic",
     location: "",
-    priority: "Medium",
     subject: "",
     description: "",
+    image: null,
   });
 
   const [previousRequests, setPreviousRequests] = useState([]);
   const [filterStatus, setFilterStatus] = useState("All");
   const [page, setPage] = useState(0);
-  const [isLoading, setIsLoading] = useState(false); // Kept from main
-  const [error, setError] = useState(null); // Kept from main
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState(null);
   const pageSize = 3;
 
-  // Modified useEffect to depend on filterStatus and registerNumber
   useEffect(() => {
-    fetchRequests(filterStatus, formState.registerNumber);
-  }, [filterStatus, formState.registerNumber]);
-
-  // Modified fetchRequests to accept status and registerNumber
-  const fetchRequests = async (status = "All", registerNumber) => {
-    setIsLoading(true); // From main
-    setError(null); // From main
-    try {
-      let url =
-        status === "All"
-          ? `http://localhost:5000/api/requests/student/${registerNumber}`
-          : `http://localhost:5000/api/requests/student/${registerNumber}?status=${status}`;
-
-      const res = await fetch(url);
-      if (!res.ok) { // From main
-        throw new Error(`HTTP error! status: ${res.status}`);
+    const fetchRequests = async () => {
+      setIsLoading(true);
+      setError(null);
+      try {
+        const res = await fetch(
+          `http://localhost:5000/api/requests/student/${formState.registerNumber}`
+        );
+        if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
+        const data = await res.json();
+        if (!Array.isArray(data))
+          throw new Error("Expected array but got: " + JSON.stringify(data));
+        setPreviousRequests(data);
+      } catch (err) {
+        console.error("Failed to load requests:", err);
+        setError(err.message);
+        setPreviousRequests([]);
+      } finally {
+        setIsLoading(false);
       }
-      const data = await res.json();
-      // Combine array check and reverse from reviewupdate, ensuring it's always an array
-      setPreviousRequests(Array.isArray(data) ? data.reverse() : []);
-    } catch (err) {
-      console.error("Failed to load requests:", err); // Combined error logging
-      setError(err.message); // From main
-      setPreviousRequests([]); // Ensure it's always an array
-    } finally {
-      setIsLoading(false); // From main
+    };
+
+    fetchRequests();
+  }, [formState.registerNumber]);
+
+  const handleChange = (e) => {
+    const { name, value, files } = e.target;
+
+    if (name === "image") {
+      setFormState((prev) => ({
+        ...prev,
+        image: files[0] || null,
+      }));
+    } else {
+      setFormState((prev) => ({
+        ...prev,
+        [name]: value,
+      }));
     }
   };
 
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-
-    if (name === "subject") {
-      const wordCount = value.trim().split(/\s+/).filter(Boolean).length;
-      if (wordCount > 20) return;
+  const handleImageChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      setFormState((prev) => ({ ...prev, image: file }));
     }
-
-    setFormState((prev) => ({ ...prev, [name]: value }));
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    const newRequest = {
-      ...formState,
-      status: "Pending",
-      createdAt: new Date().toISOString(),
-    };
+    const confirmSubmit = window.confirm(
+      "Are you sure you want to submit this request?"
+    );
+    if (!confirmSubmit) return;
+
+    const formData = new FormData();
+   Object.entries(formState).forEach(([key, value]) => {
+  if (key === "image") {
+    if (value) formData.append("image", value);
+  } else {
+    formData.append(key, value || "");
+  }
+});
+
+    formData.append("status", "Pending");
+    formData.append("createdAt", new Date().toISOString().slice(0, 19));
 
     try {
       const res = await fetch("http://localhost:5000/api/requests/create", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(newRequest),
+        body: formData,
       });
 
-      if (res.ok) {
-        // From reviewupdate: refresh list after successful submission
-        fetchRequests(filterStatus, formState.registerNumber);
-        // Reset form fields
-        setFormState((prev) => ({
-          ...prev,
-          type: "Academic", // Kept from reviewupdate
-          location: "",
-          priority: "Medium",
-          subject: "",
-          description: "",
-        }));
-      } else {
-        throw new Error("Request submission failed.");
-      }
-    } catch (err) {
-      console.error("Error:", err); // Combined error logging
+      if (!res.ok) throw new Error("Failed to submit request");
+
+      const savedRequest = await res.json();
+      setPreviousRequests((prev) => [savedRequest, ...prev]);
+
+      setFormState((prev) => ({
+        ...prev,
+        location: "",
+        subject: "",
+        description: "",
+        image: null,
+      }));
+    } catch (error) {
+      console.error("Error:", error);
       alert("Submission failed. Please try again.");
     }
   };
 
-  // filteredRequests logic from main, but now 'previousRequests' is already filtered by fetchRequests
-  // and reversed. So, we directly use previousRequests here.
-  const displayRequests = filterStatus === "All"
-    ? previousRequests
-    : previousRequests.filter((r) => r.status === filterStatus);
+  const filteredRequests = Array.isArray(previousRequests)
+    ? filterStatus === "All"
+      ? previousRequests
+      : previousRequests.filter((r) => r.status === filterStatus)
+    : [];
 
-
-  const paginatedRequests = displayRequests.slice( // Used displayRequests
+  const paginatedRequests = filteredRequests.slice(
     page * pageSize,
     page * pageSize + pageSize
   );
 
   const locationOptions =
     formState.type === "Hostel"
-      ? ["Block A", "Block B", "Block C", "Block D", "Block E", "Block F"] // From reviewupdate
-      : ["Academic Hall", "Library", "Cafeteria", "Block A", "Block B"]; // From reviewupdate
+      ? [
+          "Block A",
+          "Block B",
+          "Block C",
+          "Block D",
+          "Block E",
+          "Block F",
+          "Block G",
+          "Mess A",
+          "Mess B",
+        ]
+      : [
+          "Academic Hall",
+          "Library",
+          "Cafeteria",
+          "Block A",
+          "Block B",
+          "Block C",
+          "Block D",
+          "Block E",
+        ];
 
   return (
     <div className="px-6 pt-24 pb-10 max-w-5xl mx-auto">
@@ -122,29 +153,61 @@ export default function HelpSupport() {
         Fill out the form below and our support team will get back to you.
       </p>
 
-      {/* ✅ Form */}
+      {/* ---------- FORM SECTION ---------- */}
       <form
         onSubmit={handleSubmit}
         className="bg-white rounded-lg shadow p-6 space-y-4 border"
       >
-        <input type="text" value={formState.name} readOnly className="w-full p-3 border rounded bg-gray-100" />
-        <input type="text" value={formState.registerNumber} readOnly className="w-full p-3 border rounded bg-gray-100" />
-        <input type="text" value={formState.department} readOnly className="w-full p-3 border rounded bg-gray-100" />
+        <input
+          type="text"
+          name="name"
+          value={formState.name}
+          readOnly
+          className="w-full p-3 border rounded bg-gray-100"
+        />
+        <input
+          type="text"
+          name="registerNumber"
+          value={formState.registerNumber}
+          readOnly
+          className="w-full p-3 border rounded bg-gray-100"
+        />
+        <input
+          type="text"
+          name="department"
+          value={formState.department}
+          readOnly
+          className="w-full p-3 border rounded bg-gray-100"
+        />
 
-        <select name="type" value={formState.type} onChange={handleChange} className="w-full p-3 border rounded" required>
+        <select
+          name="type"
+          value={formState.type}
+          onChange={handleChange}
+          className="w-full p-3 border rounded"
+          required
+        >
           <option value="Academic">Academic</option>
           <option value="Facilities">Facilities</option>
           <option value="Hostel">Hostel</option>
         </select>
 
-        <select name="location" value={formState.location} onChange={handleChange} className="w-full p-3 border rounded" required>
+        <select
+          name="location"
+          value={formState.location}
+          onChange={handleChange}
+          className="w-full p-3 border rounded"
+          required
+        >
           <option value="">Select Location</option>
           {locationOptions.map((loc) => (
-            <option key={loc} value={loc}>{loc}</option>
+            <option key={loc} value={loc}>
+              {loc}
+            </option>
           ))}
         </select>
 
-        <select
+        {/* <select
           name="priority"
           value={formState.priority}
           onChange={handleChange}
@@ -154,7 +217,19 @@ export default function HelpSupport() {
           <option value="High">High</option>
           <option value="Medium">Medium</option>
           <option value="Low">Low</option>
-        </select>
+        </select> */}
+
+        <div>
+          <label className="block text-gray-700 mb-1 font-medium">
+            Upload Image (optional)
+          </label>
+          <input
+            type="file"
+            accept="image/*"
+            onChange={handleImageChange}
+            className="w-full p-2 border rounded"
+          />
+        </div>
 
         <div>
           <input
@@ -163,11 +238,14 @@ export default function HelpSupport() {
             value={formState.subject}
             onChange={handleChange}
             className="w-full p-3 border rounded"
-            placeholder="Specify your issue (max 20 words)"
+            placeholder="Specify your issue..... (max 20 words)"
             required
           />
           <p className="text-sm text-gray-500 mt-1">
-            {formState.subject.trim().split(/\s+/).filter(Boolean).length}/20 words
+            {
+              formState.subject.trim().split(/\s+/).filter(Boolean).length
+            }
+            /20 words
           </p>
         </div>
 
@@ -181,13 +259,20 @@ export default function HelpSupport() {
           required
         />
 
-        <button type="submit" className="bg-blue-600 text-white px-6 py-2 rounded hover:bg-blue-700">Submit Request</button>
+        <button
+          type="submit"
+          className="bg-blue-600 text-white px-6 py-2 rounded hover:bg-blue-700"
+        >
+          Submit Request
+        </button>
       </form>
 
-      {/* ✅ Previous Requests Section */}
+      {/* ---------- REQUEST LIST ---------- */}
       <div className="mt-10">
         <div className="flex justify-between items-center mb-4">
-          <h2 className="text-xl font-semibold text-blue-700">📋 Previous Requests</h2>
+          <h2 className="text-xl font-semibold text-blue-700">
+            📋 Previous Requests
+          </h2>
           <select
             value={filterStatus}
             onChange={(e) => {
@@ -212,14 +297,27 @@ export default function HelpSupport() {
         ) : (
           <div className="space-y-4">
             {paginatedRequests.map((req) => (
-              <div key={req.id || req._id} className="border p-4 rounded-md bg-gray-50 shadow-sm">
+              <div
+                key={req.id || req._id}
+                className="border p-4 rounded-md bg-gray-50 shadow-sm"
+              >
                 <div className="flex justify-between">
                   <div>
                     <p className="font-medium text-lg">{req.type}</p>
-                    <p className="text-sm font-semibold">📌 {req.subject}</p>
+                    <p className="text-sm font-semibold text-gray-800">
+                      📌 {req.subject}
+                    </p>
                     <p className="text-gray-600 text-sm">{req.description}</p>
 
-                    {req.responseMessage && ( // Kept from main for general response message
+                    {req.imagePath && (
+                      <img
+                        src={`http://localhost:5000/api/requests/image/${req.imagePath}`}
+                        alt="Uploaded"
+                        className="mt-2 max-h-48 rounded border"
+                      />
+                    )}
+
+                    {req.responseMessage && (
                       <p className="text-sm italic text-blue-600 mt-1">
                         💬 {req.responseMessage}
                       </p>
@@ -238,23 +336,25 @@ export default function HelpSupport() {
                   </span>
                 </div>
                 <div className="text-sm text-gray-500 mt-2">
-                  📍 {req.location} | ⚡ {req.priority} | 🕒 {new Date(req.createdAt).toLocaleString()}
+                  📍 {req.location} | 🕒 {new Date(req.createdAt).toLocaleString()}
+                  {new Date(req.createdAt).toLocaleString()}
                 </div>
-
-                {/* ✅ Show faculty response if resolved - from reviewupdate */}
-                {req.status === "Resolved" && req.responseMessage && (
-                  <div className="mt-3 text-sm text-green-700 bg-green-50 p-2 rounded">
-                    <strong>Faculty Response:</strong>{" "}
-                    {req.responseMessage}
-                  </div>
-                )}
               </div>
             ))}
+
             <div className="flex justify-between pt-4">
-              <button disabled={page === 0} onClick={() => setPage((prev) => prev - 1)} className="px-4 py-2 bg-gray-200 rounded disabled:opacity-50">
+              <button
+                disabled={page === 0}
+                onClick={() => setPage((prev) => prev - 1)}
+                className="px-4 py-2 bg-gray-200 rounded disabled:opacity-50"
+              >
                 Previous
               </button>
-              <button disabled={(page + 1) * pageSize >= displayRequests.length} onClick={() => setPage((prev) => prev + 1)} className="px-4 py-2 bg-gray-200 rounded disabled:opacity-50">
+              <button
+                disabled={(page + 1) * pageSize >= filteredRequests.length}
+                onClick={() => setPage((prev) => prev + 1)}
+                className="px-4 py-2 bg-gray-200 rounded disabled:opacity-50"
+              >
                 Next
               </button>
             </div>
