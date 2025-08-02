@@ -2,7 +2,7 @@ import React from 'react';
 
 
 import TotalOverview from './totaloverview.jsx';
-import Attendance from './attendance.jsx';
+import AcademicCalendar from './academicCalendar.jsx';
 
 const Header = () => {
   
@@ -22,21 +22,8 @@ const Header = () => {
       <TotalOverview />
 
       {/* Attendance Chart */}
-      <Attendance />
-
-      {/* Department-wise Overview 
-      <DepartmentOverview />
-
-      {/* Faculty on Leave and Notice Board 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-10">
-        <FacultyOnLeave />
-        <NoticeBoard />
-      </div> 
-     */}
-
-      {/* Notifications */}
-      
-    </div>
+       <AcademicCalendar />
+     </div>
   );
 };
 
