@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 
-const BASE_URL = "http://localhost:8080/admin/courses";
+const BASE_URL = "http://localhost:8081/admin/courses";
 const DEGREE_OPTIONS = ["BE", "B.Tech"];
 const YEAR_OPTIONS = ["1st Year", "2nd Year", "3rd Year", "4th Year"];
 const DEPARTMENT_OPTIONS = ["IT", "CSE", "AIDS", "EEE", "ECE"];
