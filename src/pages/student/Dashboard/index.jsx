@@ -146,7 +146,8 @@ export default function StudentDashboard() {
           <div className="bg-gray-50 rounded-xl p-6 shadow-sm space-y-6 text-bg">
             <DetailRow label="Register No:" value={studentData.studentRollNo} />
             <DetailRow label="Department:" value={studentData.studentDepartment} />
-            <DetailRow label="Section:" value={studentData.studentSection} />
+            <DetailRow  label="Batch:" value={studentData?.studentYear ? (new Date().getFullYear() - studentData.studentYear) : "N/A"} />
+
             <DetailRow label="Year:" value={studentData.studentYear} />
             <DetailRow label="Semester:" value={studentData.studentSem} />
           </div>
