@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from "react";
 import {
   CalendarDays,
@@ -8,12 +9,14 @@ import {
 } from "lucide-react";
 
 export default function StudentDashboard() {
+  const [studentRollNo, setStudentRollNo] = useState(null);
   const [enlargedCard, setEnlargedCard] = useState(null);
   const today = new Date();
   const [currentMonth, setCurrentMonth] = useState(today.getMonth());
   const [currentYear, setCurrentYear] = useState(today.getFullYear());
   const [selectedDate, setSelectedDate] = useState(null);
   const [academicEvents, setAcademicEvents] = useState([]);
+  const [studentData, setStudentData] = useState(null);
 
   const monthNames = [
     "January", "February", "March", "April", "May", "June",
@@ -26,6 +29,35 @@ export default function StudentDashboard() {
     event: "bg-green-200",
   };
 
+  // ✅ Step 1: Get roll number from localStorage
+  useEffect(() => {
+    const storedRollNo = localStorage.getItem("studentRollNo");
+    if (storedRollNo) {
+      setStudentRollNo(storedRollNo);
+    }
+  }, []);
+
+  // ✅ Step 2: Fetch student details
+  useEffect(() => {
+    if (!studentRollNo) return;
+
+    const fetchStudent = async () => {
+      try {
+        const res = await fetch(
+          `http://localhost:8081/api/admin/students/rollno/${studentRollNo}`
+        );
+        if (!res.ok) throw new Error("Student not found");
+        const json = await res.json();
+        setStudentData(json.data);
+      } catch (err) {
+        console.error("Error fetching student data:", err);
+      }
+    };
+
+    fetchStudent();
+  }, [studentRollNo]);
+
+  // ✅ Step 3: Fetch academic events from API
   useEffect(() => {
     const fetchEvents = async () => {
       try {
@@ -88,25 +120,35 @@ export default function StudentDashboard() {
   }
 
   function StudentCard() {
+    if (!studentData) {
+      return (
+        <div className="bg-white rounded-2xl shadow-md flex items-center justify-center h-[472px]">
+          <p>Loading student info...</p>
+        </div>
+      );
+    }
     return (
       <div className="bg-white rounded-2xl shadow-md hover:shadow-xl transition duration-300 flex flex-col h-[472px]">
         <div className="relative h-24 bg-gradient-to-r from-blue-100 to-blue-300">
-          <img
-            src="https://cdn-icons-png.flaticon.com/512/4140/4140051.png"
-            alt="Student Avatar"
-            className="w-28 h-28 rounded-full border-4 border-white absolute left-1/2 transform -translate-x-1/2 translate-y-6 shadow-md"
-          />
+         <img
+  src={studentData?.studentProfilepic || "https://cdn-icons-png.flaticon.com/512/4140/4140051.png"}
+  alt={`${studentData?.studentFirstname || "Student"} Avatar`}
+  className="w-28 h-28 rounded-full border-4 border-white absolute left-1/2 transform -translate-x-1/2 translate-y-6 shadow-md object-cover"
+/>
+
         </div>
         <div className="pt-16 pb-6 px-6 text-center">
-          <h2 className="text-lg font-semibold text-gray-850">Riya Sharma</h2>
+          <h2 className="text-lg font-semibold text-gray-850">
+            {studentData.studentFirstname} {studentData.studentLastname}
+          </h2>
         </div>
         <div className="px-6 pb-6">
           <div className="bg-gray-50 rounded-xl p-6 shadow-sm space-y-6 text-bg">
-            <DetailRow label="Register No:" value="21CSE019" />
-            <DetailRow label="Department:" value="CSE" />
-            <DetailRow label="Batch:" value="2022" />
-            <DetailRow label="Year:" value="3" />
-            <DetailRow label="Semester:" value="6" />
+            <DetailRow label="Register No:" value={studentData.studentRollNo} />
+            <DetailRow label="Department:" value={studentData.studentDepartment} />
+            <DetailRow label="Section:" value={studentData.studentSection} />
+            <DetailRow label="Year:" value={studentData.studentYear} />
+            <DetailRow label="Semester:" value={studentData.studentSem} />
           </div>
         </div>
       </div>
@@ -151,7 +193,7 @@ export default function StudentDashboard() {
 
         {/* Week Headers */}
         <div className="grid grid-cols-7 text-xs">
-          {["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"].map((d) => (
+          {["Sun","Mon","Tue","Wed","Thu","Fri","Sat"].map((d) => (
             <div key={d} className="h-8 flex items-center justify-center font-semibold text-gray-700">{d}</div>
           ))}
         </div>
@@ -201,17 +243,44 @@ export default function StudentDashboard() {
   return (
     <div className="w-full min-h-screen bg-gradient-to-tr from-[#eef2ff] to-[#fdfbff] px-10 pt-28 pb-16">
       <div className="mb-10">
-        <h1 className="text-4xl font-bold text-blue-700">Welcome back, Riya! 👋</h1>
+        <h1 className="text-4xl font-bold text-blue-700">
+          Welcome back, {studentData?.studentFirstname || "Student"}! 👋
+        </h1>
         <p className="text-gray-600 text-md mt-2">Stay focused and keep learning 🚀</p>
       </div>
 
       {/* Dashboard Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-6 mb-10">
-        <DashboardCard label="Active Courses" value="05" icon={<NotebookPen className="text-indigo-500 text-lg mt-2" />} cardKey="active" />
-        <DashboardCard label="CGPA" value="8.8" icon={<Star className="text-yellow-400 text-lg mt-2" />} cardKey="cgpa" />
-        <DashboardCard label="Credits Earned" value="120" icon={<CalendarDays className="text-purple-500 text-lg mt-2" />} cardKey="credits" />
-        <DashboardCard label="Attendance %" value="92%" icon={<Rocket className="text-rose-500 text-lg mt-2" />} cardKey="attendance" />
-        <DashboardCard label="No. of Backlogs" value="02" icon={<GraduationCap className="text-red-500 text-lg mt-2" />} cardKey="backlogs" />
+        <DashboardCard
+          label="Active Courses"
+          value={studentData?.studentCredits ? Math.floor(studentData.studentCredits / 24) : "N/A"}
+          icon={<NotebookPen className="text-indigo-500 text-lg mt-2" />}
+          cardKey="active"
+        />
+        <DashboardCard
+          label="CGPA"
+          value={studentData?.studentCgpa?.toFixed(2) || "N/A"}
+          icon={<Star className="text-yellow-400 text-lg mt-2" />}
+          cardKey="cgpa"
+        />
+        <DashboardCard
+          label="Credits Earned"
+          value={studentData?.studentCredits || "N/A"}
+          icon={<CalendarDays className="text-purple-500 text-lg mt-2" />}
+          cardKey="credits"
+        />
+        <DashboardCard
+          label="Attendance %"
+          value={studentData?.studentAttendance ? studentData.studentAttendance.toFixed(1) + "%" : "N/A"}
+          icon={<Rocket className="text-rose-500 text-lg mt-2" />}
+          cardKey="attendance"
+        />
+        <DashboardCard
+          label="No. of Backlogs"
+          value={studentData?.studentBacklogs || "0"}
+          icon={<GraduationCap className="text-red-500 text-lg mt-2" />}
+          cardKey="backlogs"
+        />
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 items-start">
