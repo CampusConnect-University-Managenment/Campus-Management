@@ -1,10 +1,14 @@
+
 import React, { useState, useEffect } from "react";
 
 export default function HelpSupport() {
+  const [studentRollNo, setStudentRollNo] = useState(null);
+  const [studentData, setStudentData] = useState(null);
+
   const [formState, setFormState] = useState({
-    name: "Riya Sharma",
-    registerNumber: "21CSE019",
-    department: "Computer Science",
+    name: "",
+    registerNumber: "",
+    department: "",
     type: "Academic",
     location: "",
     subject: "",
@@ -19,13 +23,54 @@ export default function HelpSupport() {
   const [error, setError] = useState(null);
   const pageSize = 3;
 
+  // ✅ Step 1: Get roll number from localStorage
   useEffect(() => {
+    const storedRollNo = localStorage.getItem("studentRollNo");
+    if (storedRollNo) {
+      setStudentRollNo(storedRollNo);
+    }
+  }, []);
+
+  // ✅ Step 2: Fetch student details from MongoDB
+  useEffect(() => {
+    if (!studentRollNo) return;
+
+    const fetchStudent = async () => {
+      try {
+        const res = await fetch(
+          `http://localhost:8081/api/admin/students/rollno/${studentRollNo}`
+        );
+        if (!res.ok) throw new Error("Student not found");
+        const json = await res.json();
+        const data = json.data;
+
+        setStudentData(data);
+
+        // Pre-fill formState with fetched student details
+        setFormState((prev) => ({
+          ...prev,
+          name: `${data.studentFirstname} ${data.studentLastname}`,
+          registerNumber: data.studentRollNo,
+          department: data.studentDepartment,
+        }));
+      } catch (err) {
+        console.error("Error fetching student data:", err);
+      }
+    };
+
+    fetchStudent();
+  }, [studentRollNo]);
+
+  // ✅ Step 3: Fetch previous requests for this student
+  useEffect(() => {
+    if (!formState.registerNumber) return;
+
     const fetchRequests = async () => {
       setIsLoading(true);
       setError(null);
       try {
         const res = await fetch(
-          `http://localhost:5000/api/requests/student/${formState.registerNumber}`
+          `http://localhost:5001/api/requests/student/${formState.registerNumber}`
         );
         if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
         const data = await res.json();
@@ -76,19 +121,19 @@ export default function HelpSupport() {
     if (!confirmSubmit) return;
 
     const formData = new FormData();
-   Object.entries(formState).forEach(([key, value]) => {
-  if (key === "image") {
-    if (value) formData.append("image", value);
-  } else {
-    formData.append(key, value || "");
-  }
-});
+    Object.entries(formState).forEach(([key, value]) => {
+      if (key === "image") {
+        if (value) formData.append("image", value);
+      } else {
+        formData.append(key, value || "");
+      }
+    });
 
     formData.append("status", "Pending");
     formData.append("createdAt", new Date().toISOString().slice(0, 19));
 
     try {
-      const res = await fetch("http://localhost:5000/api/requests/create", {
+      const res = await fetch("http://localhost:5001/api/requests/create", {
         method: "POST",
         body: formData,
       });
@@ -111,11 +156,10 @@ export default function HelpSupport() {
     }
   };
 
-  const filteredRequests = Array.isArray(previousRequests)
-    ? filterStatus === "All"
+  const filteredRequests =
+    filterStatus === "All"
       ? previousRequests
-      : previousRequests.filter((r) => r.status === filterStatus)
-    : [];
+      : previousRequests.filter((r) => r.status === filterStatus);
 
   const paginatedRequests = filteredRequests.slice(
     page * pageSize,
@@ -207,8 +251,6 @@ export default function HelpSupport() {
           ))}
         </select>
 
-   
-
         <div>
           <label className="block text-gray-700 mb-1 font-medium">
             Upload Image (optional)
@@ -232,10 +274,8 @@ export default function HelpSupport() {
             required
           />
           <p className="text-sm text-gray-500 mt-1">
-            {
-              formState.subject.trim().split(/\s+/).filter(Boolean).length
-            }
-            /20 words
+            {formState.subject.trim().split(/\s+/).filter(Boolean).length}/20
+            words
           </p>
         </div>
 
@@ -301,7 +341,7 @@ export default function HelpSupport() {
 
                     {req.imagePath && (
                       <img
-                        src={`http://localhost:5000/api/requests/image/${req.imagePath}`}
+                        src={`http://localhost:5001/api/requests/image/${req.imagePath}`}
                         alt="Uploaded"
                         className="mt-2 max-h-48 rounded border"
                       />
@@ -326,7 +366,7 @@ export default function HelpSupport() {
                   </span>
                 </div>
                 <div className="text-sm text-gray-500 mt-2">
-                  📍 {req.location} | 🕒 {new Date(req.createdAt).toLocaleString()}
+                  📍 {req.location} | 🕒{" "}
                   {new Date(req.createdAt).toLocaleString()}
                 </div>
               </div>
