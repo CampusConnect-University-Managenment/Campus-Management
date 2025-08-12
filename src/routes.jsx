@@ -13,7 +13,6 @@ import Assign from "./pages/admin/Assign_class";
 import AllStudents from "./pages/admin/students/components/AllStudents";
 import AttendanceUpload from "./pages/faculty/AttendanceUpload";
 import Notification_Message from "./pages/faculty/Notification_Message";
-import Announcements from "./pages/faculty/Announcements/components/Announcements";
 import StudentDashboard from "./pages/student/StudentDashBoard/components/StudentDashboard";
 import FacultyProfile from "./pages/faculty/Profile";
 import EditFacultyProfile from "./pages/faculty/EditProfile";
@@ -223,13 +222,7 @@ const routes = [
     icon: <FaComments className="h-6 w-6"  />,
     component: <Notification_Message />,
   },
-  {
-    name: "Announcements",
-    layout: "/faculty",
-    path: "Announcements",
-    icon: <MdCampaign className="h-6 w-6" />,
-    component: <Announcements />,
-  },
+
    {
     name: "Courses",
     layout: "/faculty",
