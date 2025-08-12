@@ -20,7 +20,8 @@ import {
   Clock,
   MapPin,
   Users,
-  ExternalLink,
+  Paperclip,
+  Download,
 } from "lucide-react"
 import { useNavigate } from "react-router-dom"
 
@@ -28,20 +29,48 @@ import { useNavigate } from "react-router-dom"
 const NotificationModal = ({ notification, isOpen, onClose, onMarkAsRead }) => {
   if (!isOpen || !notification) return null
 
-  const formatTime = (time) => {
-    return new Date(`2000-01-01T${time}`).toLocaleTimeString("en-IN", {
-      hour: "2-digit",
-      minute: "2-digit",
-      hour12: true,
-    })
+  const formatTime = (timeString) => {
+    if (!timeString) return "Time not specified"
+
+    try {
+      // Handle different time formats
+      let time = timeString
+
+      // If it's just HH:mm, add :00 for seconds
+      if (time.match(/^\d{1,2}:\d{2}$/)) {
+        time += ":00"
+      }
+
+      // Create a date object with today's date and the time
+      const [hours, minutes, seconds = "00"] = time.split(":")
+      const date = new Date()
+      date.setHours(Number.parseInt(hours), Number.parseInt(minutes), Number.parseInt(seconds || 0))
+
+      return date.toLocaleTimeString("en-IN", {
+        hour: "2-digit",
+        minute: "2-digit",
+        hour12: true,
+      })
+    } catch (error) {
+      console.error("Time formatting error:", error)
+      return timeString // Return original if formatting fails
+    }
   }
 
-  const formatDate = (date) => {
-    return new Date(date).toLocaleDateString("en-IN", {
-      day: "2-digit",
-      month: "short",
-      year: "numeric",
-    })
+  const formatDate = (dateString) => {
+    if (!dateString) return "Date not specified"
+
+    try {
+      const date = new Date(dateString)
+      return date.toLocaleDateString("en-IN", {
+        day: "2-digit",
+        month: "short",
+        year: "numeric",
+      })
+    } catch (error) {
+      console.error("Date formatting error:", error)
+      return dateString // Return original if formatting fails
+    }
   }
 
   const formatFileSize = (bytes) => {
@@ -76,8 +105,49 @@ const NotificationModal = ({ notification, isOpen, onClose, onMarkAsRead }) => {
   }
 
   const handleMarkAsRead = () => {
-    onMarkAsRead(notification._id)
+    onMarkAsRead(notification.id || notification._id)
     onClose()
+  }
+
+  const handleFileDownload = async () => {
+    try {
+      const notificationId = notification.id || notification._id
+
+      // Try direct download first
+      const response = await axios.get(`http://localhost:8081/api/notifications/${notificationId}/download`, {
+        responseType: "blob",
+      })
+
+      const blob = new Blob([response.data])
+      const url = window.URL.createObjectURL(blob)
+      const link = document.createElement("a")
+      link.href = url
+      link.download = notification.fileName || "download"
+      document.body.appendChild(link)
+      link.click()
+      document.body.removeChild(link)
+      window.URL.revokeObjectURL(url)
+    } catch (error) {
+      console.error("Download failed:", error)
+
+      // Fallback: try base64 method
+      try {
+        const notificationId = notification.id || notification._id
+        const response = await axios.get(`http://localhost:8081/api/notifications/${notificationId}/file-base64`)
+
+        if (response.data.success) {
+          const link = document.createElement("a")
+          link.href = `data:${response.data.fileType};base64,${response.data.fileData}`
+          link.download = response.data.fileName
+          document.body.appendChild(link)
+          link.click()
+          document.body.removeChild(link)
+        }
+      } catch (fallbackError) {
+        console.error("Fallback download also failed:", fallbackError)
+        alert("Failed to download file")
+      }
+    }
   }
 
   return (
@@ -102,6 +172,12 @@ const NotificationModal = ({ notification, isOpen, onClose, onMarkAsRead }) => {
               <h1 className="text-2xl font-bold mb-2">📢 {notification.name}</h1>
               <div className="flex items-center gap-4 text-blue-100">
                 <span className="text-sm">{formatDate(notification.createdAt)}</span>
+                {notification.hasFile && (
+                  <span className="flex items-center gap-1 text-sm">
+                    <Paperclip className="w-4 h-4" />
+                    Attachment
+                  </span>
+                )}
               </div>
             </div>
           </div>
@@ -121,8 +197,10 @@ const NotificationModal = ({ notification, isOpen, onClose, onMarkAsRead }) => {
                     <div>
                       <div className="font-medium">Date</div>
                       <div className="text-sm">
-                        {formatDate(notification.startDate)}
-                        {notification.startDate !== notification.endDate && ` - ${formatDate(notification.endDate)}`}
+                        {formatDate(notification.date)}
+                        {notification.endDate &&
+                          notification.date !== notification.endDate &&
+                          ` - ${formatDate(notification.endDate)}`}
                       </div>
                     </div>
                   </div>
@@ -132,7 +210,8 @@ const NotificationModal = ({ notification, isOpen, onClose, onMarkAsRead }) => {
                     <div>
                       <div className="font-medium">Time</div>
                       <div className="text-sm">
-                        {formatTime(notification.startTime)} - {formatTime(notification.endTime)}
+                        {formatTime(notification.time)}
+                        {notification.endTime && ` - ${formatTime(notification.endTime)}`}
                       </div>
                     </div>
                   </div>
@@ -163,28 +242,31 @@ const NotificationModal = ({ notification, isOpen, onClose, onMarkAsRead }) => {
             </div>
 
             {/* Attachments */}
-           {/* Attachments */}
-{notification.fileName && notification.fileData && (
-  <div>
-    <h3 className="text-lg font-semibold text-gray-800 mb-4">Attachment</h3>
-    <div className="flex items-center justify-between p-4 bg-gray-50 rounded-lg border hover:bg-gray-100 transition-colors">
-      <div className="flex items-center gap-3">
-        <FileText className="w-6 h-6 text-blue-500" />
-        <div>
-          <div className="font-medium text-gray-800">{notification.fileName}</div>
-          <div className="text-sm text-gray-500">{notification.fileType}</div>
-        </div>
-      </div>
-      <a
-        href={`data:${notification.fileType};base64,${notification.fileData.data}`}
-        download={notification.fileName}
-        className="p-2 text-gray-600 hover:bg-gray-100 rounded-lg transition-colors"
-      >
-        <ExternalLink className="w-4 h-4" />
-      </a>
-    </div>
-  </div>
-)}
+            {(notification.fileName || notification.hasFile) && (
+              <div>
+                <h3 className="text-lg font-semibold text-gray-800 mb-4">Attachment</h3>
+                <div className="flex items-center justify-between p-4 bg-gray-50 rounded-lg border hover:bg-gray-100 transition-colors">
+                  <div className="flex items-center gap-3">
+                    <FileText className="w-6 h-6 text-blue-500" />
+                    <div>
+                      <div className="font-medium text-gray-800">{notification.fileName}</div>
+                      <div className="text-sm text-gray-500">
+                        {notification.fileType}
+                        {notification.fileSize && ` • ${formatFileSize(notification.fileSize)}`}
+                      </div>
+                    </div>
+                  </div>
+                  <button
+                    onClick={handleFileDownload}
+                    className="p-2 text-gray-600 hover:bg-gray-200 rounded-lg transition-colors flex items-center gap-2"
+                    title="Download file"
+                  >
+                    <Download className="w-4 h-4" />
+                    <span className="text-sm">Download</span>
+                  </button>
+                </div>
+              </div>
+            )}
 
             {/* Metadata */}
             <div className="pt-4 border-t border-gray-200">
@@ -305,6 +387,42 @@ const NotificationPanel = ({
     return date.toLocaleDateString()
   }
 
+  const formatDisplayTime = (timeString) => {
+    if (!timeString) return "Time not set"
+
+    try {
+      let time = timeString
+      if (time.match(/^\d{1,2}:\d{2}$/)) {
+        time += ":00"
+      }
+
+      const [hours, minutes] = time.split(":")
+      const date = new Date()
+      date.setHours(Number.parseInt(hours), Number.parseInt(minutes), 0)
+
+      return date.toLocaleTimeString("en-IN", {
+        hour: "2-digit",
+        minute: "2-digit",
+        hour12: true,
+      })
+    } catch (error) {
+      return timeString
+    }
+  }
+
+  const formatDisplayDate = (dateString) => {
+    if (!dateString) return "Date not set"
+
+    try {
+      return new Date(dateString).toLocaleDateString("en-IN", {
+        day: "2-digit",
+        month: "short",
+      })
+    } catch (error) {
+      return dateString
+    }
+  }
+
   const unreadCount = notificationList.filter((n) => !n.isRead).length
 
   return (
@@ -343,7 +461,7 @@ const NotificationPanel = ({
           <div className="p-3 space-y-2">
             {notificationList.map((notification) => (
               <div
-                key={notification._id}
+                key={notification.id || notification._id}
                 className={`rounded-lg p-3 transition-all duration-200 cursor-pointer border shadow-sm relative group hover:shadow-md transform hover:scale-[1.02] ${getNotificationColor(notification.type, notification.isRead)}`}
                 onClick={() => {
                   onNotificationClick(notification)
@@ -352,7 +470,7 @@ const NotificationPanel = ({
                 <button
                   onClick={(e) => {
                     e.stopPropagation()
-                    onRemoveNotification(notification._id)
+                    onRemoveNotification(notification.id || notification._id)
                   }}
                   className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity bg-red-500 hover:bg-red-600 text-white rounded-full w-5 h-5 flex items-center justify-center text-xs"
                   title="Remove notification"
@@ -361,7 +479,12 @@ const NotificationPanel = ({
                 </button>
 
                 <div className="flex items-start gap-3 pr-6">
-                  <div className="flex-shrink-0 mt-0.5">{getNotificationIcon(notification.type)}</div>
+                  <div className="flex-shrink-0 mt-0.5 flex items-center gap-1">
+                    {getNotificationIcon(notification.type)}
+                    {(notification.fileName || notification.hasFile) && (
+                      <Paperclip className="w-3 h-3 text-gray-500" title="Has attachment" />
+                    )}
+                  </div>
                   <div className="flex-1 min-w-0">
                     <div
                       className={`text-sm leading-relaxed mb-1 ${notification.isRead ? "text-gray-600" : "text-gray-800 font-medium"}`}
@@ -369,7 +492,7 @@ const NotificationPanel = ({
                       📢 <strong>{notification.name}</strong> at <strong>{notification.venue}</strong>
                     </div>
                     <div className="text-xs text-gray-600">
-                      {notification.startDate} at {notification.startTime}
+                      {formatDisplayDate(notification.date)} at {formatDisplayTime(notification.time)}
                     </div>
                     <div className="flex items-center justify-between mt-1 text-xs text-gray-500">
                       <div>{notification.audience}</div>
@@ -477,8 +600,19 @@ export default function FacultyNavbar() {
     setNotifications([])
   }, [])
 
-  const removeNotification = useCallback((id) => {
-    setNotifications((prev) => prev.filter((n) => n._id !== id))
+  const removeNotification = useCallback(async (id) => {
+    try {
+      // Call backend API to delete
+      await axios.delete(`http://localhost:8081/api/notifications/${id}`)
+
+      // Update local state
+      setNotifications((prev) => prev.filter((n) => (n.id || n._id) !== id))
+    } catch (error) {
+      console.error("Failed to delete notification:", error)
+
+      // Still update local state even if API call fails
+      setNotifications((prev) => prev.filter((n) => (n.id || n._id) !== id))
+    }
   }, [])
 
   const markAsRead = useCallback(async (id) => {
@@ -487,19 +621,19 @@ export default function FacultyNavbar() {
       await axios.patch(`http://localhost:8081/api/notifications/${id}/read`)
 
       // Update local state
-      setNotifications((prev) => prev.map((n) => (n._id === id ? { ...n, isRead: true } : n)))
+      setNotifications((prev) => prev.map((n) => ((n.id || n._id) === id ? { ...n, isRead: true } : n)))
     } catch (error) {
       console.error("Failed to mark notification as read:", error)
       // Still update local state even if API call fails
-      setNotifications((prev) => prev.map((n) => (n._id === id ? { ...n, isRead: true } : n)))
+      setNotifications((prev) => prev.map((n) => ((n.id || n._id) === id ? { ...n, isRead: true } : n)))
     }
   }, [])
 
   const markAllAsRead = useCallback(async () => {
     try {
       // Update all unread notifications in backend
-      const unreadIds = notifications.filter((n) => !n.isRead).map((n) => n._id)
-      await Promise.all(unreadIds.map((id) => axios.patch(`http://localhost:8082/api/notifications/${id}/read`)))
+      const unreadIds = notifications.filter((n) => !n.isRead).map((n) => n.id || n._id)
+      await Promise.all(unreadIds.map((id) => axios.patch(`http://localhost:8081/api/notifications/${id}/read`)))
 
       // Update local state
       setNotifications((prev) => prev.map((n) => ({ ...n, isRead: true })))
@@ -510,11 +644,19 @@ export default function FacultyNavbar() {
     }
   }, [notifications])
 
-  const handleNotificationClick = useCallback((notification) => {
-    setSelectedNotification(notification)
-    setShowModal(true)
-    setShowNotifications(false) // Close the dropdown
-  }, [])
+  const handleNotificationClick = useCallback(
+    async (notification) => {
+      // Auto mark as read when clicked
+      if (!notification.isRead) {
+        await markAsRead(notification.id || notification._id)
+      }
+
+      setSelectedNotification(notification)
+      setShowModal(true)
+      setShowNotifications(false) // Close the dropdown
+    },
+    [markAsRead],
+  )
 
   const handleCloseModal = useCallback(() => {
     setShowModal(false)
