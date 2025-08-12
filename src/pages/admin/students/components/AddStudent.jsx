@@ -93,7 +93,7 @@ const AddStudent = ({ editingStudent, onClose }) => {
     };
 
     try {
-      const response = await axios.post("http://localhost:8081/api/admin/students/add", backendStudent);
+      const response = await axios.post("http://localhost:8080/api/admin/students/add", backendStudent);
       alert("Student added successfully!");
       console.log(response.data);
       resetForm();

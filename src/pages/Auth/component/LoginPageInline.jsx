@@ -30,9 +30,13 @@ export default function LoginPage() {
       localStorage.setItem("email", email);
 
       // ✅ Store uniqueId for student dashboard (only if student)
-      
-        localStorage.setItem("studentRollNo", uniqueId);
-      
+      // ✅ Store uniqueId for student or admin
+if (role === "student") {
+  localStorage.setItem("studentRollNo", uniqueId);
+} else if (role === "admin") {
+  localStorage.setItem("adminCode", uniqueId);
+}
+
 
       // Redirect based on role
       switch (role) {
