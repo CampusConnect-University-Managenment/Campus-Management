@@ -19,7 +19,7 @@ const createMockSocket = () => {
       }
     },
     emit: (event, data) => {
-      console.log(`Socket emit: ${event}`, data)
+      console.log(`Socket emit: ${event},`, data)
       // Mock response for development
       if (event === "sendMessage") {
         setTimeout(() => {
