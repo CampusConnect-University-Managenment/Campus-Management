@@ -44,7 +44,7 @@ export default function StudentDashboard() {
     const fetchStudent = async () => {
       try {
         const res = await fetch(
-          `http://localhost:8081/api/admin/students/rollno/${studentRollNo}`
+          `http://localhost:8080/api/admin/students/rollno/${studentRollNo}`
         );
         if (!res.ok) throw new Error("Student not found");
         const json = await res.json();
