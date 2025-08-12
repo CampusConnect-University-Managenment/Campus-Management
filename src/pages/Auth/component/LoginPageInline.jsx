@@ -1,11 +1,60 @@
-import React from "react";
+
+
+
+import React, { useState } from "react";
 import { User, Lock } from "lucide-react";
 import { FaUniversity } from "react-icons/fa";
-import illustration from "../../../assets/images/collegecampus-bro.svg"; // adjust path if needed
+import illustration from "../../../assets/images/collegecampus-bro.svg";
+import axios from "axios";
 
 export default function LoginPage() {
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
+
+  const handleLogin = async () => {
+    try {
+      const response = await axios.post("http://localhost:8088/api/auth/login", {
+        username,
+        password
+      });
+
+      const { token, role, email, uniqueId } = response.data;
+
+      // Debug logs
+      console.log("Unique ID:", uniqueId);
+      console.log("FULL RESPONSE:", response.data);
+
+      // Store details in localStorage
+      localStorage.setItem("token", token);
+      localStorage.setItem("email", email);
+
+      // ✅ Store uniqueId for student dashboard (only if student)
+      
+        localStorage.setItem("studentRollNo", uniqueId);
+      
+
+      // Redirect based on role
+      switch (role) {
+        case "admin":
+          window.location.href = "/admin/default";
+          break;
+        case "faculty":
+          window.location.href = "/faculty/default";
+          break;
+        case "student":
+          window.location.href = "/student/default";
+          break;
+        default:
+          setError("Invalid role");
+      }
+    } catch (err) {
+      setError("Invalid credentials or unauthorized access.");
+    }
+  };
+
   return (
-    <div className="flex h-screen w-full relative  ">
+    <div className="flex h-screen w-full relative">
       {/* Top-Left Project Name */}
       <div className="absolute top-6 left-10 flex items-center gap-2 z-10">
         <div className="bg-white rounded-full p-4 shadow-md">
@@ -45,6 +94,8 @@ export default function LoginPage() {
             <input
               type="text"
               placeholder="Username"
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
               className="pl-10 pr-4 py-2 w-full rounded-md text-black focus:outline-none focus:ring-2 focus:ring-blue-400 hover:ring-2 hover:ring-blue-300 transition"
             />
           </div>
@@ -57,27 +108,33 @@ export default function LoginPage() {
             <input
               type="password"
               placeholder="Password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
               className="pl-10 pr-4 py-2 w-full rounded-md text-black focus:outline-none focus:ring-2 focus:ring-blue-400 hover:ring-2 hover:ring-blue-300 transition"
             />
           </div>
 
-          {/* Remember me + Forgot Password */}
+          {/* Remember me */}
           <div className="flex justify-between items-center text-sm mb-6">
             <label className="flex items-center gap-2">
               <input type="checkbox" className="accent-black" />
               <span>Remember me</span>
             </label>
-            <a href="#" className="text-white underline hover:text-gray-200">
-              Forgot Password?
-            </a>
           </div>
 
           {/* Login Button */}
-          <button className="w-full bg-black text-white py-2 rounded-md hover:opacity-90 transition">
+          <button
+            onClick={handleLogin}
+            className="w-full bg-black text-white py-2 rounded-md hover:opacity-90 transition"
+          >
             Login
           </button>
+
+          {/* Error message */}
+          {error && <p className="mt-4 text-red-200 text-center">{error}</p>}
         </div>
       </div>
     </div>
   );
 }
+
