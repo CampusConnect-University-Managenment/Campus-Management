@@ -1,155 +1,27 @@
 "use client"
 
 import { useRef, useEffect, useState } from "react"
-import { Users, MoreVertical, Eye, X, Send } from "lucide-react"
+import { Users, MoreVertical, Eye, Send, X } from "lucide-react"
 import Button from "./ui/Button"
 import Badge from "./ui/Badge"
 import { ScrollArea } from "./ui/ScrollArea"
 
-// Mock data for adding participants (same as in new-chat-modal)
-const mockStudents = [
-  {
-    id: 1,
-    firstName: "John",
-    lastName: "Doe",
-    rollNumber: "CS2021001",
-    year: "3rd",
-    department: "Computer Science",
-    section: "A",
-    type: "student",
-    email: "john.doe@university.edu",
+// Simple toast function to replace sonner
+const toast = {
+  success: (message) => {
+    console.log("✅ Success:", message)
+    alert(`Success: ${message}`)
   },
-  {
-    id: 2,
-    firstName: "Jane",
-    lastName: "Smith",
-    rollNumber: "CS2021002",
-    year: "3rd",
-    department: "Computer Science",
-    section: "A",
-    type: "student",
-    email: "jane.smith@university.edu",
+  error: (message) => {
+    console.error("❌ Error:", message)
+    alert(`Error: ${message}`)
   },
-  {
-    id: 3,
-    firstName: "Mike",
-    lastName: "Johnson",
-    rollNumber: "CS2022001",
-    year: "2nd",
-    department: "Computer Science",
-    section: "B",
-    type: "student",
-    email: "mike.johnson@university.edu",
+  info: (message) => {
+    console.log("ℹ️ Info:", message)
+    alert(`Info: ${message}`)
   },
-  {
-    id: 4,
-    firstName: "Sarah",
-    lastName: "Wilson",
-    rollNumber: "IT2021001",
-    year: "3rd",
-    department: "Information Technology",
-    section: "A",
-    type: "student",
-    email: "sarah.wilson@university.edu",
-  },
-  {
-    id: 5,
-    firstName: "David",
-    lastName: "Brown",
-    rollNumber: "CS2023001",
-    year: "1st",
-    department: "Computer Science",
-    section: "A",
-    type: "student",
-    email: "david.brown@university.edu",
-  },
-  {
-    id: 6,
-    firstName: "Emily",
-    lastName: "Davis",
-    rollNumber: "IT2022001",
-    year: "2nd",
-    department: "Information Technology",
-    section: "B",
-    type: "student",
-    email: "emily.davis@university.edu",
-  },
-  {
-    id: 7,
-    firstName: "Alex",
-    lastName: "Chen",
-    rollNumber: "CS2021003",
-    year: "3rd",
-    department: "Computer Science",
-    section: "B",
-    type: "student",
-    email: "alex.chen@university.edu",
-  },
-  {
-    id: 8,
-    firstName: "Maria",
-    lastName: "Garcia",
-    rollNumber: "IT2023001",
-    year: "1st",
-    department: "Information Technology",
-    section: "A",
-    type: "student",
-    email: "maria.garcia@university.edu",
-  },
-]
+}
 
-const mockFaculty = [
-  {
-    id: 101,
-    name: "Dr. Robert Brown",
-    department: "Computer Science",
-    type: "faculty",
-    email: "robert.brown@university.edu",
-    position: "Associate Professor",
-  },
-  {
-    id: 102,
-    name: "Prof. Lisa Davis",
-    department: "Information Technology",
-    type: "faculty",
-    email: "lisa.davis@university.edu",
-    position: "Assistant Professor",
-  },
-  {
-    id: 103,
-    name: "Dr. Mark Wilson",
-    department: "Computer Science",
-    type: "faculty",
-    email: "mark.wilson@university.edu",
-    position: "Professor",
-  },
-  {
-    id: 104,
-    name: "Prof. Emily Johnson",
-    department: "Mathematics",
-    type: "faculty",
-    email: "emily.johnson@university.edu",
-    position: "Associate Professor",
-  },
-  {
-    id: 105,
-    name: "Dr. Sarah Miller",
-    department: "Computer Science",
-    type: "faculty",
-    email: "sarah.miller@university.edu",
-    position: "Professor",
-  },
-  {
-    id: 106,
-    name: "Prof. Michael Chen",
-    department: "Information Technology",
-    type: "faculty",
-    email: "michael.chen@university.edu",
-    position: "Assistant Professor",
-  },
-]
-
-// Simple Message Input Component (completely without file upload, improved positioning)
 const SimpleMessageInput = ({ onSendMessage }) => {
   const [message, setMessage] = useState("")
   const textareaRef = useRef(null)
@@ -159,9 +31,7 @@ const SimpleMessageInput = ({ onSendMessage }) => {
     if (message.trim()) {
       onSendMessage(message.trim())
       setMessage("")
-      if (textareaRef.current) {
-        textareaRef.current.style.height = "auto"
-      }
+      if (textareaRef.current) textareaRef.current.style.height = "auto"
     }
   }
 
@@ -174,7 +44,6 @@ const SimpleMessageInput = ({ onSendMessage }) => {
 
   const handleTextareaChange = (e) => {
     setMessage(e.target.value)
-    // Auto-resize textarea
     if (textareaRef.current) {
       textareaRef.current.style.height = "auto"
       textareaRef.current.style.height = `${Math.min(textareaRef.current.scrollHeight, 120)}px`
@@ -208,14 +77,50 @@ const SimpleMessageInput = ({ onSendMessage }) => {
   )
 }
 
-const ChatWindow = ({ chat, currentUser, onSendMessage }) => {
+const ChatWindow = ({ chat, currentUser, onSendMessage, participantDetails = {}, onUpdateParticipants }) => {
   const messagesEndRef = useRef(null)
   const [showParticipants, setShowParticipants] = useState(false)
   const [showDropdown, setShowDropdown] = useState(false)
+  const [participants, setParticipants] = useState([])
+  const [loading, setLoading] = useState(false)
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" })
   }, [chat?.messages])
+
+  // Fetch participant details when chat changes
+  useEffect(() => {
+    const fetchParticipants = async () => {
+      if (chat?.id && chat?.id !== "global") {
+        setLoading(true)
+        try {
+          console.log("Fetching participants for group:", chat.id)
+
+          const response = await fetch(`http://localhost:8081/api/groups/${chat.id}`)
+          if (response.ok) {
+            const groupData = await response.json()
+            console.log("Group data:", groupData)
+
+            const memberIds = groupData.memberIds || []
+            setParticipants(memberIds)
+            console.log("Participants:", memberIds)
+          } else {
+            console.error("Failed to fetch group data:", response.status)
+            toast.error("Failed to load group details")
+          }
+        } catch (error) {
+          console.error("Error fetching participants:", error)
+          toast.error("Failed to load participants")
+        } finally {
+          setLoading(false)
+        }
+      } else if (chat?.id === "global") {
+        setParticipants(["everyone"])
+      }
+    }
+
+    fetchParticipants()
+  }, [chat?.id])
 
   const getTypeColor = (type) => {
     switch (type?.toLowerCase()) {
@@ -225,6 +130,8 @@ const ChatWindow = ({ chat, currentUser, onSendMessage }) => {
         return "bg-orange-100 text-orange-800"
       case "group":
         return "bg-purple-100 text-purple-800"
+      case "global":
+        return "bg-blue-100 text-blue-800"
       default:
         return "bg-gray-100 text-gray-800"
     }
@@ -253,26 +160,14 @@ const ChatWindow = ({ chat, currentUser, onSendMessage }) => {
     const diffInHours = (now - messageDate) / (1000 * 60 * 60)
 
     if (diffInHours < 24) {
-      return messageDate.toLocaleTimeString([], {
-        hour: "2-digit",
-        minute: "2-digit",
-      })
+      return messageDate.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })
     } else if (diffInHours < 48) {
-      return (
-        "Yesterday " +
-        messageDate.toLocaleTimeString([], {
-          hour: "2-digit",
-          minute: "2-digit",
-        })
-      )
+      return "Yesterday " + messageDate.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })
     } else {
       return (
         messageDate.toLocaleDateString() +
         " " +
-        messageDate.toLocaleTimeString([], {
-          hour: "2-digit",
-          minute: "2-digit",
-        })
+        messageDate.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })
       )
     }
   }
@@ -307,38 +202,38 @@ const ChatWindow = ({ chat, currentUser, onSendMessage }) => {
               <h2 className="text-base md:text-lg text-gray-800 font-semibold">{chat.name}</h2>
               <div className="flex items-center gap-1 md:gap-2 text-xs md:text-sm text-gray-500">
                 <Users className="w-3 h-3 md:w-4 md:h-4" />
-                <span>{chat.participants || 0} participants</span>
+                <span>{participants.length} participants</span>
                 <span className="text-gray-300">•</span>
                 <Badge className={`text-xs ${getTypeColor(chat.type)}`}>{chat.type?.toUpperCase() || "CHAT"}</Badge>
               </div>
             </div>
           </div>
-          {/* Header Actions */}
-          <div className="flex items-center space-x-1 md:space-x-2">
-            <div className="relative">
-              <Button
-                variant="ghost"
-                size="sm"
-                className="text-gray-500 hover:text-gray-700"
-                onClick={() => setShowDropdown(!showDropdown)}
-              >
-                <MoreVertical className="w-4 h-4" />
-              </Button>
-              {showDropdown && (
-                <div className="absolute right-0 top-full mt-2 w-48 bg-white border border-gray-200 rounded-lg shadow-lg z-50">
-                  <button
-                    onClick={() => {
-                      setShowParticipants(true)
-                      setShowDropdown(false)
-                    }}
-                    className="w-full px-4 py-2 text-left text-sm text-gray-700 hover:bg-gray-100 flex items-center space-x-2 rounded-lg"
-                  >
-                    <Eye className="w-4 h-4" />
-                    <span>View Participants</span>
-                  </button>
-                </div>
-              )}
-            </div>
+
+          {/* Three Dots Menu - Only View Participants */}
+          <div className="relative">
+            <Button
+              variant="ghost"
+              size="sm"
+              className="text-gray-500 hover:text-gray-700"
+              onClick={() => setShowDropdown(!showDropdown)}
+            >
+              <MoreVertical className="w-4 h-4" />
+            </Button>
+
+            {showDropdown && (
+              <div className="absolute right-0 top-full mt-2 w-56 bg-white border border-gray-200 rounded-lg shadow-lg z-50">
+                <button
+                  onClick={() => {
+                    setShowParticipants(true)
+                    setShowDropdown(false)
+                  }}
+                  className="w-full px-4 py-2 text-left text-sm text-gray-700 hover:bg-gray-100 flex items-center space-x-2 rounded-lg"
+                >
+                  <Eye className="w-4 h-4" />
+                  <span>View Participants</span>
+                </button>
+              </div>
+            )}
           </div>
         </div>
       </div>
@@ -346,35 +241,106 @@ const ChatWindow = ({ chat, currentUser, onSendMessage }) => {
       {/* View Participants Modal */}
       {showParticipants && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-lg shadow-xl w-full max-w-md max-h-[80vh] flex flex-col">
-            <div className="p-4 border-b border-gray-200">
-              <div className="flex items-center justify-between">
-                <h3 className="text-lg font-semibold text-gray-800">Participants ({chat.participants})</h3>
-                <button onClick={() => setShowParticipants(false)} className="text-gray-500 hover:text-gray-700 text-xl font-bold">
-                  ×
-                </button>
+          <div className="bg-white rounded-lg shadow-xl w-full max-w-lg max-h-[80vh] flex flex-col">
+            <div className="p-4 border-b border-gray-200 flex justify-between items-center">
+              <h3 className="text-lg font-semibold">Participants ({participants.length})</h3>
+              <button
+                onClick={() => setShowParticipants(false)}
+                className="text-gray-500 hover:text-gray-700 text-xl font-bold"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+
+            <ScrollArea className="flex-1 p-4">
+              {loading ? (
+                <div className="flex items-center justify-center py-8">
+                  <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-blue-600"></div>
+                  <span className="ml-2 text-gray-500">Loading participants...</span>
+                </div>
+              ) : participants.length > 0 ? (
+                <div className="space-y-3">
+                  {participants.map((participantId, index) => {
+                    const isCurrentUser = participantId === currentUser.id
+                    const isFacultyMember = participantId.startsWith("P")
+                    const isStudent = participantId.startsWith("S")
+
+                    return (
+                      <div
+                        key={index}
+                        className="flex items-center justify-between bg-gray-50 px-4 py-3 rounded-lg border"
+                      >
+                        <div className="flex items-center space-x-3">
+                          <div
+                            className="w-10 h-10 rounded-full flex items-center justify-center text-white font-bold text-sm"
+                            style={{ backgroundColor: getAvatarColor(participantId, participantId) }}
+                          >
+                            {participantId === "everyone" ? "🌍" : participantId.charAt(0).toUpperCase()}
+                          </div>
+                          <div>
+                            <div className="flex items-center gap-2 mb-1">
+                              <span className="text-base font-semibold text-gray-900">
+                                {participantId === "everyone" ? "Everyone" : participantId}
+                              </span>
+                              {isCurrentUser && (
+                                <span className="text-xs bg-blue-100 text-blue-800 px-2 py-1 rounded-full font-medium">
+                                  You
+                                </span>
+                              )}
+                              <span
+                                className={`text-xs px-2 py-1 rounded-full font-medium ${
+                                  isFacultyMember
+                                    ? "bg-orange-100 text-orange-800"
+                                    : isStudent
+                                      ? "bg-green-100 text-green-800"
+                                      : "bg-gray-100 text-gray-800"
+                                }`}
+                              >
+                                {isFacultyMember ? "Faculty" : isStudent ? "Student" : "User"}
+                              </span>
+                            </div>
+                            <div className="text-sm text-gray-600">
+                              {participantId === "everyone"
+                                ? "Global chat participant"
+                                : `${participantId.toLowerCase()}@campus.edu`}
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    )
+                  })}
+                </div>
+              ) : (
+                <div className="flex items-center justify-center py-8">
+                  <div className="text-center text-gray-500">
+                    <Users className="w-12 h-12 mx-auto mb-2 text-gray-300" />
+                    <p>No participants found</p>
+                  </div>
+                </div>
+              )}
+            </ScrollArea>
+
+            {/* Participants Summary */}
+            <div className="p-4 border-t border-gray-200 bg-gray-50">
+              <div className="grid grid-cols-3 gap-4 text-center">
+                <div>
+                  <div className="text-2xl font-bold text-gray-900">{participants.length}</div>
+                  <div className="text-sm text-gray-600">Total</div>
+                </div>
+                <div>
+                  <div className="text-2xl font-bold text-orange-600">
+                    {participants.filter((p) => p.startsWith("P")).length}
+                  </div>
+                  <div className="text-sm text-gray-600">Faculty</div>
+                </div>
+                <div>
+                  <div className="text-2xl font-bold text-green-600">
+                    {participants.filter((p) => p.startsWith("S")).length}
+                  </div>
+                  <div className="text-sm text-gray-600">Students</div>
+                </div>
               </div>
             </div>
-            <ScrollArea className="flex-1 p-4">
-              <div className="space-y-2">
-                {chat.participantNames?.map((name, index) => (
-                  <div key={index} className="flex items-center space-x-3 p-2 hover:bg-gray-50 rounded-lg">
-                    <div
-                      className="w-8 h-8 rounded-full flex items-center justify-center text-white font-bold text-xs"
-                      style={{ backgroundColor: getAvatarColor(index, name) }}
-                    >
-                      {name?.charAt(0).toUpperCase()}
-                    </div>
-                    <span className="text-sm text-gray-700">{name}</span>
-                  </div>
-                )) || (
-                  <div className="text-center text-gray-500 py-8">
-                    <Users className="w-12 h-12 mx-auto mb-2 text-gray-300" />
-                    <p>No participant information available</p>
-                  </div>
-                )}
-              </div>
-            </ScrollArea>
           </div>
         </div>
       )}

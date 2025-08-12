@@ -26,7 +26,7 @@ export default function NotificationMessage() {
   useEffect(() => {
     const fetchChats = async () => {
       try {
-        const res = await fetch(`http://localhost:8081/api/chat/messages/108
+        const res = await fetch(`http://localhost:8081/api/chat/messages/102
           `)
         const data = await res.json()
         setChats(data)
