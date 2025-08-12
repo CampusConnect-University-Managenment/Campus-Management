@@ -1,4 +1,12 @@
+
 // import React from 'react';
+
+// // Format yyyy-mm-dd → dd-mm-yyyy
+// const formatDisplayDate = (dateStr) => {
+//   if (!dateStr) return '';
+//   const [y, m, d] = dateStr.split('-');
+//   return `${d}-${m}-${y}`;
+// };
 
 // const CalendarInput = ({
 //   selectedDate,
@@ -16,7 +24,9 @@
 //   return (
 //     <div className="bg-white p-6 rounded-xl shadow-md border w-full max-w-5xl mx-auto mt-8">
 //       <div className="flex justify-between items-center mb-4">
-//         <h3 className="text-xl font-bold">Add/Edit Event for {selectedDate}</h3>
+//         <h3 className="text-xl font-bold">
+//           Add/Edit Event for {formatDisplayDate(selectedDate)}
+//         </h3>
 //         <button
 //           onClick={onClear}
 //           className="px-4 py-2 bg-gray-200 text-gray-800 rounded hover:bg-gray-300 transition duration-150"
@@ -31,7 +41,7 @@
 //           <input
 //             type="text"
 //             id="eventDate"
-//             value={selectedDate}
+//             value={formatDisplayDate(selectedDate)}
 //             readOnly
 //             className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2"
 //           />
@@ -42,9 +52,9 @@
 //           <input
 //             type="text"
 //             id="endDate"
-//             value={endDate}
+//             value={formatDisplayDate(endDate)}
 //             onChange={onEndDateChange}
-//             placeholder="YYYY-MM-DD"
+//             placeholder="DD-MM-YYYY"
 //             className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2"
 //           />
 //         </div>
@@ -78,7 +88,11 @@
 //         <div className="col-span-2 flex justify-end gap-3 mt-4">
 //           <button
 //             type="submit"
-//             className={`px-6 py-2 ${isUpdate ? 'bg-yellow-500 hover:bg-yellow-600' : 'bg-green-600 hover:bg-green-700'} text-white rounded`}
+//             className={`px-6 py-2 ${
+//               isUpdate
+//                 ? 'bg-blue-600 hover:bg-blue-700'
+//                 : 'bg-green-600 hover:bg-green-700'
+//             } text-white rounded`}
 //           >
 //             {isUpdate ? 'Update' : 'Save'}
 //           </button>
@@ -86,7 +100,7 @@
 //             <button
 //               type="button"
 //               onClick={onDelete}
-//               className="px-6 py-2 bg-red-600 text-white rounded hover:bg-red-700"
+//               className="px-6 py-2 bg-red-700 text-white rounded hover:bg-red-800"
 //             >
 //               Delete
 //             </button>
@@ -97,7 +111,8 @@
 //   );
 // };
 
-// export default CalendarInput;
+//export default CalendarInput;
+
 import React from 'react';
 
 const CalendarInput = ({
@@ -119,6 +134,7 @@ const CalendarInput = ({
         <h3 className="text-xl font-bold">Add/Edit Event for {selectedDate}</h3>
         <button
           onClick={onClear}
+          type="button"
           className="px-4 py-2 bg-gray-200 text-gray-800 rounded hover:bg-gray-300 transition duration-150"
         >
           Clear Form
@@ -126,8 +142,11 @@ const CalendarInput = ({
       </div>
 
       <form onSubmit={onSubmit} className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        {/* Start Date */}
         <div>
-          <label htmlFor="eventDate" className="block text-sm font-medium text-gray-700">Start Date</label>
+          <label htmlFor="eventDate" className="block text-sm font-medium text-gray-700">
+            Start Date
+          </label>
           <input
             type="text"
             id="eventDate"
@@ -137,20 +156,26 @@ const CalendarInput = ({
           />
         </div>
 
+        {/* End Date */}
         <div>
-          <label htmlFor="endDate" className="block text-sm font-medium text-gray-700">End Date (optional)</label>
+          <label htmlFor="endDate" className="block text-sm font-medium text-gray-700">
+            End Date (optional)
+          </label>
           <input
             type="text"
             id="endDate"
-            value={endDate}
+            value={endDate || ""} // prevent undefined
             onChange={onEndDateChange}
             placeholder="YYYY-MM-DD"
             className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2"
           />
         </div>
 
+        {/* Event Title */}
         <div>
-          <label htmlFor="eventTitle" className="block text-sm font-medium text-gray-700">Event Title</label>
+          <label htmlFor="eventTitle" className="block text-sm font-medium text-gray-700">
+            Event Title
+          </label>
           <input
             type="text"
             id="eventTitle"
@@ -160,8 +185,11 @@ const CalendarInput = ({
           />
         </div>
 
+        {/* Event Type */}
         <div>
-          <label htmlFor="eventType" className="block text-sm font-medium text-gray-700">Event Type</label>
+          <label htmlFor="eventType" className="block text-sm font-medium text-gray-700">
+            Event Type
+          </label>
           <select
             id="eventType"
             value={eventType}
@@ -175,6 +203,7 @@ const CalendarInput = ({
           </select>
         </div>
 
+        {/* Action Buttons */}
         <div className="col-span-2 flex justify-end gap-3 mt-4">
           <button
             type="submit"
@@ -186,6 +215,7 @@ const CalendarInput = ({
           >
             {isUpdate ? 'Update' : 'Save'}
           </button>
+
           {isUpdate && (
             <button
               type="button"
@@ -202,3 +232,8 @@ const CalendarInput = ({
 };
 
 export default CalendarInput;
+
+
+
+
+
