@@ -39,6 +39,9 @@ import ExamSchedule from "./pages/admin/exam/components/examschedule";
 import FaCourse from "./pages/faculty/Course/Course";
 import HelpDesk from "./pages/admin/HelpDesk/component/notification";
 
+import LoginPage from "./pages/Auth/component/LoginPageInline";
+
+
 // IMPORT BOTH COMPONENTS FROM THE SINGLE INDEX.JSX FILE
 import { ClassList, ClassList_Students } from "./pages/faculty/ClassList";
 
@@ -64,6 +67,16 @@ import {
 } from "react-icons/md";
 
 const routes = [
+  // login
+
+  {
+    name: "Login",
+    layout: "",
+    path: "/",
+    icon: null, // no icon needed
+    component: <LoginPage />,
+  },
+
   // Admin Routes
   {
     name: "Admin Dashboard",
@@ -132,7 +145,7 @@ const routes = [
     layout: "/admin",
     path: "help",
     icon: <MdDashboard className="h-6 w-6" />,
-    component: <HelpDesk/>,
+    component: <HelpDesk />,
   },
   {
     name: "My Profile",
@@ -232,8 +245,7 @@ const routes = [
     component: <Notification_Message />,
   },
 
-
-    {
+  {
     name: "Courses",
     layout: "/faculty",
     path: "Course",

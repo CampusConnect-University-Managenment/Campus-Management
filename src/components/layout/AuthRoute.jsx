@@ -5,7 +5,7 @@ import LoginPageInline from "../../pages/Auth/component/LoginPageInline";
 const AuthRoute = () => {
   return (
     <Routes>
-      <Route path="/login" element={<LoginPageInline />} />
+      <Route path="/" element={<LoginPageInline />} />
       {/* Add other auth routes like /register etc. */}
     </Routes>
   );
