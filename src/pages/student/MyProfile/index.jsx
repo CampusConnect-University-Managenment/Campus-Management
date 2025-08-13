@@ -44,29 +44,47 @@ const MyProfile = () => {
     fetchStudent();
   }, []);
 
-  const handlePasswordSubmit = (e) => {
-    e.preventDefault();
-    const validationErrors = {};
+const handlePasswordSubmit = async (e) => {
+  e.preventDefault();
+  const validationErrors = {};
 
-    if (!newPassword.trim()) {
-      validationErrors.newPassword = "Please enter a new password.";
-    }
-    if (!confirmPassword.trim()) {
-      validationErrors.confirmPassword = "Please confirm your password.";
-    }
-    if (newPassword !== confirmPassword) {
-      validationErrors.confirmPassword = "Passwords do not match.";
-    }
+  if (!newPassword.trim()) {
+    validationErrors.newPassword = "Please enter a new password.";
+  }
+  if (!confirmPassword.trim()) {
+    validationErrors.confirmPassword = "Please confirm your password.";
+  }
+  if (newPassword !== confirmPassword) {
+    validationErrors.confirmPassword = "Passwords do not match.";
+  }
 
-    setErrors(validationErrors);
+  setErrors(validationErrors);
+  if (Object.keys(validationErrors).length > 0) return;
 
-    if (Object.keys(validationErrors).length === 0) {
-      alert("Password updated successfully!");
-      setNewPassword("");
-      setConfirmPassword("");
-      setShowPasswordFields(false);
-    }
-  };
+  try {
+     const storedRollNo = localStorage.getItem("studentRollNo");
+    if (!storedRollNo) return;
+
+    const res = await fetch(`http://localhost:8088/api/auth/update-password/${storedRollNo}`, {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ newPassword }),
+    });
+
+    if (!res.ok) throw new Error("Failed to update password");
+
+    const msg = await res.text();
+    alert(msg);
+
+    setNewPassword("");
+    setConfirmPassword("");
+    setShowPasswordFields(false);
+  } catch (err) {
+    console.error("Password update error:", err);
+    alert("Error updating password");
+  }
+};
+
 
   if (!studentData) {
     return (
