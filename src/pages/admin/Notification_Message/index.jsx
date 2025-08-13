@@ -27,7 +27,7 @@ const NotificationManagement = () => {
       .get("http://localhost:8081/api/notifications")
       .then((res) => {
         console.log("📥 Fetched notifications:", res.data)
-        setNotifications(res.data)
+        setNotifications(res.data)  
       })
       .catch((err) => {
         console.error("Failed to fetch notifications:", err)
@@ -35,24 +35,25 @@ const NotificationManagement = () => {
   }, [])
 
   const handleInputChange = (e) => {
-    const { name, value } = e.target
+    const { name, value } = e.target 
     setNewNotification((prev) => ({ ...prev, [name]: value }))
   }
 
   const handleFileUpload = (e) => {
-    const files = Array.from(e.target.files)
-    const fileData = files.map((file) => ({
-      name: file.name,
-      size: file.size,
-      type: file.type,
-      url: URL.createObjectURL(file),
-    }))
-
+  const file = e.target.files[0];
+  if (file) {
     setNewNotification((prev) => ({
       ...prev,
-      attachments: [...prev.attachments, ...fileData],
-    }))
+      attachments: [{
+        name: file.name,
+        size: file.size,
+        type: file.type,
+        url: URL.createObjectURL(file),
+      }],
+    }));
   }
+};
+
 
   const removeAttachment = (index) => {
     setNewNotification((prev) => ({
@@ -61,53 +62,43 @@ const NotificationManagement = () => {
     }))
   }
 
-  const handleFormSubmit = (e) => {
-    e.preventDefault()
-    setIsSubmitting(true)
+ const handleFormSubmit = async (e) => {
+  e.preventDefault();
+  setIsSubmitting(true);
 
-    // Format time for display (matching your original format)
-    const startTimeFormatted = new Date(`2000-01-01T${newNotification.startTime}`).toLocaleTimeString("en-IN", {
-      hour: "2-digit",
-      minute: "2-digit",
-      hour12: true,
-      timeZone: "Asia/Kolkata",
-    })
+  const formData = new FormData();
+  formData.append("name", newNotification.name);
+  formData.append("date", newNotification.startDate);
+  formData.append("endDate", newNotification.endDate);
+  formData.append("time", new Date(`2000-01-01T${newNotification.startTime}`).toLocaleTimeString("en-IN", {
+    hour: "2-digit", minute: "2-digit", hour12: true, timeZone: "Asia/Kolkata"
+  }));
+  formData.append("endTime", newNotification.endTime);
+  formData.append("venue", newNotification.venue);
+  formData.append("audience", newNotification.audience);
 
-    // Create simplified payload matching your original backend structure
-    const notificationData = {
-      name: newNotification.name,
-      time: startTimeFormatted, // Your backend expects 'time'
-      venue: newNotification.venue,
-      date: newNotification.startDate, // Your backend expects 'date'
-      audience: newNotification.audience,
-      // Additional fields for enhanced features (optional)
-      startDate: newNotification.startDate,
-      endDate: newNotification.endDate,
-      startTime: newNotification.startTime,
-      endTime: newNotification.endTime,
-      attachments: newNotification.attachments || [],
-    }
-
-    console.log("📤 Sending notification to backend:", notificationData)
-
-    axios
-      .post("http://localhost:8081/api/notifications", notificationData)
-      .then((res) => {
-        console.log("✅ Notification created successfully:", res.data)
-        // Add the new notification to the beginning of the list
-        setNotifications((prevNotifications) => [res.data, ...prevNotifications])
-        resetForm()
-        alert("Notification created successfully!")
-      })
-      .catch((err) => {
-        console.error("❌ Failed to add notification:", err)
-        console.error("Error details:", err.response?.data)
-        alert(`Failed to create notification: ${err.response?.data?.message || err.message}`)
-      })
-      .finally(() => {
-        setIsSubmitting(false)
-      })
+  // Add file from input
+  const file = fileInputRef.current?.files?.[0];
+  if (file) {
+    formData.append("file", file);
   }
+
+  try {
+    const res = await axios.post("http://localhost:8081/api/notifications/upload", formData, {
+      headers: { "Content-Type": "multipart/form-data" },
+    });
+    console.log("✅ Uploaded:", res.data);
+    setNotifications((prev) => [res.data, ...prev]);
+    resetForm();
+    alert("Notification created successfully!");
+  } catch (err) {
+    console.error("❌ Upload failed:", err);
+    alert("Upload failed: " + (err.response?.data?.message || err.message));
+  } finally {
+    setIsSubmitting(false);
+  }
+};
+
 
   const resetForm = () => {
     setShowForm(false)
@@ -126,22 +117,30 @@ const NotificationManagement = () => {
       fileInputRef.current.value = ""
     }
   }
+  const fetchNotifications = () => {
+  axios
+    .get("http://localhost:8081/api/notifications")
+    .then((res) => setNotifications(res.data))
+    .catch((err) => console.error("Failed to fetch notifications:", err));
+}
+
 
   const deleteNotification = (id) => {
-    if (window.confirm("Are you sure you want to delete this notification?")) {
-      axios
-        .delete(`http://localhost:8081/api/notifications/${id}`)
-        .then(() => {
-          console.log("✅ Notification deleted successfully")
-          setNotifications(notifications.filter((notification) => notification._id !== id))
-        })
-        .catch((err) => {
-          console.error("Failed to delete notification:", err)
-          // Still remove from UI even if API call fails
-          setNotifications(notifications.filter((notification) => notification._id !== id))
-        })
-    }
+  if (window.confirm("Are you sure you want to delete this notification?")) {
+    axios
+      .delete(`http://localhost:8081/api/notifications/${id}`)
+      .then(() => {
+        console.log("✅ Notification deleted successfully")   
+         fetchNotifications();
+      })
+      .catch((err) => {
+        console.error("Failed to delete notification:", err)
+        // Optional: keep or remove this depending on whether you still want to remove from UI
+        setNotifications((prev) => prev.filter((notification) => notification._id !== id))
+      })
   }
+}
+
 
   const formatTime = (time) => {
     if (!time) return "N/A"
@@ -306,14 +305,8 @@ const NotificationManagement = () => {
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-3">Attachments (Optional)</label>
                   <div className="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center hover:border-blue-400 transition-colors">
-                    <input
-                      type="file"
-                      ref={fileInputRef}
-                      onChange={handleFileUpload}
-                      multiple
-                      className="hidden"
-                      accept=".pdf,.doc,.docx,.jpg,.jpeg,.png,.txt"
-                    />
+                  <input type="file" ref={fileInputRef} onChange={handleFileUpload} accept=".pdf,.doc,.docx,.jpg,.jpeg,.png,.txt" />
+
                     <Upload className="mx-auto h-12 w-12 text-gray-400 mb-4" />
                     <p className="text-gray-600 mb-2">Click to upload files or drag and drop</p>
                     <p className="text-sm text-gray-500">PDF, DOC, Images up to 10MB each</p>
