@@ -203,7 +203,7 @@ const AddStudent = ({ editingStudent, onClose }) => {
             <input name="studentParentorguardianphone" value={formData.studentParentorguardianphone} onChange={handleChange} placeholder="Parent/Guardian Phone" className="border p-2 rounded" />
             <input name="studentCredits" value={formData.studentCredits} onChange={handleChange} placeholder="Total Credits" className="border p-2 rounded" type="number" />
             <input name="studentAttendance" value={formData.studentAttendance} onChange={handleChange} placeholder="Attendance (%)" className="border p-2 rounded" type="number" />
-            <input name="studentCgpa" value={formData.studentCgpa} onChange={handleChange} placeholder="CGPA" className="border p-2 rounded" type="number" />
+            <input name="studentCgpa" value={formData.studentCgpa} onChange={handleChange} placeholder="CGPA" className="border p-2 rounded" type="number" step="0.01" min="0" max="10"/>
 
             <div className="col-span-2">
               <label className="block mb-1 font-medium">Profile Pic</label>
