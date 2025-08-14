@@ -20,7 +20,7 @@ const AddStudent = ({ editingStudent, onClose }) => {
     studentAadharno: "",
     studentTenthmark: "",
     studentDiplomamark: "",
-    studentTwelfthmark: "",
+    studentTwelthmark: "",  // Changed here
     studentYear: "",
     studentSem: "",
     studentModeofjoing: "",
@@ -86,7 +86,7 @@ const AddStudent = ({ editingStudent, onClose }) => {
       ...formData,
       studentTenthmark: parseFloat(formData.studentTenthmark) || 0,
       studentDiplomamark: parseFloat(formData.studentDiplomamark) || 0,
-      studentTwelfthmark: parseFloat(formData.studentTwelfthmark) || 0,
+      studentTwelthmark: parseFloat(formData.studentTwelthmark) || 0, // Changed here
       studentCredits: parseInt(formData.studentCredits) || 0,
       studentAttendance: parseFloat(formData.studentAttendance) || 0,
       studentCgpa: parseFloat(formData.studentCgpa) || 0,
@@ -116,7 +116,7 @@ const AddStudent = ({ editingStudent, onClose }) => {
       studentAadharno: "",
       studentTenthmark: "",
       studentDiplomamark: "",
-      studentTwelfthmark: "",
+      studentTwelthmark: "",  // Changed here
       studentYear: "",
       studentSem: "",
       studentModeofjoing: "",
@@ -169,7 +169,7 @@ const AddStudent = ({ editingStudent, onClose }) => {
             <input name="studentEmail" value={formData.studentEmail} onChange={handleChange} placeholder="Email" className="border p-2 rounded" type="email" />
             <input name="studentAadharno" value={formData.studentAadharno} onChange={handleChange} placeholder="Aadhar Number" className="border p-2 rounded" />
             <input name="studentTenthmark" value={formData.studentTenthmark} onChange={handleChange} placeholder="10th Mark (%)" className="border p-2 rounded" type="number" />
-            <input name="studentTwelfthmark" value={formData.studentTwelfthmark} onChange={handleChange} placeholder="12th Mark (%)" className="border p-2 rounded" type="number" />
+            <input name="studentTwelthmark" value={formData.studentTwelthmark} onChange={handleChange} placeholder="12th Mark (%)" className="border p-2 rounded" type="number" />
             <input name="studentDiplomamark" value={formData.studentDiplomamark} onChange={handleChange} placeholder="Diploma Mark (%)" className="border p-2 rounded" type="number" />
 
             <select name="studentModeofjoing" value={formData.studentModeofjoing} onChange={handleChange} className="border p-2 rounded">
@@ -211,19 +211,15 @@ const AddStudent = ({ editingStudent, onClose }) => {
               {photoPreviewUrl && (
                 <div className="mt-2 relative w-20 h-20">
                   <img src={photoPreviewUrl} alt="Preview" className="w-20 h-20 rounded-full object-cover border" />
-                  <button type="button" onClick={handleClearPhoto} className="absolute top-0 right-0 text-xs bg-red-600 text-white rounded px-1" title="Remove photo">&times;</button>
+                  <button type="button" onClick={handleClearPhoto} className="absolute top-0 right-0 text-xs bg-red-600 text-white rounded px-1">X</button>
                 </div>
               )}
             </div>
           </div>
 
-          <div className="col-span-2 flex gap-3 mt-4">
-            <button type="submit" className="px-6 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">
-              {editingStudent ? "Update Student" : "Add Student"}
-            </button>
-            <button type="button" onClick={onClose} className="px-6 py-2 border border-gray-400 rounded hover:bg-gray-100">
-              Cancel
-            </button>
+          <div className="flex justify-end gap-4 pt-4 border-t">
+            <button type="button" onClick={onClose} className="px-4 py-2 rounded border hover:bg-gray-100">Cancel</button>
+            <button type="submit" className="px-4 py-2 rounded bg-blue-600 text-white hover:bg-blue-700">Save</button>
           </div>
         </form>
       </div>
