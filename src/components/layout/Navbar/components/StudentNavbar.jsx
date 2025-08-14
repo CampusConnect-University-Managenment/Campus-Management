@@ -964,35 +964,32 @@ export default function FacultyNavbar() {
                     className="w-10 h-10 rounded-full"
                   />
                   <div>
-                    <h4 className="font-semibold text-sm text-gray-900">Yeswanth</h4>
-                    <p className="text-xs text-orange-500 font-medium">Premium Member</p>
+                    <h4 className="font-semibold text-sm text-gray-900">Ragu</h4>
+                    <p className="text-xs text-orange-500 font-medium">Student</p>
                   </div>
                 </div>
-                <div className="flex flex-wrap gap-4 text-sm font-medium text-gray-700 border-b pb-2">
-                  <span
-                    className="cursor-pointer hover:text-blue-600"
-                    onClick={() => {
-                      setShowProfileMenu(false)
-                      navigate("/faculty/attendance")
-                    }}
-                  >
-                    Progress
-                  </span>
-                  <span className="cursor-pointer hover:text-blue-600">Points</span>
-                </div>
-                <div className="flex flex-col gap-1 text-sm text-gray-600">
-                  <span className="cursor-pointer hover:text-blue-600">Settings</span>
-                  <span className="cursor-pointer hover:text-blue-600">Orders</span>
-                  <span
-                    onClick={() => {
-                      setShowProfileMenu(false)
-                      navigate("/faculty/profile")
-                    }}
-                    className="cursor-pointer hover:text-blue-600 font-medium"
-                  >
-                    Go to Profile
-                  </span>
-                </div>
+               
+                 {/* Footer Links */}
+              <div className="flex flex-col gap-1 text-sm text-gray-600">
+                <span
+                  onClick={() => {
+                    setShowProfileMenu(false);
+                    navigate("/student/profile");
+                  }}
+                  className="cursor-pointer hover:text-blue-600 font-medium"
+                >
+                  Go to Profile
+                </span>
+                <span
+                  onClick={() => {
+                    setShowProfileMenu(false);
+                    navigate("/");
+                  }}
+                  className="cursor-pointer hover:text-blue-600 font-medium"
+                >
+                  Logout
+                </span>
+              </div>
               </div>
             )}
           </div>

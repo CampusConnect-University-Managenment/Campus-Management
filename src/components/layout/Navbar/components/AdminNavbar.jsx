@@ -64,13 +64,13 @@ export default function AdminNavbar() {
                 <div>
                   <h4 className="font-semibold text-sm text-gray-900">V S</h4>
                   <p className="text-xs text-orange-500 font-medium">
-                    Premium Member
+                    Admin
                   </p>
                 </div>
               </div>
 
               {/* Tabs */}
-              <div className="flex flex-wrap gap-4 text-sm font-medium text-gray-700 border-b pb-2">
+              {/* <div className="flex flex-wrap gap-4 text-sm font-medium text-gray-700 border-b pb-2">
                 <span
                   className="cursor-pointer hover:text-blue-600"
                   onClick={() => {
@@ -83,24 +83,27 @@ export default function AdminNavbar() {
                 <span className="cursor-pointer hover:text-blue-600">
                   Points
                 </span>
-              </div>
+              </div> */}
 
               {/* Footer Links */}
               <div className="flex flex-col gap-1 text-sm text-gray-600">
-                <span className="cursor-pointer hover:text-blue-600">
-                  Settings
-                </span>
-                <span className="cursor-pointer hover:text-blue-600">
-                  Orders
-                </span>
                 <span
                   onClick={() => {
                     setShowProfileMenu(false);
-                    navigate("/faculty/profile");
+                    navigate("/admin/profile");
                   }}
                   className="cursor-pointer hover:text-blue-600 font-medium"
                 >
                   Go to Profile
+                </span>
+                <span
+                  onClick={() => {
+                    setShowProfileMenu(false);
+                    navigate("/");
+                  }}
+                  className="cursor-pointer hover:text-blue-600 font-medium"
+                >
+                  Logout
                 </span>
               </div>
             </div>
