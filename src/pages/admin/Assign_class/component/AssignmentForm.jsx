@@ -31,40 +31,42 @@ const AssignmentForm = ({ onCreateAssignment, courseToAssignedStudents = {} }) =
     IV: [{ value: "VII", label: "Semester VII" }, { value: "VIII", label: "Semester VIII" }],
   };
 
+  // Fetch courses and faculties/students
   useEffect(() => {
     const fetchData = async () => {
       if (selectedDepartment && selectedYear && selectedSemester) {
         const semesterNumber = getSemesterNumber(selectedYear, selectedSemester);
-
         try {
-          // 1. Get real courses
+          // Courses
           const courseRes = await axios.get(`http://localhost:8081/admin/courses`, {
-            params: {
-              department: selectedDepartment,
-              year: selectedYear,
-              semester: semesterNumber,
-            },
+            params: { department: selectedDepartment, year: selectedYear, semester: semesterNumber },
           });
           const courseList = courseRes.data.data || [];
+          // Only store strings (courseCode) to avoid object rendering
           setAvailableCourses(courseList.map((course) => course.courseCode));
 
-          // 2. Get dummy students/faculties
-          const dummyRes = await axios.get(`http://localhost:8081/admin/class-assignments/assignable`, {
-            params: { year: selectedYear, department: selectedDepartment, semester: semesterNumber },
-          });
+          // Faculties and students
+          const dummyRes = await axios.get(
+            `http://localhost:8081/admin/class-assignments/assignable`,
+            { params: { year: selectedYear, department: selectedDepartment, semester: semesterNumber } }
+          );
           const dummyData = dummyRes.data.data || {};
-          setAvailableFaculties(dummyData.faculties || []);
+          // Only use string identifiers for faculties
+          setAvailableFaculties(
+            (dummyData.faculties || []).map((f) =>
+              typeof f === "string" ? f : f.firstName ? `${f.firstName} ${f.lastName}` : f.id || "Unknown"
+            )
+          );
           setRawStudents(dummyData.students || []);
         } catch (err) {
           console.error("Error fetching data:", err);
         }
       }
     };
-
     fetchData();
   }, [selectedDepartment, selectedYear, selectedSemester]);
 
-  // 🔁 Filter students dynamically whenever selected course or rawStudents changes
+  // Filter students for selected course
   useEffect(() => {
     if (selectedCourse && rawStudents.length > 0) {
       const alreadyAssigned = courseToAssignedStudents[selectedCourse] || new Set();
@@ -85,9 +87,6 @@ const AssignmentForm = ({ onCreateAssignment, courseToAssignedStudents = {} }) =
         department: selectedDepartment,
         students: availableStudents,
         selectedStudents: [],
-        page: 0,
-        rowsPerPage: 20,
-        isConfirmed: false,
       };
       onCreateAssignment(newAssignment);
 
@@ -110,11 +109,11 @@ const AssignmentForm = ({ onCreateAssignment, courseToAssignedStudents = {} }) =
     <div className="bg-white rounded-lg shadow-md p-6 mb-6">
       <h2 className="text-xl font-semibold text-gray-900 mb-2">Create New Assignment</h2>
 
-{selectedYear && selectedSemester && selectedDepartment && selectedCourse && (
-  <h3 className="text-md font-medium text-gray-700 mb-4">
-    Assignment for {selectedYear} Year - Semester {selectedSemester} - {selectedDepartment} Department - Course: {selectedCourse}
-  </h3>
-)}
+      {selectedYear && selectedSemester && selectedDepartment && selectedCourse && (
+        <h3 className="text-md font-medium text-gray-700 mb-4">
+          Assignment for {selectedYear} Year - Semester {selectedSemester} - {selectedDepartment} Department - Course: {selectedCourse}
+        </h3>
+      )}
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
         {/* Year */}
@@ -132,8 +131,8 @@ const AssignmentForm = ({ onCreateAssignment, courseToAssignedStudents = {} }) =
             className="w-full px-3 py-2 border border-gray-300 rounded-md"
           >
             <option value="">Choose a year</option>
-            {years.map((year, idx) => (
-              <option key={idx} value={year}>Year {year}</option>
+            {years.map((year) => (
+              <option key={year} value={year}>{year}</option>
             ))}
           </select>
         </div>
@@ -184,16 +183,13 @@ const AssignmentForm = ({ onCreateAssignment, courseToAssignedStudents = {} }) =
           <label className="block text-sm font-medium text-gray-700 mb-2">Select Course</label>
           <select
             value={selectedCourse}
-            onChange={(e) => {
-              setSelectedCourse(e.target.value);
-              setSelectedFaculty("");
-            }}
+            onChange={(e) => { setSelectedCourse(e.target.value); setSelectedFaculty(""); }}
             disabled={availableCourses.length === 0}
             className="w-full px-3 py-2 border border-gray-300 rounded-md disabled:bg-gray-100"
           >
             <option value="">Choose a course</option>
-            {availableCourses.map((course, idx) => (
-              <option key={idx} value={course}>{course}</option>
+            {availableCourses.map((course) => (
+              <option key={course} value={course}>{course}</option>
             ))}
           </select>
         </div>
@@ -208,8 +204,8 @@ const AssignmentForm = ({ onCreateAssignment, courseToAssignedStudents = {} }) =
             className="w-full px-3 py-2 border border-gray-300 rounded-md disabled:bg-gray-100"
           >
             <option value="">Choose a faculty</option>
-            {availableFaculties.map((faculty, idx) => (
-              <option key={idx} value={faculty}>{faculty}</option>
+            {availableFaculties.map((faculty) => (
+              <option key={faculty} value={faculty}>{faculty}</option>
             ))}
           </select>
         </div>

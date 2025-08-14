@@ -16,22 +16,22 @@ const AssignmentManager = () => {
         year: a.year,
         semester: a.semester,
         department: a.department,
-        course: a.courseId,
+        course: a.courseId?.courseCode || a.courseId,
         faculty: a.facultyId,
-        facultyName: a.facultyName,
+        facultyName:
+          a.facultyName ||
+          (a.facultyId ? `${a.facultyId.firstName} ${a.facultyId.lastName}` : "Unknown"),
         assignedCount: a.studentCount,
       }));
       setConfirmedAssignments(converted);
     });
   }, []);
 
-  // ✅ Build map of assigned students per course (empty Set, since with-names doesn't return studentIds)
   const courseToAssignedStudents = {};
   confirmedAssignments.forEach((a) => {
     if (!courseToAssignedStudents[a.course]) {
       courseToAssignedStudents[a.course] = new Set();
     }
-    // No studentIds in detailed data, so we skip this
   });
 
   const handleCreateAssignment = (assignment) => {
@@ -66,15 +66,17 @@ const AssignmentManager = () => {
         year: data.year,
         semester: data.semester,
         department: data.department,
-        course: data.courseId,
+        course: data.courseId?.courseCode || data.courseId,
         faculty: data.facultyId,
-        facultyName: "Faculty " + data.facultyId, // Placeholder name
+        facultyName:
+          data.facultyName ||
+          (data.facultyId ? `${data.facultyId.firstName} ${data.facultyId.lastName}` : "Unknown"),
         assignedCount: data.studentIds.length,
       };
 
       setConfirmedAssignments((prev) => [...prev, confirmedAssignment]);
       setAssignments((prev) => prev.filter((a) => a.id !== assignment.id));
-      setPopupMessage(`Assignment confirmed for ${data.facultyId}.`);
+      setPopupMessage(`Assignment confirmed for ${confirmedAssignment.facultyName}.`);
       setShowPopup(true);
     } catch (err) {
       console.error("Error confirming assignment:", err);
@@ -97,14 +99,17 @@ const AssignmentManager = () => {
         courseToAssignedStudents={courseToAssignedStudents}
       />
 
-      {/* 🔽 Ongoing Assignments being created (checkbox view) */}
+      {/* Ongoing Assignments */}
       {assignments.map((assignment) => (
         <div key={assignment.id} className="bg-gray-100 p-4 my-4 rounded-md shadow-md">
           <h3 className="text-lg font-semibold text-gray-800 mb-2">
-            Assignment: {assignment.course} - {assignment.faculty}
+            Assignment: {assignment.course?.courseCode || assignment.course} -{" "}
+           {assignment.faculty?.firstName
+  ? `${assignment.faculty.firstName} ${assignment.faculty.lastName}`
+  : assignment.facultyName || (assignment.faculty?.firstName ? `${assignment.faculty.firstName} ${assignment.faculty.lastName}` : "Unknown Faculty")}
+
           </h3>
 
-          {/* Student Selection */}
           <div className="mb-2">
             <p className="text-sm text-gray-600 mb-1">Select students to assign:</p>
             {assignment.students.length === 0 ? (
@@ -138,7 +143,6 @@ const AssignmentManager = () => {
             )}
           </div>
 
-          {/* Confirm Button */}
           <button
             className="mt-2 px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700"
             onClick={() => handleFinalConfirm(assignment)}
@@ -148,7 +152,7 @@ const AssignmentManager = () => {
         </div>
       ))}
 
-      {/* 🔽 ✅ Confirmed Assignments Display */}
+      {/* Confirmed Assignments */}
       <div className="mt-10">
         <h2 className="text-xl font-semibold text-gray-800 mb-4">Confirmed Class Assignments</h2>
         {confirmedAssignments.length === 0 ? (
@@ -157,9 +161,13 @@ const AssignmentManager = () => {
           <div className="grid gap-4">
             {confirmedAssignments.map((assignment) => (
               <div key={assignment.id} className="bg-white rounded-md shadow p-4 border">
-                <h3 className="text-md font-bold text-indigo-700 mb-2">
-                  {assignment.course} - {assignment.facultyName} ({assignment.faculty})
-                </h3>
+          <h3 className="text-md font-bold text-indigo-700 mb-2">
+  {assignment.course?.courseCode || assignment.course} -{" "}
+  {assignment.faculty?.firstName
+    ? `${assignment.faculty.firstName} ${assignment.faculty.lastName}`
+    : assignment.facultyName || "Unknown Faculty"}
+</h3>
+
                 <p className="text-sm text-gray-700">
                   <strong>Year:</strong> {assignment.year} | <strong>Semester:</strong> {assignment.semester} |{" "}
                   <strong>Department:</strong> {assignment.department}
@@ -173,7 +181,7 @@ const AssignmentManager = () => {
         )}
       </div>
 
-      {/* 🔽 Popup Message */}
+      {/* Popup Message */}
       {showPopup && (
         <div className="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative mt-4">
           <strong className="font-bold">Notice:</strong>
