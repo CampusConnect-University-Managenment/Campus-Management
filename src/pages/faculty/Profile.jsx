@@ -105,6 +105,58 @@ const FacultyProfile = () => {
     fetchFacultyProfile();
   }, []);
 
+  // Fetch faculty profile from backend
+  useEffect(() => {
+    const fetchFacultyProfile = async () => {
+      try {
+        const facultyCode = localStorage.getItem("facultyCode");
+        if (!facultyCode) {
+          console.error("No faculty code found in localStorage");
+          setLoading(false);
+          return;
+        }
+
+        const response = await axios.get(
+          `http://localhost:8080/api/admin/faculty/${facultyCode}`
+        );
+
+        setProfile(response.data);
+      } catch (error) {
+        console.error("Error fetching faculty profile:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchFacultyProfile();
+  }, []);
+
+  // Fetch faculty profile from backend
+  useEffect(() => {
+    const fetchFacultyProfile = async () => {
+      try {
+        const facultyCode = localStorage.getItem("facultyCode");
+        if (!facultyCode) {
+          console.error("No faculty code found in localStorage");
+          setLoading(false);
+          return;
+        }
+
+        const response = await axios.get(
+          `http://localhost:8080/api/admin/faculty/${facultyCode}`
+        );
+
+        setProfile(response.data);
+      } catch (error) {
+        console.error("Error fetching faculty profile:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchFacultyProfile();
+  }, []);
+
   const handleTogglePasswordEdit = () => {
     setIsEditing((prev) => !prev);
     setCurrentPassword("");

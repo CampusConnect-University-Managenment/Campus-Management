@@ -185,6 +185,7 @@ export default function LoginPage() {
           case "student":
             window.location.href = "/student/default";
             break;
+            
           default:
             toast.error("Invalid role", {
               position: "top-center",
