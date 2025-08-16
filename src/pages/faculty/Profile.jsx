@@ -1,15 +1,18 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import axios from "axios";
+import { Eye, EyeOff } from "lucide-react";
+import { toast } from "react-toastify";
 
-// Helper function to format date for display
+import { ToastContainer } from "react-toastify";
+// Initialize toast container once in your app root (e.g., App.js):
+// toast.configure();
+
 const formatDate = (dateString) => {
   if (!dateString) return "N/A";
   const options = { year: "numeric", month: "long", day: "numeric" };
   return new Date(dateString).toLocaleDateString(undefined, options);
 };
 
-// Reusable input field component
-// Note: isEditing prop is removed as fields are always read-only in this version,
-// except for password fields which are managed separately.
 const ProfileInputField = ({
   label,
   value,
@@ -18,28 +21,38 @@ const ProfileInputField = ({
   onChange,
   placeholder = "",
   readOnly = true,
+  showToggle = false,
+  isVisible = false,
+  onToggleVisibility,
 }) => (
-  <div className="mb-4">
+  <div className="mb-4 relative">
     <label className="block text-sm font-medium text-gray-700 mb-1">
       {label}
     </label>
     <input
-      type={type}
+      type={isVisible ? "text" : type}
       name={name}
       value={value}
       onChange={onChange}
       placeholder={placeholder}
-      readOnly={readOnly} // Fields are read-only by default
+      readOnly={readOnly}
       className={`mt-1 block w-full px-3 py-2 border ${
         readOnly ? "bg-gray-100" : "bg-white"
       } border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm`}
     />
+    {showToggle && (
+      <button
+        type="button"
+        onClick={onToggleVisibility}
+        className="absolute right-3 top-9 text-gray-500 hover:text-gray-700"
+      >
+        {isVisible ? <EyeOff size={18} /> : <Eye size={18} />}
+      </button>
+    )}
   </div>
 );
 
-// Component for a single row in the Basic Info section (label in one column, value in another)
-// Note: isEditing prop is removed as fields are always read-only in this version.
-const BasicInfoRow = ({ label, value, name, type = "text", onChange }) => {
+const BasicInfoRow = ({ label, value, type = "text" }) => {
   const displayValue =
     label === "Birthday" && value && value !== "Your birthday"
       ? formatDate(value)
@@ -49,104 +62,179 @@ const BasicInfoRow = ({ label, value, name, type = "text", onChange }) => {
     <div className="flex flex-col sm:flex-row py-3 border-b border-gray-200 last:border-b-0">
       <div className="w-full sm:w-1/3 text-gray-600 font-medium mb-1 sm:mb-0">
         {label}
+        
       </div>
       <div className="w-full sm:w-2/3 text-gray-800">
-        <span>{displayValue}</span> {/* Always display as text */}
+        <span>{displayValue}</span>
       </div>
     </div>
   );
 };
 
-/**
- * FacultyProfile Component
- *
- * This component displays a structured profile for a faculty member.
- * It focuses on displaying personal and ID info, and provides a dedicated
- * "Change Password" functionality. All profile details (except password fields)
- * are read-only.
- * It is designed to be fully responsive using Tailwind CSS.
- */
 const FacultyProfile = () => {
-  const initialProfile = {
-    first_name: "Ichshanackiyan",
-    middle_name: "",
-    last_name: "Doe",
-    gender: "Male",
-    address:
-      "123, Tech Street, Knowledge City, Chennai, Tamil Nadu, India - 600001",
-    dateOfBirth: "1995-07-22",
-    bloodGroup: "A+",
+  const [profile, setProfile] = useState(null);
+  const [loading, setLoading] = useState(true);
 
-    email: "ichshanackiyan.faculty@university.edu",
-    phone: "+91 98765 43210",
-    department: "Computer Science & Engineering",
-    designation: "Associate Professor",
-    profilePicture: "https://placehold.co/150x150/4CAF50/FFFFFF?text=I",
-
-    department_id: "CSE001",
-    faculty_id: "FCLT007",
-  };
-
-  const [profile, setProfile] = useState(initialProfile);
-  // isEditing now only controls the visibility of the password change form
   const [isEditing, setIsEditing] = useState(false);
-
-  // Password change specific states
   const [currentPassword, setCurrentPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [confirmNewPassword, setConfirmNewPassword] = useState("");
-  const [passwordChangeError, setPasswordChangeError] = useState("");
-  const [passwordChangeSuccess, setPasswordChangeSuccess] = useState("");
+
+  const [showCurrent, setShowCurrent] = useState(false);
+  const [showNew, setShowNew] = useState(false);
+  const [showConfirm, setShowConfirm] = useState(false);
+
+  useEffect(() => {
+    const fetchFacultyProfile = async () => {
+      try {
+        const facultyCode = localStorage.getItem("facultyCode");
+        if (!facultyCode) {
+          console.error("No faculty code found in localStorage");
+          setLoading(false);
+          return;
+        }
+        const response = await axios.get(
+          `http://localhost:8080/api/admin/faculty/${facultyCode}`
+        );
+        setProfile(response.data);
+      } catch (error) {
+        console.error("Error fetching faculty profile:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchFacultyProfile();
+  }, []);
+
+  // Fetch faculty profile from backend
+  useEffect(() => {
+    const fetchFacultyProfile = async () => {
+      try {
+        const facultyCode = localStorage.getItem("facultyCode");
+        if (!facultyCode) {
+          console.error("No faculty code found in localStorage");
+          setLoading(false);
+          return;
+        }
+
+        const response = await axios.get(
+          `http://localhost:8080/api/admin/faculty/${facultyCode}`
+        );
+
+        setProfile(response.data);
+      } catch (error) {
+        console.error("Error fetching faculty profile:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchFacultyProfile();
+  }, []);
+
+  // Fetch faculty profile from backend
+  useEffect(() => {
+    const fetchFacultyProfile = async () => {
+      try {
+        const facultyCode = localStorage.getItem("facultyCode");
+        if (!facultyCode) {
+          console.error("No faculty code found in localStorage");
+          setLoading(false);
+          return;
+        }
+
+        const response = await axios.get(
+          `http://localhost:8080/api/admin/faculty/${facultyCode}`
+        );
+
+        setProfile(response.data);
+      } catch (error) {
+        console.error("Error fetching faculty profile:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchFacultyProfile();
+  }, []);
 
   const handleTogglePasswordEdit = () => {
     setIsEditing((prev) => !prev);
-    // Reset password form fields and messages when toggling
     setCurrentPassword("");
     setNewPassword("");
     setConfirmNewPassword("");
-    setPasswordChangeError("");
-    setPasswordChangeSuccess("");
   };
 
-  const handleSubmitPasswordChange = () => {
-    setPasswordChangeError("");
-    setPasswordChangeSuccess("");
+  const handleSubmitPasswordChange = async (e) => {
+    e.preventDefault();
 
-    if (newPassword.length < 6) {
-      setPasswordChangeError(
-        "New password must be at least 6 characters long."
-      );
+    if (!newPassword.trim()) {
+      toast.error("Please enter a new password.");
+      return;
+    }
+    if (!confirmNewPassword.trim()) {
+      toast.error("Please confirm your password.");
       return;
     }
     if (newPassword !== confirmNewPassword) {
-      setPasswordChangeError("New password and confirmation do not match.");
+      toast.error("Passwords do not match.");
       return;
     }
-    // In a real app, you'd send currentPassword, newPassword to your backend
-    // and validate currentPassword on the server side.
-    console.log("Attempting to change password:", {
-      currentPassword,
-      newPassword,
-    });
 
-    // Simulate API call success/failure
-    setTimeout(() => {
-      if (currentPassword === "correctPassword123") {
-        // Mock validation
-        setPasswordChangeSuccess("Password changed successfully!");
-        setCurrentPassword("");
-        setNewPassword("");
-        setConfirmNewPassword("");
-        setIsEditing(false); // Close the form on success
-      } else {
-        setPasswordChangeError("Incorrect current password.");
+    try {
+      const facultyCode = localStorage.getItem("facultyCode");
+      if (!facultyCode) {
+        toast.error("Faculty code not found.");
+        return;
       }
-    }, 1000);
+
+      const res = await fetch(
+        `http://localhost:8088/api/auth/update-password/${facultyCode}`,
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+          body: JSON.stringify({ oldPassword: currentPassword, newPassword }),
+        }
+      );
+
+      if (!res.ok) {
+        const errMsg = await res.text();
+        throw new Error(errMsg || "Failed to update password");
+      }
+
+      toast.success("Password reset successfully!");
+      setCurrentPassword("");
+      setNewPassword("");
+      setConfirmNewPassword("");
+      setIsEditing(false);
+    } catch (err) {
+      console.error("Password update error:", err);
+      toast.error(err.message || "Error updating password");
+    }
   };
 
-  const fullName = `${profile.first_name} ${
+  if (loading) {
+    return (
+      <div className="flex justify-center items-center min-h-screen">
+        Loading profile...
+      </div>
+    );
+  }
+
+  if (!profile) {
+    return (
+      <div className="flex justify-center items-center min-h-screen">
+        No profile found.
+      </div>
+    );
+  }
+
+  const fullName = `${profile.first_name || ""} ${
     profile.middle_name ? profile.middle_name + " " : ""
-  }${profile.last_name}`.trim();
+  }${profile.last_name || ""}`.trim();
 
   return (
     <div className="bg-gray-100 min-h-screen p-4 sm:p-8 font-inter flex justify-center items-start">
@@ -155,14 +243,12 @@ const FacultyProfile = () => {
         <div className="flex flex-col md:flex-row items-center md:items-start space-y-6 md:space-y-0 md:space-x-8 pb-6 border-b border-gray-200 mb-8">
           <div className="flex-shrink-0 relative">
             <img
-              src={profile.profilePicture}
+              src={
+                profile.profilePicture ||
+                "https://placehold.co/150x150/cccccc/000000?text=No+Image"
+              }
               alt={`${fullName}'s profile`}
               className="w-36 h-36 rounded-full object-cover shadow-md border-4 border-blue-500"
-              onError={(e) => {
-                e.target.onerror = null;
-                e.target.src =
-                  "https://placehold.co/150x150/cccccc/000000?text=No+Image";
-              }}
             />
           </div>
           <div className="text-center md:text-left flex-grow">
@@ -176,101 +262,89 @@ const FacultyProfile = () => {
           </div>
         </div>
 
-        {/* Main Content Grid - Single column for all sizes */}
+        {/* Personal Details */}
         <div className="grid grid-cols-1 gap-8">
-          {/* Personal Details Card - Always read-only */}
           <div className="bg-gray-50 p-6 rounded-lg shadow-sm">
-            <h2 className="text-2xl font-bold text-gray-800 flex items-center mb-4">
-              Personal_details
+            <h2 className="text-2xl font-bold text-gray-800 mb-4">
+              Personal Details
             </h2>
-            <BasicInfoRow label="First Name" value={profile.first_name} />
-            <BasicInfoRow label="Middle Name" value={profile.middle_name} />
-            <BasicInfoRow label="Last Name" value={profile.last_name} />
-            <BasicInfoRow label="Faculty ID" value={profile.faculty_id} />
-            <BasicInfoRow label="Department ID" value={profile.department_id} />
-            <BasicInfoRow label="Gender" value={profile.gender} />
-            <BasicInfoRow label="Address" value={profile.address} />
-            <BasicInfoRow
-              label="Birthday"
-              value={profile.dateOfBirth}
-              type="date"
-            />
-            <BasicInfoRow label="Blood Group" value={profile.bloodGroup} />
-            <BasicInfoRow label="Email" value={profile.email} type="email" />
-            <BasicInfoRow label="Phone" value={profile.phone} type="tel" />
+            <BasicInfoRow label="First Name" value={profile.firstName} />
+            <BasicInfoRow label="Last Name" value={profile.lastName} />
+            <BasicInfoRow label="Faculty Code" value={profile.facultyCode} />
+            <BasicInfoRow label="Department ID" value={profile.departmentId} />
+            <BasicInfoRow label="Birthday" value={profile.dob} type="date" />
+            <BasicInfoRow label="Phone" value={profile.contact} />
           </div>
 
-          {/* Password Change Section - Controlled by isEditing */}
+          {/* Change Password */}
           {isEditing && (
             <div className="bg-gray-50 p-6 rounded-lg shadow-sm">
-              <h2 className="text-2xl font-bold text-gray-800 flex items-center mb-4">
+              <h2 className="text-2xl font-bold text-gray-800 mb-4">
                 Change Password
               </h2>
-              <div className="space-y-4">
-                <ProfileInputField
-                  label="Current Password"
-                  type="password"
-                  name="currentPassword"
-                  value={currentPassword}
-                  onChange={(e) => setCurrentPassword(e.target.value)}
-                  readOnly={false} // This field IS editable
-                />
-                <ProfileInputField
-                  label="New Password"
-                  type="password"
-                  name="newPassword"
-                  value={newPassword}
-                  onChange={(e) => setNewPassword(e.target.value)}
-                  readOnly={false} // This field IS editable
-                />
-                <ProfileInputField
-                  label="Confirm New Password"
-                  type="password"
-                  name="confirmNewPassword"
-                  value={confirmNewPassword}
-                  onChange={(e) => setConfirmNewPassword(e.target.value)}
-                  readOnly={false} // This field IS editable
-                />
-                {passwordChangeError && (
-                  <p className="text-red-500 text-sm">{passwordChangeError}</p>
-                )}
-                {passwordChangeSuccess && (
-                  <p className="text-green-600 text-sm">
-                    {passwordChangeSuccess}
-                  </p>
-                )}
-                <div className="flex space-x-4">
-                  <button
-                    onClick={handleSubmitPasswordChange}
-                    className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-1 px-4 rounded-lg shadow-md transition-colors duration-200"
-                  >
-                    Submit
-                  </button>
-                  <button
-                    onClick={handleTogglePasswordEdit} // Use the toggle handler to cancel
-                    className="bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-1 px-4 rounded-lg shadow-md transition-colors duration-200"
-                  >
-                    Cancel
-                  </button>
-                </div>
+              <ProfileInputField
+                label="Current Password"
+                type="password"
+                value={currentPassword}
+                onChange={(e) => setCurrentPassword(e.target.value)}
+                readOnly={false}
+                showToggle
+                isVisible={showCurrent}
+                onToggleVisibility={() => setShowCurrent((prev) => !prev)}
+              />
+              <ProfileInputField
+                label="New Password"
+                type="password"
+                value={newPassword}
+                onChange={(e) => setNewPassword(e.target.value)}
+                readOnly={false}
+                showToggle
+                isVisible={showNew}
+                onToggleVisibility={() => setShowNew((prev) => !prev)}
+              />
+              <ProfileInputField
+                label="Confirm New Password"
+                type="password"
+                value={confirmNewPassword}
+                onChange={(e) => setConfirmNewPassword(e.target.value)}
+                readOnly={false}
+                showToggle
+                isVisible={showConfirm}
+                onToggleVisibility={() => setShowConfirm((prev) => !prev)}
+              />
+              <div className="flex space-x-4 mt-4">
+                <button
+                  onClick={handleSubmitPasswordChange}
+                  className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-1 px-4 rounded-lg shadow-md"
+                >
+                  Submit
+                </button>
+                <button
+                  onClick={handleTogglePasswordEdit}
+                  className="bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-1 px-4 rounded-lg shadow-md"
+                >
+                  Cancel
+                </button>
               </div>
             </div>
           )}
         </div>
 
-        {/* Edit Profile Button (toggles password change form) */}
-        <div className="mt-8 flex justify-center">
-          {!isEditing && (
+        {/* Toggle Button */}
+        {!isEditing && (
+          <div className="mt-8 flex justify-center">
             <button
               onClick={handleTogglePasswordEdit}
-              className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-6 rounded-lg shadow-md transition-colors duration-200"
+              className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-6 rounded-lg shadow-md"
             >
               Change Password
             </button>
-          )}
-        </div>
+          </div>
+        )}
       </div>
+       <ToastContainer position="top-right" autoClose={3000} />
     </div>
+    
   );
 };
 
