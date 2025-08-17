@@ -4,7 +4,6 @@ import AdminProfile from "./pages/admin/Profile";
 import AdminDashboard from "./pages/admin/dashboard";
 import AdminExam from "./pages/admin/exam";
 import AdminExamInterface from "./pages/admin/dashboard/component/ExamInterface";
-import AdminExamSchedule from "./pages/admin/dashboard/component/ExamSchedule";
 import AdminMarksUpload from "./pages/admin/dashboard/component/MarksUpload";
 
 import NotificationMessage from "./pages/admin/Notification_Message";
@@ -108,24 +107,13 @@ const routes = [
     component: <NotificationMessage />,
   },
   {
-    name: "Exam Interface",
-    layout: "/admin",
-    path: "examinterface",
-    icon: <MdLibraryBooks className="h-6 w-6" />,
-    component: <AdminExamInterface />, // <- should include <Outlet />
-    children: [
-      {
-        layout: "/admin",
-        path: "examinterface/exam-schedule",
-        component: <AdminExamSchedule />,
-      },
-      {
-        layout: "/admin",
-        path: "examinterface/marks-upload",
-        component: <AdminMarksUpload />,
-      },
-    ],
-  },
+  name: "Exam Interface",
+  layout: "/admin",
+  path: "examinterface",
+  icon: <MdLibraryBooks className="h-6 w-6" />,
+  component: <AdminMarksUpload />,  // directly load marks upload
+},
+
   {
     name: "Assign Class",
     layout: "/admin",
