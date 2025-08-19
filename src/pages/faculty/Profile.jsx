@@ -189,6 +189,7 @@ const profileImage =
   "https://placehold.co/150x150/cccccc/000000?text=No+Image";
 
 
+
   return (
     <div className="bg-gray-100 min-h-screen p-4 sm:p-8 font-inter flex justify-center items-start">
       <div className="bg-white rounded-xl shadow-lg p-8 max-w-2xl w-full mx-auto my-8">
