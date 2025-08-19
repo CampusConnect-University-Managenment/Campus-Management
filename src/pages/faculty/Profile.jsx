@@ -1,11 +1,7 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { Eye, EyeOff } from "lucide-react";
-import { toast } from "react-toastify";
-
-import { ToastContainer } from "react-toastify";
-// Initialize toast container once in your app root (e.g., App.js):
-// toast.configure();
+import { toast, ToastContainer } from "react-toastify";
 
 const formatDate = (dateString) => {
   if (!dateString) return "N/A";
@@ -62,7 +58,6 @@ const BasicInfoRow = ({ label, value, type = "text" }) => {
     <div className="flex flex-col sm:flex-row py-3 border-b border-gray-200 last:border-b-0">
       <div className="w-full sm:w-1/3 text-gray-600 font-medium mb-1 sm:mb-0">
         {label}
-        
       </div>
       <div className="w-full sm:w-2/3 text-gray-800">
         <span>{displayValue}</span>
@@ -84,6 +79,7 @@ const FacultyProfile = () => {
   const [showNew, setShowNew] = useState(false);
   const [showConfirm, setShowConfirm] = useState(false);
 
+  // ✅ Fetch faculty profile (only once)
   useEffect(() => {
     const fetchFacultyProfile = async () => {
       try {
@@ -103,58 +99,6 @@ const FacultyProfile = () => {
         setLoading(false);
       }
     };
-    fetchFacultyProfile();
-  }, []);
-
-  // Fetch faculty profile from backend
-  useEffect(() => {
-    const fetchFacultyProfile = async () => {
-      try {
-        const facultyCode = localStorage.getItem("facultyCode");
-        if (!facultyCode) {
-          console.error("No faculty code found in localStorage");
-          setLoading(false);
-          return;
-        }
-
-        const response = await axios.get(
-          `http://localhost:8080/api/admin/faculty/${facultyCode}`
-        );
-
-        setProfile(response.data);
-      } catch (error) {
-        console.error("Error fetching faculty profile:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchFacultyProfile();
-  }, []);
-
-  // Fetch faculty profile from backend
-  useEffect(() => {
-    const fetchFacultyProfile = async () => {
-      try {
-        const facultyCode = localStorage.getItem("facultyCode");
-        if (!facultyCode) {
-          console.error("No faculty code found in localStorage");
-          setLoading(false);
-          return;
-        }
-
-        const response = await axios.get(
-          `http://localhost:8080/api/admin/faculty/${facultyCode}`
-        );
-
-        setProfile(response.data);
-      } catch (error) {
-        console.error("Error fetching faculty profile:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
     fetchFacultyProfile();
   }, []);
 
@@ -232,9 +176,19 @@ const FacultyProfile = () => {
     );
   }
 
-  const fullName = `${profile.first_name || ""} ${
-    profile.middle_name ? profile.middle_name + " " : ""
-  }${profile.last_name || ""}`.trim();
+  const fullName = `${profile.firstName || ""} ${
+    profile.middleName ? profile.middleName + " " : ""
+  }${profile.lastName || ""}`.trim();
+
+  // ✅ handle profile image (from backend or fallback)
+const profileImage =
+  profile.photoUrl ||   // add this ✅
+  profile.profilePicture ||
+  profile.imageUrl ||
+  profile.photo ||
+  "https://placehold.co/150x150/cccccc/000000?text=No+Image";
+
+
 
   return (
     <div className="bg-gray-100 min-h-screen p-4 sm:p-8 font-inter flex justify-center items-start">
@@ -243,10 +197,7 @@ const FacultyProfile = () => {
         <div className="flex flex-col md:flex-row items-center md:items-start space-y-6 md:space-y-0 md:space-x-8 pb-6 border-b border-gray-200 mb-8">
           <div className="flex-shrink-0 relative">
             <img
-              src={
-                profile.profilePicture ||
-                "https://placehold.co/150x150/cccccc/000000?text=No+Image"
-              }
+              src={profileImage}
               alt={`${fullName}'s profile`}
               className="w-36 h-36 rounded-full object-cover shadow-md border-4 border-blue-500"
             />
@@ -342,9 +293,8 @@ const FacultyProfile = () => {
           </div>
         )}
       </div>
-       <ToastContainer position="top-right" autoClose={3000} />
+      <ToastContainer position="top-right" autoClose={3000} />
     </div>
-    
   );
 };
 

@@ -87,7 +87,7 @@ const FacultyList = ({
             <tr key={fac.facultyCode} className="hover:bg-blue-50 transition">
               <td className="p-3">
                 <img
-                  src={fac.photo}
+                  src={fac.photoUrl}
                   alt={`${fac.firstName} ${fac.lastName}`}
                   className="w-10 h-10 rounded-full object-cover border mx-auto"
                 />
@@ -142,10 +142,11 @@ const FacultyList = ({
 
             <div className="flex items-center gap-4 mb-4">
               <img
-                src={selectedFaculty.photo}
-                alt={`${selectedFaculty.firstName} ${selectedFaculty.lastName}`}
-                className="w-20 h-20 rounded-full object-cover border"
-              />
+  src={selectedFaculty.photoUrl}  // ✅ use photoUrl here too
+  alt={`${selectedFaculty.firstName} ${selectedFaculty.lastName}`}
+  className="w-20 h-20 rounded-full object-cover border"
+/>
+
               <div>
                 <h2 className="text-xl font-semibold">
                   {selectedFaculty.firstName} {selectedFaculty.lastName}
