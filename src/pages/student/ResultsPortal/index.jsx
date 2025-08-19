@@ -1,23 +1,15 @@
-import React, { useState, useEffect } from "react";
-import client from "../../../api/client";  // ✅ fixed import
+import React, { useState } from "react";
+import client from "../../../api/client";  // ✅ API client
 
 export default function ResultPortal() {
   const [results, setResults] = useState([]);
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState("");
-  const [user, setUser] = useState(null);
-
-  useEffect(() => {
-    // Load logged-in user info
-    const storedUser = localStorage.getItem("user");
-    if (storedUser) {
-      setUser(JSON.parse(storedUser));
-    }
-  }, []);
+  const [rollNo, setRollNo] = useState("");
 
   const fetchResults = async () => {
-    if (!user) {
-      setMessage("Please login to view results.");
+    if (!rollNo.trim()) {
+      setMessage("Please enter your roll number.");
       return;
     }
 
@@ -25,20 +17,18 @@ export default function ResultPortal() {
       setLoading(true);
       setMessage("");
 
-      const { data } = await client.get(`/api/results/${user.regNo}`, {
-        headers: {
-          Authorization: `Bearer ${user.token}`, // if JWT token
-        },
-      });
+      const { data } = await client.get(`/api/results/${rollNo}`);
 
       if (data && data.length > 0) {
         setResults(data);
       } else {
         setMessage("No results found.");
+        setResults([]);
       }
     } catch (err) {
       console.error(err);
       setMessage("Failed to fetch results. Please try again.");
+      setResults([]);
     } finally {
       setLoading(false);
     }
@@ -51,35 +41,32 @@ export default function ResultPortal() {
           Student Result Portal
         </h1>
 
-        {user ? (
-          <p className="text-center text-gray-600 mb-4">
-            Logged in as <span className="font-semibold">{user.username}</span> (
-            {user.regNo})
-          </p>
-        ) : (
-          <p className="text-center text-red-600 mb-4">
-            Please login to view results.
-          </p>
-        )}
+        {/* Roll No Input */}
+        <div className="flex justify-center mb-6">
+          <input
+            type="text"
+            value={rollNo}
+            onChange={(e) => setRollNo(e.target.value)}
+            placeholder="Enter your Roll Number"
+            className="px-4 py-2 border rounded-l-lg w-64 focus:outline-none focus:ring focus:ring-blue-300"
+          />
+          <button
+            onClick={fetchResults}
+            disabled={loading}
+            className="px-6 py-2 bg-blue-600 text-white rounded-r-lg shadow hover:bg-blue-700 disabled:bg-gray-400"
+          >
+            {loading ? "Loading..." : "View Results"}
+          </button>
+        </div>
 
-        {user && (
-          <div className="text-center mb-6">
-            <button
-              onClick={fetchResults}
-              disabled={loading}
-              className="px-6 py-2 bg-blue-600 text-white rounded-lg shadow hover:bg-blue-700 disabled:bg-gray-400"
-            >
-              {loading ? "Loading..." : "View My Results"}
-            </button>
-          </div>
-        )}
-
+        {/* Message */}
         {message && (
           <p className="text-center text-sm font-medium text-gray-700">
             {message}
           </p>
         )}
 
+        {/* Results Table */}
         {results.length > 0 && (
           <div className="overflow-x-auto">
             <table className="w-full border border-gray-300 rounded-lg shadow">
