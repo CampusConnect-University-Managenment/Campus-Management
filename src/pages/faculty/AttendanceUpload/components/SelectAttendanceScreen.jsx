@@ -12,7 +12,7 @@ const MarkAttendanceScreen = ({ selectedClasses, onBack, onSubmit }) => {
     const { batch, courseCode } = selectedClasses[0];
 
     fetch(
-      `http://localhost:8080/attendance/students?batch=${batch}&courseCode=${courseCode}`
+      `http://localhost:5003/attendance/students?batch=${batch}&courseCode=${courseCode}`
     )
       .then((res) => res.json())
       .then((data) => {
@@ -54,7 +54,7 @@ const MarkAttendanceScreen = ({ selectedClasses, onBack, onSubmit }) => {
       });
     });
 
-    fetch("http://localhost:8080/attendance/submit", {
+    fetch("http://localhost:5003/attendance/submit", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(records),
