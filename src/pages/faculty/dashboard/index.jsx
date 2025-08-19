@@ -161,15 +161,19 @@ const FacultyDashboard = () => {
 
         {/* Compact Profile Card */}
         <div className="bg-gradient-to-tr from-blue-100 via-white to-purple-100 rounded-xl shadow p-4 flex flex-col items-center text-center">
-          <img
-            src={
-              faculty.photo
-                ? `data:image/jpeg;base64,${faculty.photo}`
-                : "https://cdn-icons-png.flaticon.com/512/3135/3135715.png"
-            }
-            alt="Faculty"
-            className="w-12 h-12 rounded-full border border-gray-300 mb-2"
-          />
+<img
+  src={
+    faculty.photoUrl
+      ? (faculty.photoUrl.startsWith("http") 
+          ? faculty.photoUrl 
+          : `data:image/jpeg;base64,${faculty.photoUrl}`)
+      : "https://cdn-icons-png.flaticon.com/512/3135/3135715.png"
+  }
+  alt="Faculty"
+  className="w-16 h-16 rounded-full border border-gray-300 mb-2 object-cover"
+/>
+
+
           <h3 className="text-sm font-semibold text-gray-800">
             {faculty.firstName} {faculty.lastName}
           </h3>
