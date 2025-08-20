@@ -33,7 +33,7 @@ const HistoryReportScreen = ({ onBack }) => {
   const recordsPerPage = 10;
 
   useEffect(() => {
-    fetch("http://localhost:8080/attendance/history")
+    fetch("http://localhost:5003/attendance/history")
       .then((res) => res.json())
       .then((data) => setHistory(data))
       .catch((err) => console.error("Error fetching history:", err));

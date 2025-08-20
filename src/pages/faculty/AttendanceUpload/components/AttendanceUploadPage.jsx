@@ -4,7 +4,7 @@ import SelectCourseScreen from "./SelectCourseScreen";
 import SelectHourScreen from "./SelectHourScreen";
 import MarkAttendanceScreen from "./SelectAttendanceScreen";
 
-axios.defaults.baseURL = "http://localhost:8080";
+axios.defaults.baseURL = "http://localhost:5003";
 
 const AttendanceUploadPage = ({ onNewSubmission, submittedHours }) => {
   const [step, setStep] = useState(1);

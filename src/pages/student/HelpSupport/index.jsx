@@ -713,7 +713,7 @@ export default function HelpSupport() {
                       </p>
                     )}
                   </div>
-                  {/* STATUS BADGE FIX */}
+                  
                   <span
                     className={`font-semibold text-sm px-2 py-1 rounded self-start inline-block w-fit ${
                       req.status === "Resolved"
