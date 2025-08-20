@@ -6,8 +6,8 @@ import MarkAttendanceScreen from "./SelectAttendanceScreen";
 
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+axios.defaults.baseURL = "http://localhost:5003";
 
-axios.defaults.baseURL = "http://localhost:8080";
 
 const AttendanceUploadPage = ({ onNewSubmission, submittedHours }) => {
   const [step, setStep] = useState(1);

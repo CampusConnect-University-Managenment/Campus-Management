@@ -21,7 +21,7 @@ const AttendanceManager = () => {
 
   // Fetch attendance history from backend
   const fetchHistory = () => {
-    fetch("http://localhost:8080/attendance/history")
+    fetch("http://localhost:5003/attendance/history")
       .then((res) => res.json())
       .then((data) => {
         const sorted = data.sort(
@@ -82,7 +82,7 @@ const AttendanceManager = () => {
       return;
     }
 
-    fetch("http://localhost:8080/attendance/submit", {
+    fetch("http://localhost:5003/attendance/submit", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(newRecords),
