@@ -1,284 +1,148 @@
-import React, { useState } from "react";
-import { Plus, Pencil } from "lucide-react";
+import React, { useState, useEffect } from "react";
+import { Upload, FileSpreadsheet } from "lucide-react";
 
-const initialSchedules = [
-  {
-    id: 1,
-    exam: "Mathematics - II",
-    date: "2025-08-10",
-    time: "10:00 AM - 1:00 PM",
-    venue: "Block A - Room 203",
-    students: 60,
-    degree: "BSc",
-    year: "1st Year",
-    department: "Mathematics",
-  },
-  {
-    id: 2,
-    exam: "Computer Networks",
-    date: "2025-08-12",
-    time: "2:00 PM - 5:00 PM",
-    venue: "Block B - Room 101",
-    students: 45,
-    degree: "BSc",
-    year: "2nd Year",
-    department: "Computer Science",
-  },
-];
+const UploadMarks = () => {
+  const [file, setFile] = useState(null);
+  const [results, setResults] = useState([]); // ✅ store backend data
+  const [loading, setLoading] = useState(false);
 
-const degrees = ["BSc", "BCA", "BCom"];
-const years = ["1st Year", "2nd Year", "3rd Year"];
-const departments = ["Mathematics", "Computer Science", "Commerce"];
-
-const ExamSchedule = () => {
-  const [schedules, setSchedules] = useState(initialSchedules);
-  const [editingId, setEditingId] = useState(null);
-  const [formData, setFormData] = useState({
-    exam: "",
-    date: "",
-    time: "",
-    venue: "",
-    students: "",
-    degree: "",
-    year: "",
-    department: "",
-  });
-
-  const openModal = () => document.getElementById("examModal").showModal();
-  const closeModal = () => document.getElementById("examModal").close();
-
-  const handleAdd = () => {
-    setEditingId(null);
-    setFormData({
-      exam: "",
-      date: "",
-      time: "",
-      venue: "",
-      students: "",
-      degree: "",
-      year: "",
-      department: "",
-    });
-    openModal();
-  };
-
-  const handleEdit = (schedule) => {
-    setEditingId(schedule.id);
-    setFormData(schedule);
-    openModal();
-  };
-
-  const handleDelete = (id) => {
-    if (window.confirm("Are you sure you want to cancel this exam?")) {
-      setSchedules((prev) => prev.filter((item) => item.id !== id));
+  // ✅ Fetch all results from backend
+  const fetchResults = async () => {
+    try {
+      const res = await fetch("http://localhost:8080/api/results");
+      const data = await res.json();
+      setResults(data);
+    } catch (err) {
+      console.error("Error fetching results:", err);
     }
   };
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    if (editingId) {
-      setSchedules((prev) =>
-        prev.map((item) =>
-          item.id === editingId ? { ...formData, id: editingId } : item
-        )
-      );
-    } else {
-      setSchedules((prev) => [...prev, { ...formData, id: Date.now() }]);
-    }
-    closeModal();
+  useEffect(() => {
+    fetchResults(); // load on page mount
+  }, []);
+
+  const handleFileChange = (e) => {
+    setFile(e.target.files[0]);
   };
 
-  const groupedSchedules = schedules.reduce((groups, schedule) => {
-    const key = `${schedule.degree} - ${schedule.year} - ${schedule.department}`;
-    if (!groups[key]) {
-      groups[key] = [];
+  const handleUpload = async () => {
+    if (!file) {
+      alert("Please select an Excel file first!");
+      return;
     }
-    groups[key].push(schedule);
-    return groups;
-  }, {});
+
+    const formData = new FormData();
+    formData.append("file", file);
+
+    try {
+      setLoading(true);
+      const response = await fetch("http://localhost:8080/api/results/upload", {
+        method: "POST",
+        body: formData,
+      });
+
+      if (response.ok) {
+        alert(`"${file.name}" uploaded successfully!`);
+        fetchResults(); // ✅ refresh data after upload
+      } else {
+        const errorText = await response.text();
+        alert("Upload failed: " + errorText);
+      }
+    } catch (err) {
+      console.error("Error uploading file:", err);
+      alert("Error uploading file!");
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
-    <div className="w-full min-h-screen bg-gradient-to-tr from-[#eef2ff] to-[#fdfbff] px-10 pt-28 pb-16">
-      <div className="p-4 md:p-6">
-        <div className="flex flex-col sm:flex-row justify-between sm:items-center mb-6 gap-4">
-          <h2 className="text-2xl font-bold text-gray-800">
-            Manage Exam Schedules
-          </h2>
+    <div className="p-6 w-full flex flex-col items-center">
+      <div className="w-full max-w-2xl bg-white rounded-2xl shadow-lg p-8 mb-8">
+        {/* Title */}
+        <h2 className="text-2xl font-bold text-gray-800 mb-2 text-center flex items-center justify-center gap-2">
+          <FileSpreadsheet className="w-7 h-7 text-green-600" />
+          Upload Marks
+        </h2>
+        <p className="text-gray-500 text-center mb-8">
+          Upload student marks in{" "}
+          <span className="font-medium">Excel (.xlsx / .xls)</span>
+        </p>
+
+        {/* Upload Box */}
+        <label
+          htmlFor="fileUpload"
+          className="flex flex-col items-center justify-center border-2 border-dashed border-gray-300 rounded-xl p-10 cursor-pointer bg-gray-50 hover:bg-gray-100 transition"
+        >
+          <Upload className="w-12 h-12 text-blue-600 mb-3" />
+          {file ? (
+            <span className="px-4 py-2 bg-blue-100 text-blue-700 rounded-lg text-sm font-medium">
+              {file.name}
+            </span>
+          ) : (
+            <>
+              <p className="text-gray-700 font-medium">
+                Click to upload or drag & drop
+              </p>
+              <p className="text-sm text-gray-400 mt-1">
+                Excel files only (.xlsx / .xls)
+              </p>
+            </>
+          )}
+          <input
+            type="file"
+            accept=".xlsx,.xls"
+            id="fileUpload"
+            className="hidden"
+            onChange={handleFileChange}
+          />
+        </label>
+
+        {/* Upload Button */}
+        <div className="mt-6 flex justify-center">
           <button
-            className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 inline-flex items-center gap-2"
-            onClick={handleAdd}
+            onClick={handleUpload}
+            disabled={loading}
+            className="px-6 py-3 bg-blue-600 text-white font-medium rounded-lg shadow hover:bg-blue-700 transition flex items-center gap-2 disabled:opacity-50"
           >
-            <Plus size={16} />
-            Add Exam
+            <Upload className="w-5 h-5" />
+            {loading ? "Uploading..." : "Upload File"}
           </button>
         </div>
+      </div>
 
-        {Object.entries(groupedSchedules).map(([section, exams]) => (
-          <div key={section} className="mb-8">
-            <h3 className="text-lg font-semibold text-gray-700 mb-2">
-              {section}
-            </h3>
-            <div className="overflow-x-auto">
-              <table className="min-w-full bg-white shadow-md rounded text-sm text-center">
-                <thead className="bg-gray-100 text-gray-700">
-                  <tr>
-                    <th className="py-2 px-4">Exam</th>
-                    <th className="py-2 px-4">Date</th>
-                    <th className="py-2 px-4">Time</th>
-                    <th className="py-2 px-4">Venue</th>
-                    <th className="py-2 px-4">Students</th>
-                    <th className="py-2 px-4">Actions</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {exams.map((exam) => (
-                    <tr key={exam.id} className="border-b hover:bg-gray-50">
-                      <td className="py-2 px-4">{exam.exam}</td>
-                      <td className="py-2 px-4">{exam.date}</td>
-                      <td className="py-2 px-4">{exam.time}</td>
-                      <td className="py-2 px-4">{exam.venue}</td>
-                      <td className="py-2 px-4">{exam.students}</td>
-                      <td className="py-2 px-4 space-x-2">
-                        <button
-                          onClick={() => handleEdit(exam)}
-                          className="text-blue-600 hover:text-blue-800 inline-flex items-center"
-                        >
-                          <Pencil className="w-4 h-4 mr-1" />
-                          Edit
-                        </button>
-                        <button
-                          onClick={() => handleDelete(exam.id)}
-                          className="text-red-600 hover:underline"
-                        >
-                          Cancel
-                        </button>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          </div>
-        ))}
-
-        {/* Modal for Add/Edit */}
-        <dialog id="examModal" className="modal rounded-xl">
-          <div className="modal-box max-w-md w-full">
-            <h3 className="font-bold text-xl mb-4">
-              {editingId ? "Edit Exam" : "Add Exam"}
-            </h3>
-            <form onSubmit={handleSubmit} className="space-y-3">
-              <input
-                type="text"
-                placeholder="Exam Name"
-                className="w-full border px-3 py-2 rounded"
-                value={formData.exam}
-                required
-                onChange={(e) =>
-                  setFormData({ ...formData, exam: e.target.value })
-                }
-              />
-              <input
-                type="date"
-                className="w-full border px-3 py-2 rounded"
-                value={formData.date}
-                required
-                onChange={(e) =>
-                  setFormData({ ...formData, date: e.target.value })
-                }
-              />
-              <input
-                type="text"
-                placeholder="Time (e.g. 10:00 AM - 1:00 PM)"
-                className="w-full border px-3 py-2 rounded"
-                value={formData.time}
-                required
-                onChange={(e) =>
-                  setFormData({ ...formData, time: e.target.value })
-                }
-              />
-              <input
-                type="text"
-                placeholder="Venue"
-                className="w-full border px-3 py-2 rounded"
-                value={formData.venue}
-                required
-                onChange={(e) =>
-                  setFormData({ ...formData, venue: e.target.value })
-                }
-              />
-              <input
-                type="number"
-                placeholder="Total Students"
-                className="w-full border px-3 py-2 rounded"
-                value={formData.students}
-                required
-                onChange={(e) =>
-                  setFormData({ ...formData, students: Number(e.target.value) })
-                }
-              />
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
-                <select
-                  required
-                  className="border px-3 py-2 rounded"
-                  value={formData.degree}
-                  onChange={(e) =>
-                    setFormData({ ...formData, degree: e.target.value })
-                  }
-                >
-                  <option value="">Degree</option>
-                  {degrees.map((d) => (
-                    <option key={d}>{d}</option>
-                  ))}
-                </select>
-                <select
-                  required
-                  className="border px-3 py-2 rounded"
-                  value={formData.year}
-                  onChange={(e) =>
-                    setFormData({ ...formData, year: e.target.value })
-                  }
-                >
-                  <option value="">Year</option>
-                  {years.map((y) => (
-                    <option key={y}>{y}</option>
-                  ))}
-                </select>
-                <select
-                  required
-                  className="border px-3 py-2 rounded"
-                  value={formData.department}
-                  onChange={(e) =>
-                    setFormData({ ...formData, department: e.target.value })
-                  }
-                >
-                  <option value="">Department</option>
-                  {departments.map((dep) => (
-                    <option key={dep}>{dep}</option>
-                  ))}
-                </select>
-              </div>
-              <div className="flex justify-end space-x-2 pt-2">
-                <button
-                  type="button"
-                  className="px-4 py-2 bg-gray-300 rounded"
-                  onClick={closeModal}
-                >
-                  Cancel
-                </button>
-                <button
-                  type="submit"
-                  className="px-4 py-2 bg-blue-600 text-white rounded"
-                >
-                  {editingId ? "Update" : "Add"}
-                </button>
-              </div>
-            </form>
-          </div>
-        </dialog>
+      {/* ✅ Results Table */}
+      <div className="w-full max-w-4xl bg-white rounded-2xl shadow-lg p-6">
+        <h3 className="text-lg font-semibold mb-4">Uploaded Results</h3>
+        {results.length === 0 ? (
+          <p className="text-gray-500">No results available.</p>
+        ) : (
+          <table className="w-full border border-gray-200 rounded-lg overflow-hidden">
+            <thead className="bg-gray-100 text-gray-700">
+              <tr>
+                <th className="p-2 border">Reg No</th>
+                <th className="p-2 border">Name</th>
+                <th className="p-2 border">Semester</th>
+                <th className="p-2 border">Subject</th>
+                <th className="p-2 border">Marks</th>
+              </tr>
+            </thead>
+            <tbody>
+              {results.map((res, idx) => (
+                <tr key={idx} className="text-center">
+                  <td className="p-2 border">{res.regNo}</td>
+                  <td className="p-2 border">{res.studentName}</td>
+                  <td className="p-2 border">{res.sem}</td>
+                  <td className="p-2 border">{res.subject}</td>
+                  <td className="p-2 border">{res.marks}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        )}
       </div>
     </div>
   );
 };
 
-export default ExamSchedule;
+export default UploadMarks;

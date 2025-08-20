@@ -1,10 +1,12 @@
 
 import React, { useEffect, useState } from "react";
+import toast, { Toaster } from "react-hot-toast";
 
 const Notification = () => {
   const [studentRequests, setStudentRequests] = useState([]);
   const [expandedId, setExpandedId] = useState(null);
-  const [activeTab, setActiveTab] = useState("Pending"); // default tab
+  const [activeTab, setActiveTab] = useState("Pending");
+  const [modalImage, setModalImage] = useState(null); // for enlarged image
 
   useEffect(() => {
     const fetchRequests = async () => {
@@ -18,6 +20,7 @@ const Notification = () => {
         }
       } catch (err) {
         console.error("Error fetching requests:", err);
+        toast.error("Failed to fetch requests.");
       }
     };
 
@@ -42,9 +45,15 @@ const Notification = () => {
       setStudentRequests((prev) =>
         prev.map((req) => (req.id === id ? updatedRequest : req))
       );
+
+      toast.success(
+        actionType === "resolve"
+          ? "Request marked as completed!"
+          : "Request marked as read!"
+      );
     } catch (err) {
       console.error("Status update failed:", err);
-      alert("Failed to update request status.");
+      toast.error("Failed to update request status.");
     }
   };
 
@@ -59,6 +68,7 @@ const Notification = () => {
 
   return (
     <div className="min-h-screen bg-gray-100 p-6 pt-24">
+      <Toaster position="top-right" />
       <h1 className="text-4xl font-bold mb-6 text-center">HelpDesk</h1>
 
       {/* Horizontal Tabs */}
@@ -120,7 +130,8 @@ const Notification = () => {
                     <img
                       src={imageUrl}
                       alt="Attached"
-                      className="w-32 h-32 object-cover rounded shadow-md"
+                      className="w-32 h-32 object-cover rounded shadow-md cursor-pointer hover:scale-105 transition-transform"
+                      onClick={() => setModalImage(imageUrl)}
                     />
                   )}
                 </div>
@@ -178,6 +189,21 @@ const Notification = () => {
           })
         )}
       </div>
+
+      {/* Modal for enlarged image */}
+      {modalImage && (
+        <div
+          className="fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center z-50"
+          onClick={() => setModalImage(null)}
+        >
+          <img
+            src={modalImage}
+            alt="Enlarged view"
+            className="max-w-full max-h-full rounded-lg shadow-lg"
+            onClick={(e) => e.stopPropagation()}
+          />
+        </div>
+      )}
     </div>
   );
 };

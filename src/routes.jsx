@@ -4,7 +4,6 @@ import AdminProfile from "./pages/admin/Profile";
 import AdminDashboard from "./pages/admin/dashboard";
 import AdminExam from "./pages/admin/exam";
 import AdminExamInterface from "./pages/admin/dashboard/component/ExamInterface";
-import AdminExamSchedule from "./pages/admin/dashboard/component/ExamSchedule";
 import AdminMarksUpload from "./pages/admin/dashboard/component/MarksUpload";
 
 import NotificationMessage from "./pages/admin/Notification_Message";
@@ -39,6 +38,9 @@ import ExamSchedule from "./pages/admin/exam/components/examschedule";
 import FaCourse from "./pages/faculty/Course/Course";
 import HelpDesk from "./pages/admin/HelpDesk/component/notification";
 
+import LoginPage from "./pages/Auth/component/LoginPageInline";
+
+
 // IMPORT BOTH COMPONENTS FROM THE SINGLE INDEX.JSX FILE
 import { ClassList, ClassList_Students } from "./pages/faculty/ClassList";
 
@@ -64,6 +66,16 @@ import {
 } from "react-icons/md";
 
 const routes = [
+  // login
+
+  {
+    name: "Login",
+    layout: "",
+    path: "/",
+    icon: null, // no icon needed
+    component: <LoginPage />,
+  },
+
   // Admin Routes
   {
     name: "Admin Dashboard",
@@ -95,24 +107,13 @@ const routes = [
     component: <NotificationMessage />,
   },
   {
-    name: "Exam Interface",
-    layout: "/admin",
-    path: "examinterface",
-    icon: <MdLibraryBooks className="h-6 w-6" />,
-    component: <AdminExamInterface />, // <- should include <Outlet />
-    children: [
-      {
-        layout: "/admin",
-        path: "examinterface/exam-schedule",
-        component: <AdminExamSchedule />,
-      },
-      {
-        layout: "/admin",
-        path: "examinterface/marks-upload",
-        component: <AdminMarksUpload />,
-      },
-    ],
-  },
+  name: "Exam Interface",
+  layout: "/admin",
+  path: "examinterface",
+  icon: <MdLibraryBooks className="h-6 w-6" />,
+  component: <AdminMarksUpload />,  // directly load marks upload
+},
+
   {
     name: "Assign Class",
     layout: "/admin",
@@ -132,7 +133,7 @@ const routes = [
     layout: "/admin",
     path: "help",
     icon: <MdDashboard className="h-6 w-6" />,
-    component: <HelpDesk/>,
+    component: <HelpDesk />,
   },
   {
     name: "My Profile",
@@ -232,8 +233,7 @@ const routes = [
     component: <Notification_Message />,
   },
 
-
-    {
+  {
     name: "Courses",
     layout: "/faculty",
     path: "Course",

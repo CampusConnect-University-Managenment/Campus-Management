@@ -1,43 +1,42 @@
 import React, { useState } from "react";
-import * as XLSX from "xlsx";
+import axios from "axios";
 
-const BulkAddStudents = ({ onClose, onBulkAdd }) => {
+const BulkAddStudents = ({ onClose }) => {
   const [error, setError] = useState("");
+  const [success, setSuccess] = useState("");
+  const [loading, setLoading] = useState(false);
 
-  const handleFileUpload = (e) => {
+  const handleFileUpload = async (e) => {
     const file = e.target.files[0];
     if (!file) return;
 
-    const reader = new FileReader();
+    const formData = new FormData();
+    formData.append("file", file); // must match @RequestParam("file")
 
-    reader.onload = (evt) => {
-      const data = new Uint8Array(evt.target.result);
-      const workbook = XLSX.read(data, { type: "array" });
+    setLoading(true);
+    setError("");
+    setSuccess("");
 
-      const sheetName = workbook.SheetNames[0];
-      const worksheet = workbook.Sheets[sheetName];
-      const json = XLSX.utils.sheet_to_json(worksheet);
-
-      const required = [
-        "name", "regNo", "batch", "section", "dept", "dob", "contact", "mail", "address", "adhar",
-        "tenthMark", "twelfthMark", "quota", "gender", "bloodGroup", "photo",
-        "parentName", "parentPhoneNo", "sem", "year", "totalCredits"
-      ];
-
-      const isValid = json.every(row =>
-        required.every(key => row.hasOwnProperty(key))
+    try {
+      const res = await axios.post(
+        "http://localhost:8080/api/admin/excel/upload", // ✅ matches backend
+        formData,
+        {
+          headers: { "Content-Type": "multipart/form-data" },
+        }
       );
 
-      if (!isValid) {
-        setError("Invalid format. Ensure all columns are present:\n" + required.join(", "));
-        return;
+      if (res.status === 201) {
+        setSuccess("✅ Students uploaded successfully!");
+      } else {
+        setError("⚠️ Upload failed. Server returned status: " + res.status);
       }
-
-      setError("");
-      onBulkAdd(json);  // Pass parsed data to parent
-    };
-
-    reader.readAsArrayBuffer(file);
+    } catch (err) {
+      console.error(err);
+      setError("❌ Upload failed. " + (err.response?.data?.message || err.message));
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -52,14 +51,11 @@ const BulkAddStudents = ({ onClose, onBulkAdd }) => {
       />
 
       {error && <p className="text-red-600 mb-3 whitespace-pre-wrap">{error}</p>}
+      {success && <p className="text-green-600 mb-3">{success}</p>}
+      {loading && <p className="text-blue-600 mb-3">Uploading...</p>}
 
       <p className="text-sm text-gray-500 mb-4">
-        Please upload an Excel file with these columns:<br />
-        <code>
-          name, regNo, batch, section, dept, dob, contact, mail, address, adhar,<br />
-          tenthMark, twelfthMark, quota, gender, bloodGroup, photo,<br />
-          parentName, parentPhoneNo, sem, year, totalCredits
-        </code>
+        Please upload an Excel file. The backend will parse it and save students.
       </p>
 
       <div className="flex justify-end space-x-2">
@@ -67,13 +63,7 @@ const BulkAddStudents = ({ onClose, onBulkAdd }) => {
           onClick={onClose}
           className="bg-gray-400 text-white px-4 py-2 rounded hover:bg-gray-500"
         >
-          Cancel
-        </button>
-        <button
-          className="bg-blue-600 text-white px-4 py-2 rounded opacity-50 cursor-not-allowed"
-          disabled
-        >
-          Add Students
+          Close
         </button>
       </div>
     </div>

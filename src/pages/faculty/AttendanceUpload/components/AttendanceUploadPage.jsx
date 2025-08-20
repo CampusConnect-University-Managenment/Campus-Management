@@ -4,7 +4,10 @@ import SelectCourseScreen from "./SelectCourseScreen";
 import SelectHourScreen from "./SelectHourScreen";
 import MarkAttendanceScreen from "./SelectAttendanceScreen";
 
-axios.defaults.baseURL = "http://localhost:8080";
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+axios.defaults.baseURL = "http://localhost:5003";
+
 
 const AttendanceUploadPage = ({ onNewSubmission, submittedHours }) => {
   const [step, setStep] = useState(1);
@@ -33,6 +36,7 @@ const AttendanceUploadPage = ({ onNewSubmission, submittedHours }) => {
     return toYYYYMMDD(dateObj);
   }, [filters.date]);
 
+  // Fetch classes by date
   useEffect(() => {
     if (!formattedDate) return;
     axios
@@ -40,10 +44,11 @@ const AttendanceUploadPage = ({ onNewSubmission, submittedHours }) => {
       .then((res) => setClassData(res.data))
       .catch((err) => {
         console.error("Class fetch failed", err);
-        alert("Failed to load classes.");
+        toast.error("❌ Failed to load classes.");
       });
   }, [formattedDate]);
 
+  // Fetch available batches
   useEffect(() => {
     if (!formattedDate) return;
     axios
@@ -52,9 +57,11 @@ const AttendanceUploadPage = ({ onNewSubmission, submittedHours }) => {
       .catch((err) => {
         console.error("Batch fetch failed", err);
         setAvailableBatches([]);
+        toast.error("❌ Failed to load batches.");
       });
   }, [formattedDate]);
 
+  // Filter courses when batch changes
   useEffect(() => {
     if (!filters.batch) {
       setAvailableCourses([]);
@@ -67,6 +74,7 @@ const AttendanceUploadPage = ({ onNewSubmission, submittedHours }) => {
     setAvailableCourses(uniqueCourses);
   }, [filters.batch, classData]);
 
+  // Fetch hour blocks
   useEffect(() => {
     if (!filters.date || !filters.batch || !filters.courseCode) return;
     const dateObj =
@@ -99,13 +107,15 @@ const AttendanceUploadPage = ({ onNewSubmission, submittedHours }) => {
       .catch((err) => {
         console.error("Hour fetch failed", err);
         setHourBlocks([]);
+        toast.error("❌ Failed to load class hours.");
       });
   }, [filters.date, filters.batch, filters.courseCode]);
 
+  // Handlers
   const handleDateChange = (e) => {
     const selectedDate = new Date(e.target.value);
     if (isNaN(selectedDate)) {
-      alert("Invalid date format");
+      toast.warning("⚠️ Invalid date format");
       return;
     }
     setFilters({
@@ -139,7 +149,7 @@ const AttendanceUploadPage = ({ onNewSubmission, submittedHours }) => {
 
     const first = selected[0];
     if (!first) {
-      alert("Please select at least one hour");
+      toast.warning("⚠️ Please select at least one hour");
       return;
     }
 
@@ -156,7 +166,7 @@ const AttendanceUploadPage = ({ onNewSubmission, submittedHours }) => {
       })
       .catch((err) => {
         console.error("Student fetch failed", err);
-        alert("Failed to load student data");
+        toast.error("❌ Failed to load student data.");
       });
   };
 
@@ -180,7 +190,7 @@ const AttendanceUploadPage = ({ onNewSubmission, submittedHours }) => {
         attendanceData,
       })
       .then((res) => {
-        alert(res.data);
+        toast.success("✅ " + res.data);
         onNewSubmission?.({
           filters,
           selectedClasses: fixedSelectedClasses,
@@ -192,7 +202,7 @@ const AttendanceUploadPage = ({ onNewSubmission, submittedHours }) => {
       })
       .catch((err) => {
         console.error("Submit error:", err);
-        alert("Failed to submit attendance.");
+        toast.error("❌ Failed to submit attendance.");
       });
   };
 
@@ -229,6 +239,17 @@ const AttendanceUploadPage = ({ onNewSubmission, submittedHours }) => {
           onSubmit={handleSubmit}
         />
       )}
+
+      {/* Toast Notifications */}
+      <ToastContainer
+        position="top-right"
+        autoClose={3000}
+        hideProgressBar={false}
+        newestOnTop={true}
+        closeOnClick
+        pauseOnHover
+        draggable
+      />
     </>
   );
 };
